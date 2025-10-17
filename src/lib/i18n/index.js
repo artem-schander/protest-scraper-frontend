@@ -9,8 +9,8 @@ export const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 export const SUPPORTED_LOCALES = ['en', 'de'];
 export const LANGUAGE_OPTIONS = [
-	{ code: 'en', label: 'English' },
-	{ code: 'de', label: 'Deutsch' }
+  { code: 'en', label: 'English' },
+  { code: 'de', label: 'Deutsch' }
 ];
 
 addMessages('en', enMessages);
@@ -19,95 +19,95 @@ addMessages('de', deMessages);
 let initialized = false;
 
 function normalizeLocale(value) {
-	if (!value) {
-		return undefined;
-	}
+  if (!value) {
+    return undefined;
+  }
 
-	const primary = value.trim().split(',')[0];
-	const [language] = primary.split('-');
-	return language?.toLowerCase();
+  const primary = value.trim().split(',')[0];
+  const [language] = primary.split('-');
+  return language?.toLowerCase();
 }
 
 function isSupported(code) {
-	return Boolean(code) && SUPPORTED_LOCALES.includes(code);
+  return Boolean(code) && SUPPORTED_LOCALES.includes(code);
 }
 
 function getCookieLocale() {
-	if (!browser) {
-		return undefined;
-	}
+  if (!browser) {
+    return undefined;
+  }
 
-	const segments = document.cookie.split(';').map((segment) => segment.trim());
-	const match = segments.find((segment) => segment.startsWith(`${LOCALE_COOKIE_KEY}=`));
+  const segments = document.cookie.split(';').map((segment) => segment.trim());
+  const match = segments.find((segment) => segment.startsWith(`${LOCALE_COOKIE_KEY}=`));
 
-	if (!match) {
-		return undefined;
-	}
+  if (!match) {
+    return undefined;
+  }
 
-	const [, value] = match.split('=');
-	return decodeURIComponent(value);
+  const [, value] = match.split('=');
+  return decodeURIComponent(value);
 }
 
 function persistLocale(code) {
-	if (!browser) {
-		return;
-	}
+  if (!browser) {
+    return;
+  }
 
-	document.cookie = `${LOCALE_COOKIE_KEY}=${encodeURIComponent(
-		code
-	)}; Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax`;
+  document.cookie = `${LOCALE_COOKIE_KEY}=${encodeURIComponent(
+    code
+  )}; Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax`;
 }
 
 function resolveLocale(preferred) {
-	const normalized = normalizeLocale(preferred);
+  const normalized = normalizeLocale(preferred);
 
-	if (isSupported(normalized)) {
-		return normalized;
-	}
+  if (isSupported(normalized)) {
+    return normalized;
+  }
 
-	if (browser) {
-		const cookieLocale = normalizeLocale(getCookieLocale());
-		if (isSupported(cookieLocale)) {
-			return cookieLocale;
-		}
+  if (browser) {
+    const cookieLocale = normalizeLocale(getCookieLocale());
+    if (isSupported(cookieLocale)) {
+      return cookieLocale;
+    }
 
-		const navigatorLocale = normalizeLocale(getLocaleFromNavigator());
-		if (isSupported(navigatorLocale)) {
-			return navigatorLocale;
-		}
-	}
+    const navigatorLocale = normalizeLocale(getLocaleFromNavigator());
+    if (isSupported(navigatorLocale)) {
+      return navigatorLocale;
+    }
+  }
 
-	return FALLBACK_LOCALE;
+  return FALLBACK_LOCALE;
 }
 
 export function setupI18n(initialLocale, options = {}) {
-	const { persist = true } = options;
-	const targetLocale = resolveLocale(initialLocale);
+  const { persist = true } = options;
+  const targetLocale = resolveLocale(initialLocale);
 
-	if (!initialized) {
-		init({
-			fallbackLocale: FALLBACK_LOCALE,
-			initialLocale: targetLocale
-		});
-		initialized = true;
-	} else {
-		localeStore.set(targetLocale);
-	}
+  if (!initialized) {
+    init({
+      fallbackLocale: FALLBACK_LOCALE,
+      initialLocale: targetLocale
+    });
+    initialized = true;
+  } else {
+    localeStore.set(targetLocale);
+  }
 
-	if (persist) {
-		persistLocale(targetLocale);
-	}
+  if (persist) {
+    persistLocale(targetLocale);
+  }
 
-	return targetLocale;
+  return targetLocale;
 }
 
 export function setAppLocale(nextLocale) {
-	if (!isSupported(nextLocale)) {
-		return;
-	}
+  if (!isSupported(nextLocale)) {
+    return;
+  }
 
-	localeStore.set(nextLocale);
-	persistLocale(nextLocale);
+  localeStore.set(nextLocale);
+  persistLocale(nextLocale);
 }
 
 export { localeStore as locale, t };
