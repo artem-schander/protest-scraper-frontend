@@ -1,8 +1,10 @@
 <script>
+  import { env } from '$env/dynamic/public';
   import Icon from '$lib/components/common/Icon.svelte';
   import { t } from '$lib/i18n';
 
   const currentYear = new Date().getFullYear();
+  const githubUrl = env.PUBLIC_GITHUB_URL;
 </script>
 
 <footer class="bg-white dark:bg-stone-800 border-t border-stone-200 dark:border-stone-700">
@@ -56,11 +58,14 @@
       <p>
         {$t('footer.copyright', { values: { year: currentYear } })}
       </p>
-      <div class="flex items-center gap-4">
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="hover:text-[#E10600] dark:hover:text-red-400 transition-colors" aria-label={$t('footer.githubAria')}>
-          <Icon icon="heroicons:code-bracket" class="w-5 h-5" />
-        </a>
-      </div>
+
+      {#if githubUrl}
+        <div class="flex items-center gap-4">
+          <a href="{githubUrl}" target="_blank" rel="noopener noreferrer" class="hover:text-[#E10600] dark:hover:text-red-400 transition-colors" aria-label={$t('footer.githubAria')}>
+            <Icon icon="heroicons:code-bracket" class="w-5 h-5" />
+          </a>
+        </div>
+      {/if}
     </div>
   </div>
 </footer>

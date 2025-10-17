@@ -1,294 +1,122 @@
-# Protest Listing Platform - Frontend
+# Protest Listing Platform – Frontend
 
-A modern, responsive web application for listing upcoming protests and demonstrations. Built with SvelteKit and Tailwind CSS.
+A modern, responsive SvelteKit application for listing upcoming protests and demonstrations. The UI is fully internationalised (English/German), SSR-friendly, and tuned for fast filtering and geolocation searches.
 
 ## Features
 
-- 🎨 **Beautiful Design**: Soft gradients, clean layouts, and smooth animations
-- 🌓 **Dark Mode**: Automatic theme detection (system preference) with manual toggle
-- 📱 **Mobile First**: Fully responsive design optimized for all devices
-- 🔍 **Advanced Filtering**: Filter by location, source, date range, and more
-- 🗺️ **Geolocation**: Find protests near you
-- 🔐 **Authentication**: Secure user login and registration
-- ✏️ **Event Management**: Create and manage protest events
-- 📅 **Calendar Export**: Subscribe to events via ICS feed
-- ⚡ **SSR Ready**: Server-side rendering for optimal performance
+- 🎨 **Polished UI** – Soft gradients, smooth transitions, and Tailwind-powered layout
+- 🌓 **Dark Mode** – System detection plus manual toggle, persisted without flicker
+- 🌍 **Internationalisation** – Header switcher (EN/DE) backed by `svelte-i18n` and SSR-safe locale cookies
+- 🔍 **Rich Filters** – Date range picker, location radius map picker, language/source filters
+- 🗺️ **Geolocation** – Optional “use my location” support for proximity searches
+- ⚡ **Server Rendering** – Locale/theme cookies hydrate seamlessly for instant first paint
 
 ## Tech Stack
 
 - **Framework**: SvelteKit (SSR)
 - **Styling**: Tailwind CSS (via CDN)
-- **Icons**: Iconify (@iconify/svelte)
-- **Backend API**: [protest-scraper](https://github.com/artem-schander/protest-scraper)
+- **Icons**: Iconify (`@iconify/svelte`)
+- **Internationalisation**: `svelte-i18n` with JSON locale bundles
+- **Backend**: [protest-scraper](https://github.com/artem-schander/protest-scraper) REST API
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ and npm/pnpm/yarn
+- Node.js 18+
 - Backend API running (see [protest-scraper](https://github.com/artem-schander/protest-scraper))
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone & install**
    ```bash
    git clone <your-repo-url>
    cd protest-scraper-frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
    npm install
    ```
 
-3. **Configure environment**
+2. **Environment variables**
    ```bash
    cp .env.example .env
    ```
-
-   Update `.env` with your backend API URL:
+   Fill in `VITE_API_URL` plus optional imprint/privacy details:
    ```
    VITE_API_URL=http://localhost:3000/api
+   PUBLIC_IMPRINT_NAME=Example Org
+   PUBLIC_IMPRINT_EMAIL=info@example.org
+   PUBLIC_PRIVACY_EMAIL=privacy@example.org
+   # ...see .env.example for the full list (address, phone, supervisory authority, etc.)
    ```
 
-4. **Start development server**
+3. **Run the dev server**
    ```bash
    npm run dev
    ```
+   Visit <http://localhost:5173>.
 
-5. **Open in browser**
-   ```
-   http://localhost:5173
+4. **Production build**
+   ```bash
+   npm run build
+   npm run preview
    ```
 
 ## Project Structure
 
 ```
 src/
-├── routes/                      # SvelteKit routes (pages)
-│   ├── +layout.svelte          # Main layout
-│   ├── +page.svelte            # Landing page
-│   ├── +page.server.js         # SSR data loading
-│   └── events/                  # Event-related pages
-│       └── create/
-│           └── +page.svelte    # Create event page
+├── hooks.server.js             # Resolves locale cookie per request
+├── routes/
+│   ├── +layout.svelte          # Root layout (theme init, locale hydration)
+│   ├── +layout.server.js       # Passes resolved locale to the layout
+│   ├── +page.svelte            # Landing page with search & filters
+│   ├── about/+page.svelte      # About page (i18n content)
+│   ├── imprint/+page.svelte    # Legal imprint / Impressum
+│   ├── privacy/+page.svelte    # GDPR-compliant privacy policy
+│   └── disclaimer/+page.svelte # Disclaimer / Haftungsausschluss
 ├── lib/
 │   ├── components/
-│   │   ├── common/             # Reusable UI components
-│   │   │   ├── Button.svelte
-│   │   │   ├── Input.svelte
-│   │   │   ├── Modal.svelte
-│   │   │   └── LoadingSkeleton.svelte
-│   │   ├── event/              # Event-specific components
-│   │   │   ├── EventCard.svelte
-│   │   │   └── QuickFilters.svelte
-│   │   ├── auth/               # Authentication components
-│   │   │   ├── LoginModal.svelte
-│   │   │   └── RegisterModal.svelte
-│   │   └── layout/             # Layout components
-│   │       ├── Header.svelte
-│   │       └── FilterSidebar.svelte
-│   ├── stores/
-│   │   └── auth.js             # Authentication state
-│   └── utils/
-│       ├── api.js              # API client
-│       └── dateFormat.js       # Date utilities
-└── app.html                     # Root HTML with Tailwind CDN
+│   │   ├── common/             # Shared UI (Button, Modal, MapPicker, DateRangePicker…)
+│   │   ├── layout/             # Header, Footer, FilterSidebar
+│   │   └── event/              # Event cards and related widgets
+│   ├── i18n/                   # Locale JSON bundles and setup helper
+│   ├── stores/                 # Svelte stores (auth, theme)
+│   └── utils/                  # API client, icon preloader, helpers
+└── app.html                    # Root HTML with Tailwind CDN
 ```
 
-## Available Scripts
+## Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
+| Command            | Description                                  |
+|--------------------|----------------------------------------------|
+| `npm run dev`      | Start the Vite dev server                     |
+| `npm run build`    | Compile the SvelteKit production bundle       |
+| `npm run preview`  | Preview the production build locally          |
 
-## Design System
+## Internationalisation
 
-### Dark Mode
+- Locale switcher in the header toggles between English and German.
+- Server-side hooks read/write `protest-scraper-locale` (strictly necessary cookie) to keep SSR and hydration in sync.
+- Add new languages by extending `src/lib/i18n/locales/*.json` and updating the language option list.
 
-The application automatically detects and applies your system theme preference. It supports three modes:
+## Legal & Privacy Notes
 
-- **Light Mode**: Clean, bright interface
-- **Dark Mode**: Easy on the eyes for low-light environments
-- **System**: Automatically follows your OS setting (default)
+- Optional `.env` fields (`PUBLIC_IMPRINT_*`, `PUBLIC_PRIVACY_*`) populate imprint and privacy policy pages.
+- Locale and potential future session cookies are essential; document them in your privacy policy. No banner is needed unless you add analytics/marketing cookies.
 
-Toggle between themes using the theme switcher in the header (sun/moon/desktop icon).
+## Editing & Formatting
 
-**Theme Persistence**: Your choice is saved to localStorage and persists across sessions.
-
-### Colors
-
-**Primary Gradients:**
-- Light: `from-emerald-50 to-lime-50`
-- Dark: `from-emerald-900/30 to-lime-900/30`
-- Accent: `from-emerald-400 to-lime-400`
-- Warning (Light): `from-amber-50 to-orange-50`
-- Warning (Dark): `from-amber-900/30 to-orange-900/30`
-
-**Text:**
-- Primary: `text-black dark:text-white`
-- Secondary: `text-black/60 dark:text-white/60`
-- Accent: `text-emerald-600 dark:text-emerald-400`
-
-**Backgrounds:**
-- Primary: `bg-stone-50 dark:bg-stone-900`
-- Secondary: `bg-white dark:bg-stone-800`
-- Borders: `border-stone-200 dark:border-stone-700`
-
-### Typography
-
-- **Font**: Inter (loaded from Google Fonts)
-- **Scales**: text-3xl, text-2xl, text-xl, text-base, text-sm, text-xs
-
-### Spacing
-
-- Mobile: p-4, gap-3
-- Desktop: p-8, gap-6
-
-### Rounded Corners
-
-- Small: rounded-lg (8px)
-- Medium: rounded-xl (12px)
-- Large: rounded-2xl (16px)
-- Full: rounded-full
-
-## API Integration
-
-The application connects to the [protest-scraper](https://github.com/artem-schander/protest-scraper) backend API.
-
-### Key Endpoints Used:
-
-- `GET /api/protests` - Fetch protests with filters
-- `GET /api/protests/:id` - Get protest details
-- `POST /api/protests` - Create new protest (authenticated)
-- `PUT /api/protests/:id` - Update protest (authenticated)
-- `POST /api/auth/login` - User login
-- `POST /api/auth/register` - User registration
-- `GET /api/export/ics` - Calendar subscription feed
-
-Update the API URL in `.env` file to point to your backend instance.
-
-## Features by Page
-
-### Landing Page (/)
-- Hero section with search
-- Quick filters (Today, This Week, Near Me)
-- Event grid with cards
-- Advanced filter sidebar
-- Pagination
-
-### Event Card
-- Date badge
-- Source indicator
-- Location and time
-- Tags
-- Verified badge
-- Urgency-based color coding
-
-### Authentication
-- Login modal
-- Registration modal
-- Google OAuth option (optional)
-- Remember me functionality
-
-### Filters
-- Date range (7, 30, 90 days)
-- City search
-- Source selection
-- Language selection
-- Geolocation (near me)
-- Verified events only
-
-## Customization
-
-### Update Backend URL
-
-Edit `src/lib/utils/api.js`:
-```javascript
-const API_BASE_URL = 'https://your-api-url.com/api';
-```
-
-### Change Color Scheme
-
-Edit `src/app.html` Tailwind config:
-```javascript
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        // Add your colors here
-      }
-    }
-  }
-}
-```
-
-### Add New Icons
-
-Browse [icones.js.org](https://icones.js.org) and use:
-```svelte
-<Icon icon="heroicons:icon-name" class="w-5 h-5" />
-```
-
-## Deployment
-
-### Build for Production
-
-```bash
-npm run build
-```
-
-### Preview Production Build
-
-```bash
-npm run preview
-```
-
-### Deploy to Vercel
-
-```bash
-npx vercel
-```
-
-### Deploy to Netlify
-
-```bash
-npm run build
-npx netlify deploy --prod --dir=build
-```
-
-## Browser Support
-
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-- Mobile browsers (iOS Safari, Chrome Mobile)
+- `.editorconfig` enforces UTF-8, LF, 2-space indents, and trailing newline.
+- To convert tabs to spaces project-wide:
+  ```bash
+  nvim -u NORC -n     "+set tabstop=2 shiftwidth=2 expandtab"     "+argdo retab | update"     "+qa"     $(git ls-files '*.svelte' '*.ts' '*.js' '*.css' '*.scss' '*.md')
+  ```
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- Read `AGENTS.md` for repository-specific guidelines.
+- Ensure `npm run build` passes before opening a PR.
+- Clearly describe new environment variables, cookies, or data requirements when you introduce them.
 
-## License
+## Credit
 
-This project is open source and available under the MIT License.
-
-## Credits
-
-- Design inspired by modern calendar and subscription apps
-- Icons from [Iconify](https://iconify.design/)
-- Fonts from [Google Fonts](https://fonts.google.com/)
-- Illustrations from [unDraw](https://undraw.co/)
-
-## Support
-
-For issues and questions:
-- Backend API: [protest-scraper issues](https://github.com/artem-schander/protest-scraper/issues)
-- Frontend: Create an issue in this repository
-
----
-
-Built with ❤️ using SvelteKit and Tailwind CSS
+Protest Listing frontend works in tandem with the community-driven [protest-scraper](https://github.com/artem-schander/protest-scraper) backend. Contributions, issue reports, and new localisation pull requests are welcome!
