@@ -66,12 +66,12 @@ Use Tailwind's `dark:` modifier:
 </p>
 
 <!-- Backgrounds -->
-<div class="bg-white dark:bg-gray-800">
+<div class="bg-white dark:bg-stone-800">
   Card with dark mode
 </div>
 
 <!-- Borders -->
-<div class="border border-gray-200 dark:border-gray-700">
+<div class="border border-stone-200 dark:border-stone-700">
   Bordered element
 </div>
 

@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { createProtest } from '$lib/utils/api';
 	import { authStore } from '$lib/stores/auth';
-	import Icon from '@iconify/svelte';
+	import Icon from '$lib/components/common/Icon.svelte';
 	import Button from '$lib/components/common/Button.svelte';
 	import Input from '$lib/components/common/Input.svelte';
 
@@ -305,7 +305,7 @@
 							type="button"
 							on:click={handleUseLocation}
 							disabled={useGeolocation}
-							class="flex items-center gap-2 text-[#E10600] dark:text-[#FF4081] hover:text-[#C10500] dark:hover:text-[#E10600] text-sm font-medium disabled:opacity-50"
+							class="flex items-center gap-2 text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600] text-sm font-medium disabled:opacity-50"
 						>
 							{#if useGeolocation}
 								<Icon icon="heroicons:arrow-path" class="w-4 h-4 animate-spin" />

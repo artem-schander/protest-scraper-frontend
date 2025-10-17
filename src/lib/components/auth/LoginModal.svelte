@@ -3,7 +3,7 @@
 	import Modal from '$lib/components/common/Modal.svelte';
 	import Input from '$lib/components/common/Input.svelte';
 	import Button from '$lib/components/common/Button.svelte';
-	import Icon from '@iconify/svelte';
+	import Icon from '$lib/components/common/Icon.svelte';
 	import { authStore } from '$lib/stores/auth';
 	import { login } from '$lib/utils/api';
 
@@ -89,10 +89,10 @@
 
 			<div class="flex items-center justify-between text-sm">
 				<label class="flex items-center gap-2 cursor-pointer">
-					<input type="checkbox" bind:checked={rememberMe} class="rounded text-[#E10600] dark:text-[#FF4081] accent-[#E10600]" />
+					<input type="checkbox" bind:checked={rememberMe} class="rounded text-[#E10600] dark:text-red-400 accent-[#E10600]" />
 					<span class="text-black dark:text-white/80">Remember me</span>
 				</label>
-				<a href="/forgot-password" class="text-[#E10600] dark:text-[#FF4081] hover:text-[#C10500] dark:hover:text-[#E10600] font-medium">
+				<a href="/forgot-password" class="text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600] font-medium">
 					Forgot password?
 				</a>
 			</div>
@@ -109,7 +109,7 @@
 
 		<div class="relative">
 			<div class="absolute inset-0 flex items-center">
-				<div class="w-full border-t border-gray-200"></div>
+				<div class="w-full border-t border-stone-200"></div>
 			</div>
 			<div class="relative flex justify-center text-sm">
 				<span class="px-4 bg-white text-black/40">or</span>
@@ -118,7 +118,7 @@
 
 		<button
 			type="button"
-			class="w-full py-3 rounded-xl border border-gray-200 text-black hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+			class="w-full py-3 rounded-xl border border-stone-200 text-black hover:bg-stone-50 transition-colors flex items-center justify-center gap-2"
 		>
 			<svg class="w-5 h-5" viewBox="0 0 24 24">
 				<path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -134,7 +134,7 @@
 			<button
 				type="button"
 				on:click={switchToRegister}
-				class="text-[#E10600] dark:text-[#FF4081] font-medium hover:text-[#C10500] dark:hover:text-[#E10600]"
+				class="text-[#E10600] dark:text-red-400 font-medium hover:text-[#C10500] dark:hover:text-[#E10600]"
 			>
 				Sign up
 			</button>

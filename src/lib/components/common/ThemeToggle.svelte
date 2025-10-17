@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import Icon from '@iconify/svelte';
+	import Icon from '$lib/components/common/Icon.svelte';
 	import { themeStore } from '$lib/stores/theme';
 
 	let currentTheme = 'system';
@@ -33,8 +33,8 @@
 	on:click={cycleTheme}
 	class="
 		w-10 h-10 rounded-full
-		bg-gray-100 dark:bg-gray-800
-		hover:bg-gray-200 dark:hover:bg-gray-700
+		bg-stone-100 dark:bg-stone-800
+		hover:bg-stone-200 dark:hover:bg-stone-700
 		flex items-center justify-center
 		transition-colors
 		group

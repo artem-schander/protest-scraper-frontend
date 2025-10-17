@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import Icon from '@iconify/svelte';
+	import Icon from '$lib/components/common/Icon.svelte';
 	import {
 		formatDate,
 		formatTime,
@@ -34,23 +34,23 @@
 	// Date parsing with validation
 	function parseEventDate(dateString) {
 		if (!dateString) return null;
-		
+
 		try {
 			// Handle ISO string directly to preserve timezone
 			const date = new Date(dateString);
-			
+
 			// Check if date is valid
 			if (isNaN(date.getTime())) {
 				console.warn('Invalid date:', dateString);
 				return null;
 			}
-			
+
 			// // Debug: log the original string and parsed date
 			// console.log('Original date string:', dateString);
 			// console.log('Parsed date:', date);
 			// console.log('UTC time:', date.toISOString());
 			// console.log('Local time:', date.toString());
-			
+
 			return date;
 		} catch (error) {
 			console.error('Error parsing date:', dateString, error);
@@ -91,15 +91,15 @@
 		: null;
 
 	// Determine card style based on urgency - using protest colors
-	// let urgencyClass = 'bg-[#EEEEEE] dark:bg-gray-700'; // Paper gray for future events
+	// let urgencyClass = 'bg-[#EEEEEE] dark:bg-stone-700'; // Paper gray for future events
 	// if (daysUntil !== null) {
-	// 	if (daysUntil <= 7) urgencyClass = 'bg-gradient-to-br from-[#E10600]/10 to-[#FF4081]/10 dark:from-[#E10600]/20 dark:to-[#FF4081]/20 border-l-4 border-[#E10600]'; // Signal Red for urgent
-	// 	else if (daysUntil <= 30) urgencyClass = 'bg-white dark:bg-gray-800'; // White/black for upcoming
+	// 	if (daysUntil <= 7) urgencyClass = 'bg-gradient-to-br from-[#E10600]/10 to-red-400/10 dark:from-[#E10600]/20 dark:to-red-400/20 border-l-4 border-[#E10600]'; // Signal Red for urgent
+	// 	else if (daysUntil <= 30) urgencyClass = 'bg-white dark:bg-stone-800'; // White/black for upcoming
 	// }
 
 	let urgencyClass = 'text-black/60 dark:text-white/60'; // Paper gray for future events
 	if (daysUntil !== null && daysUntil <= 7) {
-		urgencyClass = 'text-[#E10600] dark:text-[#FF4081]'; // Signal Red for urgent
+		urgencyClass = 'text-[#E10600] dark:text-red-400'; // Signal Red for urgent
 	}
 
 	let titleEl;
@@ -118,8 +118,8 @@
 <div
 	class="
 		relative min-w-0
-		rounded-xl bg-[#EEEEEE] dark:bg-gray-700
-		border border-gray-200 dark:border-gray-700
+		rounded-xl bg-stone-100 dark:bg-stone-700
+		border border-stone-200 dark:border-stone-700
 		shadow-md p-4 block
 	"
 >
@@ -166,7 +166,7 @@
 
 			<!-- Location -->
 			{#if mapLink}
-				<a href={mapLink} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[#E10600] dark:hover:text-[#FF4081] transition-colors" on:click={(e) => e.stopPropagation()}>
+				<a href={mapLink} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[#E10600] dark:hover:text-red-400 transition-colors" on:click={(e) => e.stopPropagation()}>
 					<Icon icon="heroicons:map-pin" class="w-4 h-4 flex-shrink-0" />
 					<span class="truncate">{location}</span>
 					<Icon icon="heroicons:arrow-top-right-on-square" class="w-3 h-3 flex-shrink-0" />
@@ -179,7 +179,7 @@
 			{/if}
 
 			{#if url}
-				<a href={url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[#E10600] dark:hover:text-[#FF4081] transition-colors" on:click={(e) => e.stopPropagation()}>
+				<a href={url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[#E10600] dark:hover:text-red-400 transition-colors" on:click={(e) => e.stopPropagation()}>
 					<Icon icon="heroicons:globe-alt" class="w-4 h-4 flex-shrink-0" />
 					<span class="truncate">{source}</span>
 					<Icon icon="heroicons:arrow-top-right-on-square" class="w-3 h-3 flex-shrink-0" />
@@ -191,7 +191,7 @@
 		<!-- {#if categories && categories.length > 0} -->
 		<!-- 	<div class="flex flex-wrap gap-2"> -->
 		<!-- 		{#each categories.slice(0, 3) as tag} -->
-		<!-- 			<span class="px-3 py-1 rounded-full bg-white/60 dark:bg-gray-700/60 text-xs text-black dark:text-white"> -->
+		<!-- 			<span class="px-3 py-1 rounded-full bg-white/60 dark:bg-stone-700/60 text-xs text-black dark:text-white"> -->
 		<!-- 				{tag} -->
 		<!-- 			</span> -->
 		<!-- 		{/each} -->
@@ -220,7 +220,7 @@
 					</span>
 				{/if}
 				<!-- {#if url} -->
-				<!-- 	<a href={url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 hover:text-[#E10600] dark:hover:text-[#FF4081] transition-colors" on:click={(e) => e.stopPropagation()}> -->
+				<!-- 	<a href={url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 hover:text-[#E10600] dark:hover:text-red-400 transition-colors" on:click={(e) => e.stopPropagation()}> -->
 				<!-- 		<Icon icon="heroicons:arrow-top-right-on-square" class="w-3 h-3" /> -->
 				<!-- 		{source} -->
 				<!-- 	</a> -->
@@ -229,7 +229,7 @@
 			{#if verified}
 				<span class="text-xs text-green-600 dark:text-green-400 flex items-center gap-1 font-medium">
 					<Icon icon="heroicons:check-circle" class="w-4 h-4" />
-					Verified
+					<!-- Verified -->
 				</span>
 			{/if}
 		</div>

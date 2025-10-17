@@ -1,0 +1,420 @@
+{
+  "common": {
+    "backToHome": "Back to Home",
+    "lastUpdated": "Last updated"
+  },
+  "header": {
+    "language": "Language"
+  },
+  "home": {
+    "metaTitle": "Protest Listing - Upcoming Protests & Demonstrations",
+    "metaDescription": "Discover upcoming protests and demonstrations near you. Filter by location, date, and more to stay informed.",
+    "heroTitle": "Upcoming Protests & Demonstrations",
+    "heroSubtitle": "Stay informed, make your voice heard",
+    "heroImageAlt": "Crowd of protesters raising signs",
+    "searchPlaceholder": "Search protests…",
+    "searchAria": "Search protests",
+    "searchButtonAria": "Search",
+    "filterButton": "Filters",
+    "filterAria": "Open filters",
+    "mobileSummary": "{count, plural, =0 {No events} one {# event} other {# events}}",
+    "resultsFound": "{count, plural, =0 {No upcoming events found} one {Found # upcoming event} other {Found # upcoming events}}",
+    "errorTitle": "Error loading events",
+    "errorDescription": "We couldn't load events right now. Please try again.",
+    "errorRetry": "Try again",
+    "emptyTitle": "No events found",
+    "emptyDescription": "Try adjusting your filters or check back later for new events.",
+    "paginationPrev": "Previous",
+    "paginationNext": "Next",
+    "paginationAriaPrev": "Previous page",
+    "paginationAriaNext": "Next page",
+    "paginationAriaFirst": "First page",
+    "paginationAriaLast": "Last page",
+    "paginationAriaPage": "Page {page}",
+    "paginationShowing": "Showing {start}–{end} of {total} events",
+    "paginationGotoLabel": "Go to page:",
+    "paginationGotoSuffix": "of {total}",
+    "floatingCreateAria": "Create event"
+  },
+  "filters": {
+    "title": "Filters",
+    "reset": "Reset",
+    "dateRange": "Date range",
+    "location": "Location",
+    "apply": "Apply filters",
+    "mobileClose": "Close filters",
+    "dateModes": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month",
+      "range": "Custom"
+    },
+    "monthNav": {
+      "previous": "Previous month",
+      "next": "Next month"
+    },
+    "selectedPrefix": "Selected:",
+    "clearDates": "Clear dates",
+    "mapMarkerLabel": "Location marker",
+    "gettingLocation": "Getting location…",
+    "useLocation": "Use my location",
+    "clearLocation": "Clear location",
+    "locationError": {
+      "unsupported": "Geolocation is not supported by your browser",
+      "denied": "Location permission denied",
+      "unavailable": "Location information unavailable",
+      "timeout": "Location request timed out",
+      "unknown": "Unable to retrieve your location"
+    },
+    "radiusLabel": "Search radius",
+    "radiusValue": "{value} km",
+    "radiusMin": "1 km",
+    "radiusMax": "100 km",
+    "selectedLocation": "Selected location",
+    "mapHint": "Click on the map or use your location to search nearby events",
+    "selection": "Selection"
+  },
+  "imprint": {
+    "title": "Imprint",
+    "subtitle": "Legal information according to § 5 TMG (Telemediengesetz)",
+    "serviceProvider": "Service Provider",
+    "contact": "Contact",
+    "representedBy": "Represented By",
+    "vatId": "VAT Identification Number",
+    "vatIdText": "According to § 27a VAT Tax Act:",
+    "contentResponsible": "Responsible for Content",
+    "contentResponsibleText": "According to § 18 Abs. 2 MStV (Media State Treaty):",
+    "onlineDispute": "Online Dispute Resolution",
+    "onlineDisputeText1": "The European Commission provides a platform for online dispute resolution (ODR):",
+    "onlineDisputeText2": "We are not willing or obligated to participate in dispute resolution procedures before a consumer arbitration board.",
+    "dataProtection": "Data Protection",
+    "dataProtectionText": "Information about the processing of your personal data can be found in our",
+    "privacyPolicy": "Privacy Policy",
+    "liabilityDisclaimer": "Liability Disclaimer",
+    "liabilityContent": "Liability for Content",
+    "liabilityContentText1": "As a service provider, we are responsible for our own content on these pages according to § 7 Para. 1 TMG under general law. However, according to §§ 8 to 10 TMG, we as service providers are not obligated to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity.",
+    "liabilityContentText2": "Obligations to remove or block the use of information under general law remain unaffected. However, liability in this regard is only possible from the time of knowledge of a specific legal violation. Upon becoming aware of corresponding legal violations, we will remove this content immediately.",
+    "liabilityLinks": "Liability for Links",
+    "liabilityLinksText1": "Our website contains links to external third-party websites over whose content we have no influence. Therefore, we cannot assume any liability for this external content. The respective provider or operator of the pages is always responsible for the content of the linked pages. The linked pages were checked for possible legal violations at the time of linking. Illegal content was not recognizable at the time of linking.",
+    "liabilityLinksText2": "However, permanent monitoring of the content of linked pages is not reasonable without concrete evidence of a legal violation. If we become aware of legal violations, we will remove such links immediately.",
+    "copyright": "Copyright",
+    "copyrightText1": "The content and works created by the site operators on these pages are subject to German copyright law. Reproduction, editing, distribution, and any kind of use outside the limits of copyright require the written consent of the respective author or creator. Downloads and copies of this page are only permitted for private, non-commercial use.",
+    "copyrightText2": "Insofar as the content on this page was not created by the operator, the copyrights of third parties are respected. In particular, third-party content is marked as such. Should you nevertheless become aware of a copyright infringement, we ask for a corresponding notice. Upon becoming aware of legal violations, we will remove such content immediately.",
+    "email": "Email:",
+    "phone": "Phone:",
+    "country": "Germany"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "subtitle": "How we collect, use, and protect your personal data",
+    "introduction": "Introduction",
+    "introText1": "We take the protection of your personal data very seriously. This privacy policy explains what information we collect, how we use it, and your rights regarding your personal data.",
+    "introText2": "This privacy policy applies to all services provided by Protest Listing and complies with the General Data Protection Regulation (GDPR) and applicable data protection laws.",
+    "dataController": "Data Controller",
+    "dataControllerNote": "The controller responsible for processing personal data on this website is:",
+    "dataControllerContact": "You can reach us using the following contact details:",
+    "dataProtectionOfficer": "Data Protection Officer",
+    "dataProtectionOfficerText": "For privacy inquiries, you can contact our Data Protection Officer:",
+    "supervisoryAuthority": "Supervisory Authority",
+    "supervisoryAuthorityText": "You have the right to lodge a complaint with the following supervisory authority:",
+    "dataCollection": "What Data We Collect",
+    "accountInfo": "Account Information",
+    "accountInfoText": "When you create an account, we collect:",
+    "accountInfoItems": {
+      "email": "Email address",
+      "username": "Username",
+      "password": "Password (encrypted)",
+      "creationDate": "Account creation date"
+    },
+    "eventSubmissions": "Event Submissions",
+    "eventSubmissionsText": "When you submit event information, we collect:",
+    "eventSubmissionsItems": {
+      "details": "Event details (title, description, date, location)",
+      "contact": "Contact information (if provided)",
+      "timestamp": "Submission timestamp",
+      "userId": "Your user ID (if logged in)"
+    },
+    "autoCollected": "Automatically Collected Data",
+    "autoCollectedText": "When you use our service, we automatically collect:",
+    "autoCollectedItems": {
+      "ip": "IP address",
+      "browser": "Browser type and version",
+      "os": "Operating system",
+      "referrer": "Referrer URL",
+      "pages": "Pages visited and time spent",
+      "device": "Device information"
+    },
+    "locationData": "Location Data",
+    "locationDataText": "With your explicit consent, we may access your device's location to help you find nearby events. This data is processed only on your device and not stored on our servers.",
+    "dataUsage": "How We Use Your Data",
+    "dataUsageText": "We use your personal data for the following purposes:",
+    "dataUsageItems": {
+      "provide": "To provide and maintain our service",
+      "manage": "To manage your account and authenticate you",
+      "display": "To display event information you submit",
+      "communicate": "To send you service-related communications",
+      "improve": "To improve our service and develop new features",
+      "prevent": "To detect and prevent fraud or abuse",
+      "comply": "To comply with legal obligations",
+      "analyze": "To analyze usage patterns and optimize performance"
+    },
+    "legalBasis": "Legal Basis for Processing",
+    "legalBasisText": "We process your personal data based on:",
+    "legalBasisItems": {
+      "consent": "Consent: When you give us explicit permission (e.g., location access)",
+      "contract": "Contract: To fulfill our service agreement with you",
+      "legal": "Legal Obligation: To comply with applicable laws",
+      "legitimate": "Legitimate Interest: To improve our service and prevent abuse"
+    },
+    "dataSharing": "Data Sharing and Disclosure",
+    "dataSharingText": "We do not sell your personal data to third parties. We may share your data with:",
+    "dataSharingItems": {
+      "providers": "Service Providers: Companies that help us operate our service (hosting, analytics)",
+      "legal": "Legal Authorities: When required by law or to protect our rights",
+      "public": "Public Display: Event information you submit is publicly visible"
+    },
+    "dataSharingNote": "All third-party service providers are contractually obligated to handle your data securely and only for the purposes we specify.",
+    "cookies": "Cookies and Tracking",
+    "cookiesText": "We use cookies and similar technologies to:",
+    "cookiesItems": {
+      "login": "Keep you logged in",
+      "preferences": "Remember your preferences (theme, language)",
+      "analyze": "Analyze usage patterns",
+      "improve": "Improve service performance"
+    },
+    "cookiesNote": "You can control cookies through your browser settings. However, disabling cookies may limit some functionality of our service.",
+    "dataSecurity": "Data Security",
+    "dataSecurityText": "We implement appropriate technical and organizational measures to protect your data:",
+    "dataSecurityItems": {
+      "encryption": "Encryption of data in transit (HTTPS/TLS)",
+      "passwords": "Encrypted password storage",
+      "updates": "Regular security updates and patches",
+      "access": "Access controls and authentication",
+      "audits": "Regular security audits",
+      "backup": "Secure data backup procedures"
+    },
+    "dataSecurityNote": "However, no method of transmission or storage is 100% secure. While we strive to protect your data, we cannot guarantee absolute security.",
+    "dataRetention": "Data Retention",
+    "dataRetentionText": "We retain your personal data for as long as:",
+    "dataRetentionItems": {
+      "active": "Your account is active",
+      "necessary": "Necessary to provide our services",
+      "required": "Required by law",
+      "needed": "Needed to resolve disputes or enforce agreements"
+    },
+    "dataRetentionNote": "After account deletion, we will delete or anonymize your personal data within 30 days, except where longer retention is required by law.",
+    "yourRights": "Your Rights",
+    "yourRightsText": "Under GDPR and applicable data protection laws, you have the right to:",
+    "yourRightsItems": {
+      "access": "Access: Request a copy of your personal data",
+      "rectification": "Rectification: Correct inaccurate or incomplete data",
+      "erasure": "Erasure: Request deletion of your data (\"right to be forgotten\")",
+      "restriction": "Restriction: Limit how we use your data",
+      "portability": "Portability: Receive your data in a machine-readable format",
+      "object": "Object: Object to processing based on legitimate interests",
+      "withdraw": "Withdraw Consent: Withdraw consent at any time (where applicable)",
+      "complaint": "Complaint: Lodge a complaint with a supervisory authority"
+    },
+    "yourRightsContact": "To exercise these rights, please contact us at",
+    "childrenPrivacy": "Children's Privacy",
+    "childrenPrivacyText": "Our service is not intended for children under 16 years of age. We do not knowingly collect personal data from children. If you believe we have collected data from a child, please contact us immediately.",
+    "changesToPolicy": "Changes to This Policy",
+    "changesToPolicyText": "We may update this privacy policy from time to time. We will notify you of any significant changes by posting a notice on our website or sending you an email. Your continued use of the service after changes become effective constitutes acceptance of the updated policy.",
+    "contactUs": "Contact Us",
+    "contactUsText": "If you have any questions about this privacy policy or our data practices, please contact us:"
+  },
+  "disclaimer": {
+    "title": "Disclaimer",
+    "subtitle": "Important information about the use of this service",
+    "generalInfo": "General Information",
+    "generalInfoText1": "This platform provides information about upcoming protests and demonstrations. The information is collected from various public sources and user submissions. While we strive to ensure accuracy, we cannot guarantee the completeness or correctness of all listed events.",
+    "generalInfoText2": "Users are responsible for verifying event details independently before attending any event. We are not organizers of the listed events and do not endorse or promote any specific political views or causes.",
+    "liabilityContent": "Liability for Content",
+    "liabilityContentText1": "The content on this website has been compiled with meticulous care and to the best of our knowledge. However, we cannot assume any liability for the up-to-dateness, completeness, or accuracy of any of the pages.",
+    "liabilityContentText2": "As a service provider, we are responsible for our own content on these pages according to general legislation. However, we are not obliged to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity.",
+    "liabilityContentText3": "Obligations to remove or block the use of information under general legislation remain unaffected. However, liability in this regard is only possible from the point in time at which a concrete infringement of the law becomes known. If we become aware of any such infringements, we will remove the content in question immediately.",
+    "liabilityLinks": "Liability for Links",
+    "liabilityLinksText1": "Our website contains links to external third-party websites. We have no influence on the contents of those websites; therefore, we cannot assume any liability for these external contents. The respective provider or operator of the pages is always responsible for the contents of any linked site.",
+    "liabilityLinksText2": "The linked sites were checked for possible legal violations at the time of linking. Illegal contents were not identified at the time of linking. However, permanent monitoring of the contents of the linked sites is not reasonable without specific indications of a legal violation. If we become aware of any legal violations, we will remove such links immediately.",
+    "userContent": "User-Generated Content",
+    "userContentText": "This platform allows users to submit information about protests and demonstrations. Users are solely responsible for the content they submit and must ensure that their submissions:",
+    "userContentItems": {
+      "accurate": "Are accurate and truthful",
+      "legal": "Do not violate any laws or regulations",
+      "rights": "Do not infringe on third-party rights",
+      "offensive": "Do not contain defamatory, offensive, or illegal content",
+      "violence": "Do not promote violence or illegal activities"
+    },
+    "userContentNote": "We reserve the right to remove any user-generated content that violates these guidelines or applicable laws without prior notice.",
+    "noWarranty": "No Warranty",
+    "noWarrantyText": "This service is provided \"as is\" without any warranties, express or implied. We make no representations or warranties regarding:",
+    "noWarrantyItems": {
+      "accuracy": "The accuracy, reliability, or completeness of event information",
+      "availability": "The availability or continuity of the service",
+      "suitability": "The suitability of the service for any particular purpose",
+      "safety": "The safety of attending any listed events"
+    },
+    "limitationLiability": "Limitation of Liability",
+    "limitationLiabilityText": "We shall not be liable for any damages arising from:",
+    "limitationLiabilityItems": {
+      "use": "Use or inability to use this service",
+      "inaccurate": "Inaccurate or incomplete event information",
+      "attendance": "Attendance at any events listed on this platform",
+      "interactions": "Interactions with other users",
+      "technical": "Technical failures or interruptions of service",
+      "data": "Loss of data or unauthorized access to user accounts"
+    },
+    "limitationLiabilityNote": "This limitation of liability does not apply to damages caused by willful misconduct or gross negligence, or in cases where mandatory liability provisions apply (e.g., product liability laws).",
+    "safetyNotice": "Safety Notice",
+    "safetyNoticeText": "Before attending any protest or demonstration:",
+    "safetyNoticeItems": {
+      "verify": "Verify the event details independently",
+      "aware": "Be aware of local laws and regulations regarding protests",
+      "consider": "Consider your personal safety and the current situation",
+      "follow": "Follow instructions from official authorities and event organizers",
+      "respect": "Respect the rights and safety of others"
+    },
+    "contact": "Questions or Concerns?",
+    "contactText": "If you have any questions about this disclaimer or concerns about content on this platform, please contact us at:"
+  },
+  "footer": {
+    "brandName": "Protest Listing",
+    "tagline": "Stay informed about upcoming protests and demonstrations. Make your voice heard.",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "links": {
+      "home": "Home",
+      "about": "About",
+      "imprint": "Imprint",
+      "disclaimer": "Disclaimer",
+      "privacy": "Privacy Policy"
+    },
+    "githubAria": "Open GitHub repository",
+    "copyright": "© {year} Protest Listing. All rights reserved."
+  },
+  "about": {
+    "metaTitle": "About – Protest Listing",
+    "metaDescription": "Learn how Protest Listing centralizes protest information and how you can contribute.",
+    "title": "About",
+    "heroSubtitle": "A collaborative open-source platform to centralize and normalize information about upcoming protests and demonstrations.",
+    "mission": {
+      "title": "Our mission",
+      "paragraphs": [
+        "We believe that information about civic engagement opportunities should be easily accessible to everyone. Unfortunately, protest and demonstration details are often scattered across hard-to-reach corners of the internet, making it difficult for people to stay informed.",
+        "This platform was born from the frustration of trying to find a centralized list of upcoming protests. What should be simple public information felt deliberately difficult to access. We want to change that by creating an open, collaborative solution that aggregates and normalizes data from many sources."
+      ]
+    },
+    "how": {
+      "title": "How it works",
+      "intro": "Our platform combines automated data collection with community contributions to provide comprehensive protest listings:",
+      "cards": {
+        "automation": {
+          "title": "Automated scraping",
+          "description": "We automatically collect event data from official sources such as police registrations, city portals, and established organizations to ensure broad coverage."
+        },
+        "community": {
+          "title": "Community contributions",
+          "description": "Registered users can submit missing events while moderators verify submissions to maintain data quality and prevent misinformation."
+        }
+      }
+    },
+    "sources": {
+      "title": "Current data sources",
+      "intro": "We currently aggregate data from these trusted sources, with more being added regularly:",
+      "items": [
+        {
+          "title": "Berlin Police",
+          "description": "Official assembly registrations"
+        },
+        {
+          "title": "Dresden City",
+          "description": "Municipal assembly overview"
+        },
+        {
+          "title": "Friedenskooperative",
+          "description": "Peace movement actions"
+        },
+        {
+          "title": "DemokraTEAM",
+          "description": "Democracy and anti-fascist events"
+        }
+      ]
+    },
+    "comingSoon": {
+      "title": "Coming soon",
+      "intro": "We are continuously improving the platform with new features:",
+      "items": [
+        {
+          "title": "Data export & downloads",
+          "description": "Export filtered event data in CSV, JSON, or ICS formats."
+        },
+        {
+          "title": "Subscribable calendars",
+          "description": "Custom ICS feeds for specific time ranges and filters."
+        },
+        {
+          "title": "Advanced filtering",
+          "description": "More detailed search options and categorisation."
+        },
+        {
+          "title": "Contact form",
+          "description": "An easy way to suggest new sources and share feedback."
+        },
+        {
+          "title": "User registration system",
+          "description": "Allow community members to manually add missing events."
+        }
+      ]
+    },
+    "developers": {
+      "title": "For developers & contributors",
+      "intro": "This is an open-source project and we welcome contributions from developers who share our vision of accessible civic information:",
+      "apiTitle": "API access",
+      "apiDescription": "Our REST API provides programmatic access to protest data with comprehensive filtering options:",
+      "apiEndpoint": "GET /api/protests",
+      "apiFilters": "Filter by city, country, date range, geolocation, source, language, and more.",
+      "apiMore": "Export data in JSON, CSV, or subscribable ICS formats—perfect for building your own applications or integrations.",
+      "cards": [
+        {
+          "title": "Backend API",
+          "stack": "Node.js, Express, MongoDB",
+          "href": "https://github.com/artem-schander/protest-scraper"
+        },
+        {
+          "title": "Frontend",
+          "stack": "SvelteKit, Tailwind CSS",
+          "href": "https://github.com/artem-schander/protest-scraper-frontend"
+        }
+      ],
+      "cta": "Want to help? Open an issue or submit a pull request on GitHub."
+    },
+    "openSource": {
+      "title": "Free & open source forever",
+      "paragraphs": [
+        "This project is and will always remain completely free and open source. Access to civic engagement information should never hide behind paywalls or proprietary systems.",
+        "Licensed under AGPL-3.0, our codebase is transparent, auditable, and built to benefit the entire community. Whether you are a citizen looking for local events or a developer extending the project, you are welcome here."
+      ]
+    },
+    "contact": {
+      "title": "Get involved",
+      "intro": "We would love to hear from you! Whether you have suggestions for new data sources, found a bug, or want to contribute code:",
+      "sections": [
+        {
+          "title": "General inquiries",
+          "description": "For suggestions about new sources to scrape or general feedback, email us or use the upcoming contact form."
+        },
+        {
+          "title": "Technical issues",
+          "description": "Found a bug or have a feature request? Open an issue on GitHub for the fastest response from the development team."
+        }
+      ]
+    },
+    "important": {
+      "title": "Important information",
+      "paragraphs": [
+        "This platform aggregates protest information from public sources and user submissions. While we strive for accuracy, we cannot guarantee the completeness or correctness of all listings.",
+        "Please verify event details independently before attending. We are not the organisers of listed events and do not endorse specific political views—we simply make civic information easier to access."
+      ]
+    }
+  }
+}

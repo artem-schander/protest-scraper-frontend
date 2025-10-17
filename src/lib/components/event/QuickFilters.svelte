@@ -1,6 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
-	import Icon from '@iconify/svelte';
+	import Icon from '$lib/components/common/Icon.svelte';
 
 	export let activeFilter = 'all';
 
@@ -66,7 +66,7 @@
 				transition-all duration-200
 				{activeFilter === filter.id
 					? 'bg-[#E10600] text-white shadow-md hover:bg-[#C10500]'
-					: 'bg-white dark:bg-gray-800 border-2 border-black dark:border-white text-black dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black'}
+					: 'bg-white dark:bg-stone-800 border-2 border-black dark:border-white text-black dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black'}
 			"
 		>
 			<Icon icon={filter.icon} class="w-4 h-4" />

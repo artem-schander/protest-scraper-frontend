@@ -1,12 +1,12 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
-	import { goto, invalidate } from '$app/navigation';
-	import { fade, fly } from 'svelte/transition';
-	import Icon from '@iconify/svelte';
-	import Input from '$lib/components/common/Input.svelte';
-	import Button from '$lib/components/common/Button.svelte';
-	import DateRangePicker from '$lib/components/common/DateRangePicker.svelte';
-	import MapPicker from '$lib/components/common/MapPicker.svelte';
+import { createEventDispatcher } from 'svelte';
+import { goto, invalidate } from '$app/navigation';
+import { fade, fly } from 'svelte/transition';
+import Icon from '$lib/components/common/Icon.svelte';
+import Button from '$lib/components/common/Button.svelte';
+import DateRangePicker from '$lib/components/common/DateRangePicker.svelte';
+import MapPicker from '$lib/components/common/MapPicker.svelte';
+import { t } from '$lib/i18n';
 
 	export let filters = {};
 	export let showMobileFilters = false;
@@ -120,24 +120,26 @@
 </script>
 
 <!-- Desktop Sidebar -->
-<aside class="hidden lg:block sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto">
-	<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm space-y-6">
+<aside class="hidden lg:block sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-hide">
+	<div class="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 mt-8 p-6 shadow-sm space-y-6 mb-6">
 		<!-- Header -->
 		<div class="flex items-center justify-between">
-			<h2 class="text-lg font-medium text-black dark:text-white">Filters</h2>
+			<h2 class="text-lg font-medium text-black dark:text-white">
+				{$t('filters.title')}
+			</h2>
 			<button
 				on:click={resetFilters}
-				class="text-sm text-[#E10600] hover:text-[#C10500] dark:text-[#FF4081] dark:hover:text-[#E10600] font-medium"
+				class="text-sm text-[#E10600] hover:text-[#C10500] dark:text-red-400 dark:hover:text-[#E10600] font-medium"
 			>
-				Reset
+				{$t('filters.reset')}
 			</button>
 		</div>
 
 		<!-- Date Range -->
 		<div>
-			<label class="block text-sm font-medium text-black dark:text-white mb-3">
-				<Icon icon="heroicons:calendar-days" class="inline w-4 h-4 mr-1" />
-				Date Range
+			<label class="flex items-center text-sm font-medium text-black dark:text-white mb-3">
+				<Icon icon="heroicons:calendar-days" class="inline w-4 h-4" />
+				<span class="ml-1">{$t('filters.dateRange')}</span>
 			</label>
 			<DateRangePicker
 				bind:startDate
@@ -149,9 +151,9 @@
 
 		<!-- Map Location Picker -->
 		<div>
-			<label class="block text-sm font-medium text-black dark:text-white mb-3">
-				<Icon icon="heroicons:map" class="inline w-4 h-4 mr-1" />
-				Location
+			<label class="flex items-center text-sm font-medium text-black dark:text-white mb-3">
+				<Icon icon="heroicons:map" class="inline w-4 h-4" />
+				<span class="ml-1">{$t('filters.location')}</span>
 			</label>
 			<MapPicker
 				bind:lat
@@ -163,7 +165,7 @@
 
 		<!-- Apply Button -->
 		<Button variant="primary" fullWidth on:click={applyFilters}>
-			Apply Filters
+			{$t('filters.apply')}
 		</Button>
 	</div>
 </aside>
@@ -181,7 +183,7 @@
 	>
 		<!-- Drawer -->
 		<div
-			class="fixed inset-x-0 bottom-0 max-h-[80vh] bg-white dark:bg-gray-800 rounded-t-2xl shadow-2xl overflow-y-auto"
+			class="fixed inset-x-0 bottom-0 max-h-[80vh] bg-white dark:bg-stone-800 rounded-t-2xl shadow-2xl overflow-y-auto"
 			on:click|stopPropagation
 			role="dialog"
 			aria-modal="true"
@@ -190,18 +192,20 @@
 			<div class="p-6 space-y-6">
 				<!-- Header -->
 				<div class="flex items-center justify-between">
-					<h2 class="text-lg font-medium text-black dark:text-white">Filters</h2>
+					<h2 class="text-lg font-medium text-black dark:text-white">
+						{$t('filters.title')}
+					</h2>
 					<div class="flex items-center gap-2">
 						<button
 							on:click={resetFilters}
-							class="text-sm text-[#E10600] hover:text-[#C10500] dark:text-[#FF4081] dark:hover:text-[#E10600] font-medium"
+							class="text-sm text-[#E10600] hover:text-[#C10500] dark:text-red-400 dark:hover:text-[#E10600] font-medium"
 						>
-							Reset
+							{$t('filters.reset')}
 						</button>
 						<button
 							on:click={() => dispatch('close')}
-							class="w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
-							aria-label="Close filters"
+							class="w-8 h-8 rounded-full hover:bg-stone-100 dark:hover:bg-stone-700 flex items-center justify-center transition-colors"
+							aria-label={$t('filters.mobileClose')}
 						>
 							<Icon icon="heroicons:x-mark" class="w-5 h-5 text-black dark:text-white" />
 						</button>
@@ -212,7 +216,7 @@
 				<div>
 					<label class="block text-sm font-medium text-black dark:text-white mb-3">
 						<Icon icon="heroicons:calendar-days" class="inline w-4 h-4 mr-1" />
-						Date Range
+						{$t('filters.dateRange')}
 					</label>
 					<DateRangePicker
 						bind:startDate
@@ -226,7 +230,7 @@
 				<div>
 					<label class="block text-sm font-medium text-black dark:text-white mb-3">
 						<Icon icon="heroicons:map" class="inline w-4 h-4 mr-1" />
-						Location
+						{$t('filters.location')}
 					</label>
 					<MapPicker
 						bind:lat
@@ -238,7 +242,7 @@
 
 				<!-- Apply Button -->
 				<Button variant="primary" fullWidth on:click={applyFilters}>
-					Apply Filters
+					{$t('filters.apply')}
 				</Button>
 			</div>
 		</div>

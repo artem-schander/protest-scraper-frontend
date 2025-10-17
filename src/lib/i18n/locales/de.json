@@ -1,0 +1,420 @@
+{
+  "common": {
+    "backToHome": "Zurück zur Startseite",
+    "lastUpdated": "Zuletzt aktualisiert"
+  },
+  "header": {
+    "language": "Sprache"
+  },
+  "home": {
+    "metaTitle": "Protest Listing – Bevorstehende Proteste & Demonstrationen",
+    "metaDescription": "Entdecke anstehende Proteste und Demonstrationen in deiner Nähe. Filtere nach Ort, Datum und mehr, um auf dem Laufenden zu bleiben.",
+    "heroTitle": "Bevorstehende Proteste & Demonstrationen",
+    "heroSubtitle": "Bleib informiert, mach deine Stimme hörbar",
+    "heroImageAlt": "Menschenmenge bei einer Demonstration",
+    "searchPlaceholder": "Proteste durchsuchen …",
+    "searchAria": "Proteste durchsuchen",
+    "searchButtonAria": "Suchen",
+    "filterButton": "Filter",
+    "filterAria": "Filter öffnen",
+    "mobileSummary": "{count, plural, =0 {Keine Veranstaltungen} one {# Veranstaltung} other {# Veranstaltungen}}",
+    "resultsFound": "{count, plural, =0 {Keine bevorstehenden Veranstaltungen gefunden} one {# bevorstehende Veranstaltung gefunden} other {# bevorstehende Veranstaltungen gefunden}}",
+    "errorTitle": "Fehler beim Laden der Veranstaltungen",
+    "errorDescription": "Die Veranstaltungen konnten derzeit nicht geladen werden. Bitte versuche es erneut.",
+    "errorRetry": "Erneut versuchen",
+    "emptyTitle": "Keine Veranstaltungen gefunden",
+    "emptyDescription": "Passe deine Filter an oder schau später noch einmal vorbei.",
+    "paginationPrev": "Zurück",
+    "paginationNext": "Weiter",
+    "paginationAriaPrev": "Vorherige Seite",
+    "paginationAriaNext": "Nächste Seite",
+    "paginationAriaFirst": "Erste Seite",
+    "paginationAriaLast": "Letzte Seite",
+    "paginationAriaPage": "Seite {page}",
+    "paginationShowing": "Zeige {start}–{end} von {total} Veranstaltungen",
+    "paginationGotoLabel": "Gehe zu Seite:",
+    "paginationGotoSuffix": "von {total}",
+    "floatingCreateAria": "Veranstaltung erstellen"
+  },
+  "filters": {
+    "title": "Filter",
+    "reset": "Zurücksetzen",
+    "dateRange": "Zeitraum",
+    "location": "Ort",
+    "apply": "Filter anwenden",
+    "mobileClose": "Filter schließen",
+    "dateModes": {
+      "day": "Tag",
+      "week": "Woche",
+      "month": "Monat",
+      "range": "Individuell"
+    },
+    "monthNav": {
+      "previous": "Vorheriger Monat",
+      "next": "Nächster Monat"
+    },
+    "selectedPrefix": "Auswahl:",
+    "clearDates": "Zeitraum löschen",
+    "mapMarkerLabel": "Standortmarkierung",
+    "gettingLocation": "Standort wird ermittelt …",
+    "useLocation": "Eigenen Standort verwenden",
+    "clearLocation": "Standort löschen",
+    "locationError": {
+      "unsupported": "Geolokalisierung wird von deinem Browser nicht unterstützt",
+      "denied": "Standortfreigabe verweigert",
+      "unavailable": "Standortinformationen nicht verfügbar",
+      "timeout": "Zeitüberschreitung bei der Standortabfrage",
+      "unknown": "Standort konnte nicht ermittelt werden"
+    },
+    "radiusLabel": "Suchradius",
+    "radiusValue": "{value} km",
+    "radiusMin": "1 km",
+    "radiusMax": "100 km",
+    "selectedLocation": "Ausgewählter Standort",
+    "mapHint": "Klicke auf die Karte oder nutze deinen Standort, um nach Veranstaltungen in der Nähe zu suchen",
+    "selection": "Auswahl"
+  },
+  "imprint": {
+    "title": "Impressum",
+    "subtitle": "Angaben gemäß § 5 TMG (Telemediengesetz)",
+    "serviceProvider": "Diensteanbieter",
+    "contact": "Kontakt",
+    "representedBy": "Vertreten durch",
+    "vatId": "Umsatzsteuer-Identifikationsnummer",
+    "vatIdText": "Gemäß § 27a Umsatzsteuergesetz:",
+    "contentResponsible": "Verantwortlich für den Inhalt",
+    "contentResponsibleText": "Gemäß § 18 Abs. 2 MStV (Medienstaatsvertrag):",
+    "onlineDispute": "Online-Streitbeilegung",
+    "onlineDisputeText1": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:",
+    "onlineDisputeText2": "Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.",
+    "dataProtection": "Datenschutz",
+    "dataProtectionText": "Informationen zur Verarbeitung Ihrer personenbezogenen Daten finden Sie in unserer",
+    "privacyPolicy": "Datenschutzerklärung",
+    "liabilityDisclaimer": "Haftungsausschluss",
+    "liabilityContent": "Haftung für Inhalte",
+    "liabilityContentText1": "Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht unter der Verpflichtung, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.",
+    "liabilityContentText2": "Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.",
+    "liabilityLinks": "Haftung für Links",
+    "liabilityLinksText1": "Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar.",
+    "liabilityLinksText2": "Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.",
+    "copyright": "Urheberrecht",
+    "copyrightText1": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet.",
+    "copyrightText2": "Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.",
+    "email": "E-Mail:",
+    "phone": "Telefon:",
+    "country": "Deutschland"
+  },
+  "privacy": {
+    "title": "Datenschutzerklärung",
+    "subtitle": "Wie wir Ihre personenbezogenen Daten erfassen, verwenden und schützen",
+    "introduction": "Einleitung",
+    "introText1": "Wir nehmen den Schutz Ihrer personenbezogenen Daten sehr ernst. Diese Datenschutzerklärung erläutert, welche Informationen wir erfassen, wie wir sie verwenden und welche Rechte Sie bezüglich Ihrer personenbezogenen Daten haben.",
+    "introText2": "Diese Datenschutzerklärung gilt für alle von Protest Listing bereitgestellten Dienste und entspricht der Datenschutz-Grundverordnung (DSGVO) und den geltenden Datenschutzgesetzen.",
+    "dataController": "Verantwortlicher",
+    "dataControllerNote": "Verantwortlich für die Verarbeitung personenbezogener Daten auf dieser Website ist:",
+    "dataControllerContact": "Sie erreichen uns unter folgenden Kontaktdaten:",
+    "dataProtectionOfficer": "Datenschutzbeauftragter",
+    "dataProtectionOfficerText": "Für Fragen zum Datenschutz können Sie sich an unseren Datenschutzbeauftragten wenden:",
+    "supervisoryAuthority": "Aufsichtsbehörde",
+    "supervisoryAuthorityText": "Sie haben das Recht, sich bei folgender Aufsichtsbehörde zu beschweren:",
+    "dataCollection": "Welche Daten wir erfassen",
+    "accountInfo": "Kontoinformationen",
+    "accountInfoText": "Wenn Sie ein Konto erstellen, erfassen wir:",
+    "accountInfoItems": {
+      "email": "E-Mail-Adresse",
+      "username": "Benutzername",
+      "password": "Passwort (verschlüsselt)",
+      "creationDate": "Datum der Kontoerstellung"
+    },
+    "eventSubmissions": "Veranstaltungseinreichungen",
+    "eventSubmissionsText": "Wenn Sie Veranstaltungsinformationen einreichen, erfassen wir:",
+    "eventSubmissionsItems": {
+      "details": "Veranstaltungsdetails (Titel, Beschreibung, Datum, Ort)",
+      "contact": "Kontaktinformationen (falls angegeben)",
+      "timestamp": "Zeitstempel der Einreichung",
+      "userId": "Ihre Benutzer-ID (falls angemeldet)"
+    },
+    "autoCollected": "Automatisch erfasste Daten",
+    "autoCollectedText": "Wenn Sie unseren Dienst nutzen, erfassen wir automatisch:",
+    "autoCollectedItems": {
+      "ip": "IP-Adresse",
+      "browser": "Browsertyp und -version",
+      "os": "Betriebssystem",
+      "referrer": "Referrer-URL",
+      "pages": "Besuchte Seiten und Verweildauer",
+      "device": "Geräteinformationen"
+    },
+    "locationData": "Standortdaten",
+    "locationDataText": "Mit Ihrer ausdrücklichen Zustimmung können wir auf den Standort Ihres Geräts zugreifen, um Ihnen bei der Suche nach Veranstaltungen in Ihrer Nähe zu helfen. Diese Daten werden nur auf Ihrem Gerät verarbeitet und nicht auf unseren Servern gespeichert.",
+    "dataUsage": "Wie wir Ihre Daten verwenden",
+    "dataUsageText": "Wir verwenden Ihre personenbezogenen Daten für folgende Zwecke:",
+    "dataUsageItems": {
+      "provide": "Zur Bereitstellung und Aufrechterhaltung unseres Dienstes",
+      "manage": "Zur Verwaltung Ihres Kontos und Ihrer Authentifizierung",
+      "display": "Zur Anzeige von Veranstaltungsinformationen, die Sie einreichen",
+      "communicate": "Zum Versenden von dienstbezogenen Mitteilungen",
+      "improve": "Zur Verbesserung unseres Dienstes und Entwicklung neuer Funktionen",
+      "prevent": "Zur Erkennung und Verhinderung von Betrug oder Missbrauch",
+      "comply": "Zur Erfüllung gesetzlicher Verpflichtungen",
+      "analyze": "Zur Analyse von Nutzungsmustern und Optimierung der Leistung"
+    },
+    "legalBasis": "Rechtsgrundlage für die Verarbeitung",
+    "legalBasisText": "Wir verarbeiten Ihre personenbezogenen Daten auf folgender Grundlage:",
+    "legalBasisItems": {
+      "consent": "Einwilligung: Wenn Sie uns ausdrücklich die Erlaubnis erteilen (z.B. Standortzugriff)",
+      "contract": "Vertrag: Zur Erfüllung unserer Dienstleistungsvereinbarung mit Ihnen",
+      "legal": "Gesetzliche Verpflichtung: Zur Einhaltung geltender Gesetze",
+      "legitimate": "Berechtigtes Interesse: Zur Verbesserung unseres Dienstes und Verhinderung von Missbrauch"
+    },
+    "dataSharing": "Datenweitergabe und Offenlegung",
+    "dataSharingText": "Wir verkaufen Ihre personenbezogenen Daten nicht an Dritte. Wir können Ihre Daten weitergeben an:",
+    "dataSharingItems": {
+      "providers": "Dienstleister: Unternehmen, die uns beim Betrieb unseres Dienstes helfen (Hosting, Analyse)",
+      "legal": "Rechtsbehörden: Wenn dies gesetzlich vorgeschrieben ist oder zum Schutz unserer Rechte",
+      "public": "Öffentliche Anzeige: Von Ihnen eingereichte Veranstaltungsinformationen sind öffentlich sichtbar"
+    },
+    "dataSharingNote": "Alle Drittanbieter sind vertraglich verpflichtet, Ihre Daten sicher zu behandeln und nur für die von uns festgelegten Zwecke zu verwenden.",
+    "cookies": "Cookies und Tracking",
+    "cookiesText": "Wir verwenden Cookies und ähnliche Technologien, um:",
+    "cookiesItems": {
+      "login": "Sie angemeldet zu halten",
+      "preferences": "Ihre Einstellungen zu speichern (Theme, Sprache)",
+      "analyze": "Nutzungsmuster zu analysieren",
+      "improve": "Die Dienstleistung zu verbessern"
+    },
+    "cookiesNote": "Sie können Cookies über Ihre Browsereinstellungen steuern. Das Deaktivieren von Cookies kann jedoch einige Funktionen unseres Dienstes einschränken.",
+    "dataSecurity": "Datensicherheit",
+    "dataSecurityText": "Wir implementieren angemessene technische und organisatorische Maßnahmen zum Schutz Ihrer Daten:",
+    "dataSecurityItems": {
+      "encryption": "Verschlüsselung von Daten während der Übertragung (HTTPS/TLS)",
+      "passwords": "Verschlüsselte Passwortspeicherung",
+      "updates": "Regelmäßige Sicherheitsupdates und Patches",
+      "access": "Zugriffskontrollen und Authentifizierung",
+      "audits": "Regelmäßige Sicherheitsüberprüfungen",
+      "backup": "Sichere Datensicherungsverfahren"
+    },
+    "dataSecurityNote": "Keine Übertragungs- oder Speichermethode ist jedoch zu 100% sicher. Obwohl wir uns bemühen, Ihre Daten zu schützen, können wir keine absolute Sicherheit garantieren.",
+    "dataRetention": "Datenspeicherung",
+    "dataRetentionText": "Wir speichern Ihre personenbezogenen Daten so lange:",
+    "dataRetentionItems": {
+      "active": "Ihr Konto aktiv ist",
+      "necessary": "Dies zur Bereitstellung unserer Dienste erforderlich ist",
+      "required": "Dies gesetzlich vorgeschrieben ist",
+      "needed": "Dies zur Beilegung von Streitigkeiten oder Durchsetzung von Vereinbarungen erforderlich ist"
+    },
+    "dataRetentionNote": "Nach der Kontolöschung werden wir Ihre personenbezogenen Daten innerhalb von 30 Tagen löschen oder anonymisieren, es sei denn, eine längere Aufbewahrung ist gesetzlich vorgeschrieben.",
+    "yourRights": "Ihre Rechte",
+    "yourRightsText": "Gemäß DSGVO und geltenden Datenschutzgesetzen haben Sie das Recht auf:",
+    "yourRightsItems": {
+      "access": "Zugang: Eine Kopie Ihrer personenbezogenen Daten anzufordern",
+      "rectification": "Berichtigung: Ungenaue oder unvollständige Daten zu korrigieren",
+      "erasure": "Löschung: Die Löschung Ihrer Daten zu verlangen (\"Recht auf Vergessenwerden\")",
+      "restriction": "Einschränkung: Die Verwendung Ihrer Daten einzuschränken",
+      "portability": "Datenübertragbarkeit: Ihre Daten in einem maschinenlesbaren Format zu erhalten",
+      "object": "Widerspruch: Der Verarbeitung auf Grundlage berechtigter Interessen zu widersprechen",
+      "withdraw": "Widerruf der Einwilligung: Die Einwilligung jederzeit zu widerrufen (sofern zutreffend)",
+      "complaint": "Beschwerde: Eine Beschwerde bei einer Aufsichtsbehörde einzureichen"
+    },
+    "yourRightsContact": "Um diese Rechte auszuüben, kontaktieren Sie uns bitte unter",
+    "childrenPrivacy": "Datenschutz für Kinder",
+    "childrenPrivacyText": "Unser Dienst richtet sich nicht an Kinder unter 16 Jahren. Wir erheben wissentlich keine personenbezogenen Daten von Kindern. Wenn Sie glauben, dass wir Daten von einem Kind erfasst haben, kontaktieren Sie uns bitte umgehend.",
+    "changesToPolicy": "Änderungen dieser Richtlinie",
+    "changesToPolicyText": "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Wir werden Sie über wesentliche Änderungen informieren, indem wir einen Hinweis auf unserer Website veröffentlichen oder Ihnen eine E-Mail senden. Ihre fortgesetzte Nutzung des Dienstes nach Inkrafttreten von Änderungen gilt als Annahme der aktualisierten Richtlinie.",
+    "contactUs": "Kontaktieren Sie uns",
+    "contactUsText": "Wenn Sie Fragen zu dieser Datenschutzerklärung oder unseren Datenpraktiken haben, kontaktieren Sie uns bitte:"
+  },
+  "disclaimer": {
+    "title": "Haftungsausschluss",
+    "subtitle": "Wichtige Informationen zur Nutzung dieses Dienstes",
+    "generalInfo": "Allgemeine Informationen",
+    "generalInfoText1": "Diese Plattform bietet Informationen über bevorstehende Proteste und Demonstrationen. Die Informationen werden aus verschiedenen öffentlichen Quellen und Nutzerbeiträgen gesammelt. Obwohl wir uns um Genauigkeit bemühen, können wir die Vollständigkeit oder Richtigkeit aller aufgeführten Veranstaltungen nicht garantieren.",
+    "generalInfoText2": "Benutzer sind dafür verantwortlich, Veranstaltungsdetails unabhängig zu überprüfen, bevor sie an einer Veranstaltung teilnehmen. Wir sind keine Organisatoren der aufgeführten Veranstaltungen und befürworten oder fördern keine bestimmten politischen Ansichten oder Anliegen.",
+    "liabilityContent": "Haftung für Inhalte",
+    "liabilityContentText1": "Der Inhalt dieser Website wurde mit größter Sorgfalt und nach bestem Wissen erstellt. Wir können jedoch keine Haftung für die Aktualität, Vollständigkeit oder Richtigkeit der Seiten übernehmen.",
+    "liabilityContentText2": "Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Wir sind jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.",
+    "liabilityContentText3": "Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.",
+    "liabilityLinks": "Haftung für Links",
+    "liabilityLinksText1": "Unsere Website enthält Links zu externen Websites Dritter. Wir haben keinen Einfluss auf die Inhalte dieser Websites; daher können wir für diese externen Inhalte keine Haftung übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.",
+    "liabilityLinksText2": "Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.",
+    "userContent": "Nutzergenerierte Inhalte",
+    "userContentText": "Diese Plattform ermöglicht es Benutzern, Informationen über Proteste und Demonstrationen einzureichen. Benutzer sind allein verantwortlich für die Inhalte, die sie einreichen, und müssen sicherstellen, dass ihre Einreichungen:",
+    "userContentItems": {
+      "accurate": "Genau und wahrheitsgemäß sind",
+      "legal": "Keine Gesetze oder Vorschriften verletzen",
+      "rights": "Keine Rechte Dritter verletzen",
+      "offensive": "Keine diffamierenden, beleidigenden oder illegalen Inhalte enthalten",
+      "violence": "Keine Gewalt oder illegale Aktivitäten fördern"
+    },
+    "userContentNote": "Wir behalten uns das Recht vor, nutzergenerierte Inhalte zu entfernen, die gegen diese Richtlinien oder geltende Gesetze verstoßen, ohne vorherige Ankündigung.",
+    "noWarranty": "Keine Gewährleistung",
+    "noWarrantyText": "Dieser Dienst wird \"wie besehen\" ohne jegliche ausdrückliche oder stillschweigende Gewährleistung bereitgestellt. Wir geben keine Zusicherungen oder Garantien bezüglich:",
+    "noWarrantyItems": {
+      "accuracy": "Der Genauigkeit, Zuverlässigkeit oder Vollständigkeit der Veranstaltungsinformationen",
+      "availability": "Der Verfügbarkeit oder Kontinuität des Dienstes",
+      "suitability": "Der Eignung des Dienstes für einen bestimmten Zweck",
+      "safety": "Der Sicherheit bei der Teilnahme an aufgeführten Veranstaltungen"
+    },
+    "limitationLiability": "Haftungsbeschränkung",
+    "limitationLiabilityText": "Wir haften nicht für Schäden, die entstehen durch:",
+    "limitationLiabilityItems": {
+      "use": "Nutzung oder Unfähigkeit zur Nutzung dieses Dienstes",
+      "inaccurate": "Ungenaue oder unvollständige Veranstaltungsinformationen",
+      "attendance": "Teilnahme an auf dieser Plattform aufgeführten Veranstaltungen",
+      "interactions": "Interaktionen mit anderen Benutzern",
+      "technical": "Technische Ausfälle oder Dienstunterbrechungen",
+      "data": "Datenverlust oder unbefugter Zugriff auf Benutzerkonten"
+    },
+    "limitationLiabilityNote": "Diese Haftungsbeschränkung gilt nicht für Schäden, die durch vorsätzliches Fehlverhalten oder grobe Fahrlässigkeit verursacht wurden, oder in Fällen, in denen zwingende Haftungsbestimmungen gelten (z.B. Produkthaftungsgesetze).",
+    "safetyNotice": "Sicherheitshinweis",
+    "safetyNoticeText": "Bevor Sie an einem Protest oder einer Demonstration teilnehmen:",
+    "safetyNoticeItems": {
+      "verify": "Überprüfen Sie die Veranstaltungsdetails unabhängig",
+      "aware": "Seien Sie sich der lokalen Gesetze und Vorschriften zu Protesten bewusst",
+      "consider": "Berücksichtigen Sie Ihre persönliche Sicherheit und die aktuelle Situation",
+      "follow": "Befolgen Sie die Anweisungen der offiziellen Behörden und Veranstalter",
+      "respect": "Respektieren Sie die Rechte und die Sicherheit anderer"
+    },
+    "contact": "Fragen oder Bedenken?",
+    "contactText": "Wenn Sie Fragen zu diesem Haftungsausschluss oder Bedenken bezüglich Inhalten auf dieser Plattform haben, kontaktieren Sie uns bitte unter:"
+  },
+  "footer": {
+    "brandName": "Protest Listing",
+    "tagline": "Bleib über anstehende Proteste und Demonstrationen informiert. Mach deine Stimme hörbar.",
+    "quickLinks": "Schnellzugriff",
+    "legal": "Rechtliches",
+    "links": {
+      "home": "Startseite",
+      "about": "Über uns",
+      "imprint": "Impressum",
+      "disclaimer": "Haftungsausschluss",
+      "privacy": "Datenschutzerklärung"
+    },
+    "githubAria": "GitHub-Repository öffnen",
+    "copyright": "© {year} Protest Listing. Alle Rechte vorbehalten."
+  },
+  "about": {
+    "metaTitle": "Über uns – Protest Listing",
+    "metaDescription": "Erfahre, wie Protest Listing Protestinformationen bündelt und wie du dich beteiligen kannst.",
+    "title": "Über uns",
+    "heroSubtitle": "Eine kollaborative Open-Source-Plattform, die Informationen zu anstehenden Protesten und Demonstrationen zentralisiert und vereinheitlicht.",
+    "mission": {
+      "title": "Unsere Mission",
+      "paragraphs": [
+        "Wir sind überzeugt, dass Informationen zu zivilgesellschaftlichem Engagement für alle leicht zugänglich sein sollten. Leider sind Hinweise zu Protesten und Demonstrationen häufig über schwer auffindbare Orte im Internet verstreut, sodass sich Menschen nur schwer einen Überblick verschaffen können.",
+        "Dieses Projekt entstand aus der Frustration heraus, keine zentrale Übersicht über anstehende Proteste zu finden. Informationen, die eigentlich öffentlich zugänglich sein sollten, wirkten absichtlich schwer erreichbar. Mit einer offenen, gemeinschaftlichen Lösung wollen wir Daten aus vielen Quellen bündeln und aufbereiten."
+      ]
+    },
+    "how": {
+      "title": "So funktioniert es",
+      "intro": "Unsere Plattform verbindet automatisierte Datenerfassung mit Beiträgen aus der Community, um einen umfassenden Protestkalender bereitzustellen:",
+      "cards": {
+        "automation": {
+          "title": "Automatisches Scraping",
+          "description": "Wir sammeln Veranstaltungsdaten automatisch aus offiziellen Quellen wie polizeilichen Anmeldungen, städtischen Portalen und etablierten Organisationen, um eine breite Abdeckung zu gewährleisten."
+        },
+        "community": {
+          "title": "Community-Beiträge",
+          "description": "Registrierte Nutzerinnen und Nutzer können fehlende Veranstaltungen melden; Moderatorinnen und Moderatoren prüfen die Einträge, um Datenqualität sicherzustellen und Fehlinformationen zu vermeiden."
+        }
+      }
+    },
+    "sources": {
+      "title": "Aktuelle Datenquellen",
+      "intro": "Derzeit aggregieren wir Daten aus diesen vertrauenswürdigen Quellen – weitere folgen kontinuierlich:",
+      "items": [
+        {
+          "title": "Polizei Berlin",
+          "description": "Offizielle Versammlungsanmeldungen"
+        },
+        {
+          "title": "Stadt Dresden",
+          "description": "Kommunale Übersicht über Versammlungen"
+        },
+        {
+          "title": "Friedenskooperative",
+          "description": "Aktionen der Friedensbewegung"
+        },
+        {
+          "title": "DemokraTEAM",
+          "description": "Veranstaltungen rund um Demokratie und Antifaschismus"
+        }
+      ]
+    },
+    "comingSoon": {
+      "title": "Demnächst verfügbar",
+      "intro": "Wir entwickeln die Plattform ständig weiter und planen unter anderem folgende Funktionen:",
+      "items": [
+        {
+          "title": "Datenexport & Downloads",
+          "description": "Gefilterte Veranstaltungsdaten als CSV, JSON oder ICS exportieren."
+        },
+        {
+          "title": "Abonnierbare Kalender",
+          "description": "Individuelle ICS-Feeds für bestimmte Zeiträume und Filter."
+        },
+        {
+          "title": "Erweiterte Filter",
+          "description": "Ausführlichere Such- und Kategorisierungsmöglichkeiten."
+        },
+        {
+          "title": "Kontaktformular",
+          "description": "Einfacher Weg, neue Quellen vorzuschlagen und Feedback zu geben."
+        },
+        {
+          "title": "Registrierungssystem",
+          "description": "Community-Mitglieder können fehlende Veranstaltungen manuell ergänzen."
+        }
+      ]
+    },
+    "developers": {
+      "title": "Für Entwickler:innen & Beitragende",
+      "intro": "Dieses Projekt ist vollständig Open Source und freut sich über Beiträge von Entwickler:innen, die unseren Anspruch auf zugängliche Bürgerinformationen teilen:",
+      "apiTitle": "API-Zugriff",
+      "apiDescription": "Unsere REST-API bietet programmgesteuerten Zugriff auf Protestdaten mit umfangreichen Filtermöglichkeiten:",
+      "apiEndpoint": "GET /api/protests",
+      "apiFilters": "Filter nach Stadt, Land, Zeitraum, Geokoordinaten, Quelle, Sprache und mehr.",
+      "apiMore": "Exportiere Daten als JSON, CSV oder abonnierbares ICS – ideal für eigene Anwendungen oder Integrationen.",
+      "cards": [
+        {
+          "title": "Backend-API",
+          "stack": "Node.js, Express, MongoDB",
+          "href": "https://github.com/artem-schander/protest-scraper"
+        },
+        {
+          "title": "Frontend",
+          "stack": "SvelteKit, Tailwind CSS",
+          "href": "https://github.com/artem-schander/protest-scraper-frontend"
+        }
+      ],
+      "cta": "Du möchtest helfen? Eröffne ein Issue oder sende einen Pull Request auf GitHub."
+    },
+    "openSource": {
+      "title": "Für immer frei & Open Source",
+      "paragraphs": [
+        "Dieses Projekt ist – und bleibt – vollständig kostenfrei und quelloffen. Der Zugang zu Informationen über zivilgesellschaftliches Engagement darf niemals hinter Paywalls oder proprietären Systemen verschwinden.",
+        "Unter AGPL-3.0 lizenziert ist unser Code transparent, überprüfbar und darauf ausgelegt, der gesamten Community zu dienen. Ob du lokale Veranstaltungen suchst oder das Projekt weiterentwickeln möchtest – du bist willkommen."
+      ]
+    },
+    "contact": {
+      "title": "Mach mit",
+      "intro": "Wir freuen uns über Rückmeldungen! Egal ob neue Datenquellen, Fehlerberichte oder Codebeiträge:",
+      "sections": [
+        {
+          "title": "Allgemeine Anfragen",
+          "description": "Vorschläge für neue Datenquellen oder allgemeines Feedback? Schreibe uns eine E-Mail oder nutze demnächst das Kontaktformular."
+        },
+        {
+          "title": "Technische Themen",
+          "description": "Du hast einen Bug gefunden oder einen Feature-Wunsch? Eröffne ein Issue auf GitHub – so erreichst du das Entwicklungsteam am schnellsten."
+        }
+      ]
+    },
+    "important": {
+      "title": "Wichtige Hinweise",
+      "paragraphs": [
+        "Diese Plattform bündelt Protestinformationen aus öffentlichen Quellen und Community-Beiträgen. Trotz sorgfältiger Prüfung können wir Vollständigkeit oder Richtigkeit nicht garantieren.",
+        "Bitte prüfe Veranstaltungsdetails vor dem Besuch eigenständig. Wir organisieren keine der aufgeführten Veranstaltungen und vertreten keine spezifischen politischen Positionen – unser Anliegen ist allein ein leichter Zugang zu Bürgerinformationen."
+      ]
+    }
+  }
+}

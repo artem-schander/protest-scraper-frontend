@@ -131,9 +131,9 @@ Toggle between themes using the theme switcher in the header (sun/moon/desktop i
 - Accent: `text-emerald-600 dark:text-emerald-400`
 
 **Backgrounds:**
-- Primary: `bg-gray-50 dark:bg-gray-900`
-- Secondary: `bg-white dark:bg-gray-800`
-- Borders: `border-gray-200 dark:border-gray-700`
+- Primary: `bg-stone-50 dark:bg-stone-900`
+- Secondary: `bg-white dark:bg-stone-800`
+- Borders: `border-stone-200 dark:border-stone-700`
 
 ### Typography
 

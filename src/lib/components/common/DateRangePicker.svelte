@@ -1,36 +1,45 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
-	import Icon from '@iconify/svelte';
+import { createEventDispatcher } from 'svelte';
+import Icon from '$lib/components/common/Icon.svelte';
+import { locale, t } from '$lib/i18n';
 
-	export let startDate = null;
-	export let endDate = null;
-	export let mode = 'day'; // 'day', 'week', 'month', 'range'
+export let startDate = null;
+export let endDate = null;
+export let mode = 'day'; // 'day', 'week', 'month', 'range'
 
-	const dispatch = createEventDispatcher();
+const dispatch = createEventDispatcher();
+const modeOrder = ['day', 'week', 'month', 'range'];
+const modeIcons = {
+	day: 'heroicons:calendar',
+	week: 'heroicons:calendar-days',
+	month: 'heroicons:calendar',
+	range: 'heroicons:arrows-right-left'
+};
+const baseMondayUTC = Date.UTC(2021, 0, 4); // Monday, 4 Jan 2021
 
-	// Initialize currentMonth based on startDate if it exists, otherwise use current month
-	let currentMonth = startDate ? new Date(startDate.getFullYear(), startDate.getMonth(), 1) : new Date();
-	let hoverDate = null;
-	let userNavigatedMonth = false;
+// Initialize currentMonth based on startDate if it exists, otherwise use current month
+let currentMonth = startDate ? new Date(startDate.getFullYear(), startDate.getMonth(), 1) : new Date();
+let hoverDate = null;
+let userNavigatedMonth = false;
 
-	// Update currentMonth when startDate changes (e.g., from URL params), but only if user hasn't manually navigated
-	$: if (startDate && !userNavigatedMonth && currentMonth.getMonth() !== startDate.getMonth()) {
-		currentMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
-	}
+// Update currentMonth when startDate changes (e.g., from URL params), but only if user hasn't manually navigated
+$: if (startDate && !userNavigatedMonth && currentMonth.getMonth() !== startDate.getMonth()) {
+	currentMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+}
 
-	const modes = [
-		{ id: 'day', label: 'Day', icon: 'heroicons:calendar' },
-		{ id: 'week', label: 'Week', icon: 'heroicons:calendar-days' },
-		{ id: 'month', label: 'Month', icon: 'heroicons:calendar' },
-		{ id: 'range', label: 'Custom', icon: 'heroicons:arrows-right-left' }
-	];
+$: currentLocale = $locale || 'en-US';
+$: monthFormatter = new Intl.DateTimeFormat(currentLocale, { month: 'long', year: 'numeric' });
+$: dayFormatter = new Intl.DateTimeFormat(currentLocale, { month: 'short', day: 'numeric', year: 'numeric' });
+$: weekdayLabels = Array.from({ length: 7 }, (_, i) =>
+	new Intl.DateTimeFormat(currentLocale, { weekday: 'short' }).format(new Date(baseMondayUTC + i * 86400000))
+);
 
-	$: monthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-	$: monthEnd = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
-	$: daysInMonth = monthEnd.getDate();
-	$: firstDayOfWeek = monthStart.getDay();
-	$: today = new Date();
-	$: todayStr = formatDateStr(today);
+$: monthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+$: monthEnd = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+$: daysInMonth = monthEnd.getDate();
+$: firstDayOfWeek = (monthStart.getDay() + 6) % 7; // Monday as first day
+$: today = new Date();
+$: todayStr = formatDateStr(today);
 
 	function formatDateStr(date) {
 		if (!date) return null;
@@ -132,40 +141,42 @@
 
 <div class="space-y-4">
 	<!-- Mode Selection -->
-	<div class="grid grid-cols-4 gap-1 p-1 bg-gray-100 dark:bg-gray-900 rounded-lg">
-		{#each modes as modeOption}
+	<div class="grid grid-cols-4 gap-1 p-1 bg-stone-100 dark:bg-stone-900 rounded-lg">
+		{#each modeOrder as modeId}
 			<button
 				type="button"
-				on:click={() => handleModeChange(modeOption.id)}
+				on:click={() => handleModeChange(modeId)}
 				class="flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-md text-xs font-medium transition-all
-					{mode === modeOption.id
-						? 'bg-white dark:bg-gray-700 text-black dark:text-white shadow-sm'
+					{mode === modeId
+						? 'bg-white dark:bg-stone-700 text-black dark:text-white shadow-sm'
 						: 'text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white'}"
 			>
-				<Icon icon={modeOption.icon} class="w-4 h-4" />
-				<span class="text-[10px]">{modeOption.label}</span>
+				<Icon icon={modeIcons[modeId]} class="w-4 h-4" />
+				<span class="text-[10px]">{$t(`filters.dateModes.${modeId}`)}</span>
 			</button>
 		{/each}
 	</div>
 
 	<!-- Calendar -->
-	<div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800">
+	<div class="border border-stone-200 dark:border-stone-700 rounded-lg p-4 bg-white dark:bg-stone-800">
 		<!-- Month Navigation -->
 		<div class="flex items-center justify-between mb-4">
 			<button
 				type="button"
 				on:click={previousMonth}
-				class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
+				class="w-8 h-8 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 flex items-center justify-center transition-colors"
+				aria-label={$t('filters.monthNav.previous')}
 			>
 				<Icon icon="heroicons:chevron-left" class="w-5 h-5 text-black dark:text-white" />
 			</button>
 			<span class="font-medium text-black dark:text-white">
-				{currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+				{monthFormatter.format(currentMonth)}
 			</span>
 			<button
 				type="button"
 				on:click={nextMonth}
-				class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
+				class="w-8 h-8 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 flex items-center justify-center transition-colors"
+				aria-label={$t('filters.monthNav.next')}
 			>
 				<Icon icon="heroicons:chevron-right" class="w-5 h-5 text-black dark:text-white" />
 			</button>
@@ -173,7 +184,7 @@
 
 		<!-- Weekday Headers -->
 		<div class="grid grid-cols-7 mb-2">
-			{#each ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] as day}
+			{#each weekdayLabels as day}
 				<div class="text-center text-xs font-medium text-black/60 dark:text-white/60 py-2">
 					{day}
 				</div>
@@ -183,7 +194,7 @@
 		<!-- Calendar Days -->
 		<div class="grid grid-cols-7 gap-1">
 			<!-- Empty cells for days before month starts -->
-			{#each Array(firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1) as _}
+			{#each Array(firstDayOfWeek) as _}
 				<div class="aspect-square"></div>
 			{/each}
 
@@ -209,12 +220,12 @@
 						{isStart || isEnd
 							? 'bg-[#E10600] text-white shadow-md hover:bg-[#C10500]'
 							: inRange || inHover
-								? 'bg-[#E10600]/20 dark:bg-[#FF4081]/20 text-black dark:text-white'
+								? 'bg-[#E10600]/20 dark:bg-red-400/20 text-black dark:text-white'
 								: isToday
 									? 'bg-black dark:bg-white text-white dark:text-black font-bold'
 									: isPast
 										? 'text-black/20 dark:text-white/20 cursor-not-allowed'
-										: 'text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'}"
+										: 'text-black dark:text-white hover:bg-stone-100 dark:hover:bg-stone-700'}"
 				>
 					{day}
 				</button>
@@ -224,26 +235,27 @@
 
 	<!-- Selected Range Display -->
 	{#if startDate}
-		<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
-			<div class="text-sm">
-				<span class="text-black/60 dark:text-white/60">Selected: </span>
-				<span class="font-medium text-black dark:text-white">
-					<span class="whitespace-nowrap">
-						{startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-					</span>
-					{#if endDate && !isSameDay(startDate, endDate)}
-						<span class="whitespace-nowrap">
-							→ {endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-						</span>
-					{/if}
-				</span>
+		<div class="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-900 rounded-lg text-sm">
+			<div class="text-sm space-y-1">
+				<div class="flex items-center gap-2 text-black/60 dark:text-white/60">
+					<Icon icon="heroicons:calendar" class="w-4 h-4" />
+					<span class="font-medium">{$t('filters.selection')}</span>
+				</div>
+				<div class="text-xs text-black dark:text-white font-mono">
+					<span class="whitespace-nowrap">{dayFormatter.format(startDate)}</span>
+          {#if endDate && !isSameDay(startDate, endDate)}
+            <span class="whitespace-nowrap ml-[-4px]">→ {dayFormatter.format(endDate)}</span>
+		      {/if}
+				</div>
 			</div>
 			<button
 				type="button"
 				on:click={clearDates}
-				class="text-sm text-[#E10600] dark:text-[#FF4081] hover:text-[#C10500] dark:hover:text-[#E10600] font-medium"
+				class="flex itens-center text-sm text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600] font-medium"
+				aria-label={$t('filters.clearDates')}
 			>
-				Clear
+				<!-- {$t('filters.clear')} -->
+				<Icon icon="heroicons:x-mark" class="w-4 h-4" />
 			</button>
 		</div>
 	{/if}

@@ -1,7 +1,9 @@
 <script>
-	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
-	import { browser } from '$app/environment';
-	import Icon from '@iconify/svelte';
+import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+import { browser } from '$app/environment';
+import { get } from 'svelte/store';
+import Icon from '$lib/components/common/Icon.svelte';
+import { t } from '$lib/i18n';
 
 	export let lat = null;
 	export let lon = null;
@@ -15,7 +17,7 @@
 	let circle;
 	let mapContainer;
 	let isLoading = false;
-	let locationError = null;
+let locationErrorKey = null;
 	let lightTileLayer;
 	let darkTileLayer;
 
@@ -107,7 +109,8 @@
 		if (circle) map.removeLayer(circle);
 
 		// Create a custom icon using heroicons map-pin
-		const icon = L.divIcon({
+	const markerTitle = get(t)('filters.mapMarkerLabel');
+	const icon = L.divIcon({
 			// html: `
 			// 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#E10600" style="width: 32px; height: 32px;">
 			// 		<path fill-rule="evenodd" d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd" />
@@ -120,7 +123,8 @@
 			// 	</svg>
 			// `,
 			html: `
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#E10600" style="width: 32px; height: 32px;">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#E10600" style="width: 32px; height: 32px;" role="img" aria-label="${markerTitle}">
+					<title>${markerTitle}</title>
 					<path fill-rule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 7c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" clip-rule="evenodd" />
 				</svg>
 			`,
@@ -174,13 +178,13 @@
 	}
 
 	async function useMyLocation() {
-		if (!navigator.geolocation) {
-			locationError = 'Geolocation is not supported by your browser';
-			return;
-		}
+	if (!navigator.geolocation) {
+		locationErrorKey = 'filters.locationError.unsupported';
+		return;
+	}
 
-		isLoading = true;
-		locationError = null;
+	isLoading = true;
+	locationErrorKey = null;
 
 		navigator.geolocation.getCurrentPosition(
 			(position) => {
@@ -196,33 +200,33 @@
 				isLoading = false;
 				switch (error.code) {
 					case error.PERMISSION_DENIED:
-						locationError = 'Location permission denied';
-						break;
-					case error.POSITION_UNAVAILABLE:
-						locationError = 'Location information unavailable';
-						break;
-					case error.TIMEOUT:
-						locationError = 'Location request timed out';
-						break;
-					default:
-						locationError = 'Unable to get your location';
-				}
-			}
-		);
+			locationErrorKey = 'filters.locationError.denied';
+			break;
+		case error.POSITION_UNAVAILABLE:
+			locationErrorKey = 'filters.locationError.unavailable';
+			break;
+		case error.TIMEOUT:
+			locationErrorKey = 'filters.locationError.timeout';
+			break;
+		default:
+			locationErrorKey = 'filters.locationError.unknown';
+		}
 	}
+	);
+}
 
-	function clearLocation() {
-		if (marker) map.removeLayer(marker);
-		if (circle) map.removeLayer(circle);
+function clearLocation() {
+	if (marker) map.removeLayer(marker);
+	if (circle) map.removeLayer(circle);
 
-		marker = null;
-		circle = null;
-		lat = null;
-		lon = null;
-		locationError = null;
+	marker = null;
+	circle = null;
+	lat = null;
+	lon = null;
+	locationErrorKey = null;
 
-		emitChange(null, null, radius);
-	}
+	emitChange(null, null, radius);
+}
 
 	function emitChange(newLat, newLon, newRadius) {
 		dispatch('change', {
@@ -285,41 +289,41 @@
 			type="button"
 			on:click={useMyLocation}
 			disabled={isLoading}
-			class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs font-medium"
+			class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs font-medium"
 		>
 			{#if isLoading}
 				<Icon icon="svg-spinners:ring-resize" class="w-3.5 h-3.5" />
-				<span>Getting location...</span>
+				<span>{$t('filters.gettingLocation')}</span>
 			{:else}
 				<Icon icon="heroicons:map-pin" class="w-3.5 h-3.5" />
-				<span>Use My Location</span>
+				<span>{$t('filters.useLocation')}</span>
 			{/if}
 		</button>
 
-		{#if lat && lon}
-			<button
-				type="button"
-				on:click={clearLocation}
-				class="px-2.5 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-				aria-label="Clear location"
-			>
-				<Icon icon="heroicons:x-mark" class="w-4 h-4" />
-			</button>
-		{/if}
+		<!-- {#if lat && lon} -->
+		<!-- 	<button -->
+		<!-- 		type="button" -->
+		<!-- 		on:click={clearLocation} -->
+		<!-- 		class="flex items-center px-2 h-[34px] rounded-lg border border-stone-200 dark:border-stone-700 text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors" -->
+		<!-- 		aria-label={$t('filters.clearLocation')} -->
+		<!-- 	> -->
+		<!-- 		<Icon icon="heroicons:x-mark" class="w-4 h-4" /> -->
+		<!-- 	</button> -->
+		<!-- {/if} -->
 	</div>
 
 	<!-- Error message -->
-	{#if locationError}
+	{#if locationErrorKey}
 		<div class="flex items-start gap-2 p-2 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm text-red-600 dark:text-red-400">
 			<Icon icon="heroicons:exclamation-triangle" class="w-4 h-4 mt-0.5 flex-shrink-0" />
-			<span>{locationError}</span>
+			<span>{$t(locationErrorKey)}</span>
 		</div>
 	{/if}
 
 	<!-- Map Container -->
 	<div
 		bind:this={mapContainer}
-		class="h-64 rounded-lg border-1 border-gray-200 dark:border-gray-700 overflow-hidden"
+		class="h-64 dark:bg-black rounded-lg border-1 border-stone-200 dark:border-stone-700 overflow-hidden"
 		style="z-index: 1;"
 	></div>
 
@@ -327,10 +331,10 @@
 	<div class="space-y-2">
 		<div class="flex items-center justify-between text-sm">
 			<label for="radius-slider" class="font-medium text-black dark:text-white">
-				Search Radius
+				{$t('filters.radiusLabel')}
 			</label>
 			<span class="text-black/60 dark:text-white/60">
-				{radius} km
+				{$t('filters.radiusValue', { values: { value: radius } })}
 			</span>
 		</div>
 		<input
@@ -341,28 +345,39 @@
 			step="1"
 			bind:value={radius}
 			on:input={handleRadiusChange}
-			class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#E10600]"
+			class="w-full h-2 bg-stone-200 dark:bg-stone-700 rounded-lg appearance-none cursor-pointer accent-[#E10600]"
 		/>
 		<div class="flex justify-between text-xs text-black/40 dark:text-white/40">
-			<span>1 km</span>
-			<span>100 km</span>
+			<span>{$t('filters.radiusMin')}</span>
+			<span>{$t('filters.radiusMax')}</span>
 		</div>
 	</div>
 
 	<!-- Selected Location Info -->
 	{#if lat && lon}
-		<div class="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm space-y-1">
-			<div class="flex items-center gap-2 text-black/60 dark:text-white/60">
-				<Icon icon="heroicons:map-pin" class="w-4 h-4" />
-				<span class="font-medium">Selected Location</span>
+		<div class="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-900 rounded-lg text-sm">
+			<div class="text-sm space-y-1">
+				<div class="flex items-center gap-2 text-black/60 dark:text-white/60">
+					<Icon icon="heroicons:map-pin" class="w-4 h-4" />
+					<span class="font-medium">{$t('filters.selectedLocation')}</span>
+				</div>
+				<div class="text-xs text-black/40 dark:text-white/40 font-mono">
+					{lat.toFixed(6)}, {lon.toFixed(6)}
+				</div>
 			</div>
-			<div class="text-xs text-black/40 dark:text-white/40 font-mono">
-				{lat.toFixed(6)}, {lon.toFixed(6)}
-			</div>
+			<button
+				type="button"
+				on:click={clearLocation}
+				class="flex itens-center text-sm text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600] font-medium"
+				aria-label={$t('filters.clearLocation')}
+			>
+				<!-- {$t('filters.clear')} -->
+				<Icon icon="heroicons:x-mark" class="w-4 h-4" />
+			</button>
 		</div>
 	{:else}
-		<div class="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm text-center text-black/60 dark:text-white/60">
-			Click on the map or use your location to search nearby events
+		<div class="p-3 bg-stone-50 dark:bg-stone-900 rounded-lg text-sm text-center text-black/60 dark:text-white/60">
+			{$t('filters.mapHint')}
 		</div>
 	{/if}
 </div>
@@ -384,5 +399,9 @@
 			height: 2;
 			left: calc(50% - 5px);
 		}
+	}
+
+	:global(.leaflet-container) {
+		background-color: oklch(96.7% 0.003 264.542);
 	}
 </style>

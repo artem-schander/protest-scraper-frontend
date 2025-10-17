@@ -101,7 +101,7 @@ Data flows: Server → +page.server.js → +page.svelte component
 
 **When adding new components:**
 - Always include `dark:` variants for colors, backgrounds, borders
-- Example: `text-black dark:text-white`, `bg-white dark:bg-gray-800`
+- Example: `text-black dark:text-white`, `bg-white dark:bg-stone-800`
 
 See `DARK_MODE.md` for detailed implementation.
 
@@ -236,8 +236,8 @@ Key functions:
 - **Primary actions**: Gradient `from-emerald-400 to-lime-400`
 - **Text**: `text-black dark:text-white` (never gray-900/100)
 - **Secondary text**: Use opacity: `text-black/60 dark:text-white/60`
-- **Borders**: `border-gray-200 dark:border-gray-700`
-- **Backgrounds**: `bg-gray-50 dark:bg-gray-900` (page), `bg-white dark:bg-gray-800` (cards)
+- **Borders**: `border-stone-200 dark:border-stone-700`
+- **Backgrounds**: `bg-stone-50 dark:bg-stone-900` (page), `bg-white dark:bg-stone-800` (cards)
 
 **Typography:**
 - Font: Inter (loaded from Google Fonts in app.html)
@@ -298,8 +298,8 @@ export async function load({ params, url, fetch }) {
 1. Find all color classes: text-*, bg-*, border-*
 2. Add dark: variants:
    - `text-black` → `text-black dark:text-white`
-   - `bg-white` → `bg-white dark:bg-gray-800`
-   - `border-gray-200` → `border-gray-200 dark:border-gray-700`
+   - `bg-white` → `bg-white dark:bg-stone-800`
+   - `border-stone-200` → `border-stone-200 dark:border-stone-700`
 3. Test with theme toggle in header
 
 ### Updating API Integration

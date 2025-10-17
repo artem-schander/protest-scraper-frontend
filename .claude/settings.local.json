@@ -14,7 +14,10 @@
       "mcp__playwright__browser_evaluate",
       "mcp__playwright__browser_snapshot",
       "Bash(yarn add leaflet)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(npm install:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

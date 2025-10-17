@@ -1,7 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { fade, scale } from 'svelte/transition';
-	import Icon from '@iconify/svelte';
+	import Icon from '$lib/components/common/Icon.svelte';
 
 	export let isOpen = false;
 	export let title = '';
@@ -51,13 +51,13 @@
 		>
 			<!-- Header -->
 			{#if title}
-				<div class="flex items-center justify-between p-6 border-b border-gray-100">
+				<div class="flex items-center justify-between p-6 border-b border-stone-100">
 					<h2 class="text-xl font-medium text-black">
 						{title}
 					</h2>
 					<button
 						on:click={close}
-						class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
+						class="w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center transition-colors"
 						aria-label="Close modal"
 					>
 						<Icon icon="heroicons:x-mark" class="w-5 h-5 text-black/60" />

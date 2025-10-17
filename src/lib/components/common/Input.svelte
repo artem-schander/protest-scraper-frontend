@@ -9,7 +9,7 @@
 	export let disabled = false;
 	export let icon = '';
 
-	import Icon from '@iconify/svelte';
+	import Icon from '$lib/components/common/Icon.svelte';
 </script>
 
 <div class="w-full">
@@ -43,12 +43,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 					resize-y
 				"
 			/>
@@ -66,12 +66,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 				"
 			/>
 		{:else if type === 'email'}
@@ -88,12 +88,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 				"
 			/>
 		{:else if type === 'password'}
@@ -110,12 +110,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 				"
 			/>
 		{:else if type === 'number'}
@@ -132,12 +132,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 				"
 			/>
 		{:else if type === 'url'}
@@ -154,12 +154,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 				"
 			/>
 		{:else if type === 'tel'}
@@ -176,12 +176,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 				"
 			/>
 		{:else if type === 'date'}
@@ -198,12 +198,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 				"
 			/>
 		{:else if type === 'time'}
@@ -220,12 +220,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 				"
 			/>
 		{:else if type === 'datetime-local'}
@@ -242,12 +242,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 				"
 			/>
 		{:else}
@@ -265,12 +265,12 @@
 					w-full px-4 py-3
 					{icon ? 'pl-12' : ''}
 					border rounded-xl
-					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
-					bg-white dark:bg-gray-800 text-black dark:text-white
+					{error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-stone-200 dark:border-stone-700 focus:border-black dark:focus:border-white focus:ring-black/10 dark:focus:ring-white/10'}
+					bg-white dark:bg-stone-800 text-black dark:text-white
 					placeholder:text-black/40 dark:placeholder:text-white/40
 					focus:outline-none focus:ring-2
 					transition-all
-					disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed
+					disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
 				"
 			/>
 		{/if}
