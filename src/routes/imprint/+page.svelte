@@ -32,18 +32,9 @@
     }
   ];
 
-  const hasServiceProvider =
-    imprintData.name || imprintData.street || imprintData.postalCode || imprintData.city;
+  const hasServiceProvider = imprintData.name || imprintData.street || imprintData.postalCode || imprintData.city;
   const hasContact = imprintData.email || imprintData.phone;
   const hasContentResponsible = imprintData.contentResponsible || imprintData.contentAddress;
-
-  function handleLanguageChange(code) {
-    if (code === get(locale)) {
-      return;
-    }
-
-    setAppLocale(code);
-  }
 </script>
 
 <svelte:head>
@@ -52,28 +43,9 @@
 
 <div class="max-w-4xl mx-auto px-4 py-12 md:py-16">
   <div class="mb-8">
-    <div class="flex items-center justify-between gap-4 mb-4">
-      <h1 class="text-3xl md:text-4xl font-bold text-black dark:text-white">
-        {$t('imprint.title')}
-      </h1>
-
-      <div class="flex items-center gap-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 px-1 py-1">
-        {#each LANGUAGE_OPTIONS as option}
-          <button
-            type="button"
-            class={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-              option.code === $locale
-                ? 'bg-red-600 text-white'
-                : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700'
-            }`}
-            on:click={() => handleLanguageChange(option.code)}
-            aria-pressed={option.code === $locale}
-          >
-            {option.label}
-          </button>
-        {/each}
-      </div>
-    </div>
+    <h1 class="text-3xl md:text-4xl font-bold text-black dark:text-white mb-4">
+      {$t('imprint.title')}
+    </h1>
 
     <p class="text-black/60 dark:text-white/60">
       {$t('imprint.subtitle')}
