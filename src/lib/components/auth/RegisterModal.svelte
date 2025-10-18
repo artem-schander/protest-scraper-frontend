@@ -5,7 +5,7 @@
   import Button from '$lib/components/common/Button.svelte';
   import Icon from '$lib/components/common/Icon.svelte';
   import { authStore } from '$lib/stores/auth';
-  import { register } from '$lib/utils/api';
+  import { register, initiateGoogleOAuth } from '$lib/utils/api';
 
   export let isOpen = false;
 
@@ -62,20 +62,24 @@
     isOpen = false;
     dispatch('switchToLogin');
   }
+
+  function handleGoogleRegister() {
+    initiateGoogleOAuth();
+  }
 </script>
 
 <Modal bind:isOpen maxWidth="md">
   <div class="space-y-6">
     <div class="text-center">
-      <h2 class="text-2xl font-medium text-black mb-2">Create Account</h2>
-      <p class="text-sm text-black/60">Join us to create and manage events</p>
+      <h2 class="text-2xl font-medium text-black dark:text-white mb-2">Create Account</h2>
+      <p class="text-sm text-black/60 dark:text-white/60">Join us to create and manage events</p>
     </div>
 
     <form on:submit={handleRegister} class="space-y-4">
       {#if error}
-        <div class="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-          <Icon icon="heroicons:exclamation-circle" class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-          <p class="text-sm text-red-700">{error}</p>
+        <div class="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 flex items-start gap-3">
+          <Icon icon="heroicons:exclamation-circle" class="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
+          <p class="text-sm text-red-700 dark:text-red-300">{error}</p>
         </div>
       {/if}
 
@@ -153,16 +157,17 @@
 
     <div class="relative">
       <div class="absolute inset-0 flex items-center">
-        <div class="w-full border-t border-stone-200"></div>
+        <div class="w-full border-t border-stone-200 dark:border-stone-700"></div>
       </div>
       <div class="relative flex justify-center text-sm">
-        <span class="px-4 bg-white text-black/40">or</span>
+        <span class="px-4 bg-white dark:bg-stone-800 text-black/40 dark:text-white/40">or</span>
       </div>
     </div>
 
     <button
       type="button"
-      class="w-full py-3 rounded-xl border border-stone-200 text-black hover:bg-stone-50 transition-colors flex items-center justify-center gap-2"
+      on:click={handleGoogleRegister}
+      class="w-full py-3 rounded-xl border border-stone-200 dark:border-stone-700 text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors flex items-center justify-center gap-2"
     >
       <svg class="w-5 h-5" viewBox="0 0 24 24">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -173,7 +178,7 @@
       Continue with Google
     </button>
 
-    <p class="text-center text-sm text-black/60">
+    <p class="text-center text-sm text-black/60 dark:text-white/60">
       Already have an account?
       <button
         type="button"

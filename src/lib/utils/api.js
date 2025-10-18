@@ -67,6 +67,19 @@ export async function register(userData) {
 }
 
 /**
+ * OAuth API
+ */
+export function initiateGoogleOAuth() {
+  // Redirect to backend OAuth endpoint
+  window.location.href = `${API_BASE_URL}/auth/google`;
+}
+
+export function initiateAppleOAuth() {
+  // Redirect to backend OAuth endpoint
+  window.location.href = `${API_BASE_URL}/auth/apple`;
+}
+
+/**
  * Protest/Event API
  */
 export async function getProtests(filters = {}) {

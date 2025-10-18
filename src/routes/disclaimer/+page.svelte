@@ -1,6 +1,6 @@
 <script>
 import Icon from '$lib/components/common/Icon.svelte';
-import { env } from '$env/dynamic/public';
+import * as env from '$env/static/public';
 import { locale, t } from '$lib/i18n';
 
 const contactEmail = env.PUBLIC_IMPRINT_EMAIL || 'contact@example.com';

@@ -1,7 +1,7 @@
 <script>
   import { get } from 'svelte/store';
   import Icon from '$lib/components/common/Icon.svelte';
-  import { env } from '$env/dynamic/public';
+  import * as env from '$env/static/public';
   import { LANGUAGE_OPTIONS, locale, setAppLocale, t } from '$lib/i18n';
 
   const imprintData = {
