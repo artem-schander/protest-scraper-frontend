@@ -2,229 +2,49 @@
 
 ## Overview
 
-The application features a complete dark mode implementation that **defaults to system preference** and allows manual override.
+Dark mode is class-driven (`darkMode: 'class'`) and cycles between `light`, `dark`, and `system`. The preference persists in `localStorage` and is applied before Tailwind boots to avoid flashes.
 
-## How It Works
+## Boot process
 
-### 1. Theme Detection (app.html)
+`src/app.html` contains an inline IIFE that runs prior to the Tailwind CDN script:
 
-A script runs **before** Tailwind CSS loads to prevent theme flash:
-
-```javascript
-// Checks localStorage or defaults to 'system'
-const theme = localStorage.getItem('theme') || 'system';
-
-// Applies 'dark' class to <html> if needed
-if (theme === 'dark' || (theme === 'system' && systemPrefersDark)) {
-  document.documentElement.classList.add('dark');
-}
+```html
+<script>
+  (function () {
+    const theme = localStorage.getItem('theme') || 'system';
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (theme === 'system' && prefersDark)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  })();
+</script>
 ```
 
-### 2. Theme States
+This guarantees the correct `<html class="dark">` state before Svelte hydrates.
 
-- **`light`**: Force light mode
-- **`dark`**: Force dark mode
-- **`system`**: Follow OS preference (default)
+## Runtime control
 
-### 3. Theme Store (lib/stores/theme.js)
+- `src/lib/stores/theme.js` exposes `init()`, `set(theme)`, and `toggle()` (cycling order: light → dark → system → light). Each call updates `localStorage` and toggles the `<html>` class.
+- `ThemeToggle.svelte` subscribes to the store, swaps between sun/moon/desktop icons, and is mounted in the header for desktop and mobile.
+- `+layout.svelte` calls `themeStore.init()` during `onMount` to sync hydration with the stored value and to listen for system preference changes when the mode is `system`.
 
-Manages theme state and persistence:
+## Styling guidelines
 
-```javascript
-import { themeStore } from '$lib/stores/theme';
+- Use Tailwind’s `dark:` variant (`bg-white dark:bg-stone-800`, `text-black dark:text-white`, etc.).
+- Prefer opacity utilities (`text-black/60`) and reuse the existing colour palette for consistency.
+- Skeleton loaders rely on `.dark .animate-shimmer` styles baked into `app.html`; maintain both light and dark gradients when tweaking them.
 
-// Initialize (call in +layout.svelte)
-themeStore.init();
+## Verification checklist
 
-// Toggle through modes: light → dark → system → light
-themeStore.toggle();
-
-// Set specific theme
-themeStore.set('dark');
-```
-
-### 4. Theme Toggle Component
-
-`lib/components/common/ThemeToggle.svelte` provides the UI:
-
-- **Sun icon**: Light mode
-- **Moon icon**: Dark mode
-- **Desktop icon**: System mode
-
-**Location:** Header (both desktop and mobile)
-
-## Usage in Components
-
-### Adding Dark Mode Classes
-
-Use Tailwind's `dark:` modifier:
-
-```svelte
-<!-- Text -->
-<p class="text-black dark:text-white">
-  Text that changes color
-</p>
-
-<!-- Backgrounds -->
-<div class="bg-white dark:bg-stone-800">
-  Card with dark mode
-</div>
-
-<!-- Borders -->
-<div class="border border-stone-200 dark:border-stone-700">
-  Bordered element
-</div>
-
-<!-- Gradients -->
-<div class="bg-gradient-to-r from-emerald-50 to-lime-50 dark:from-emerald-900/30 dark:to-lime-900/30">
-  Gradient that adapts
-</div>
-```
-
-### Updated Components
-
-All major components support dark mode:
-
-- ✅ Layout (`+layout.svelte`)
-- ✅ Header (`Header.svelte`)
-- ✅ Landing page (`+page.svelte`)
-- ✅ Event cards (`EventCard.svelte`)
-- ✅ Filter sidebar (`FilterSidebar.svelte`)
-- ✅ Quick filters (`QuickFilters.svelte`)
-- ✅ Modals (`Modal.svelte`, `LoginModal.svelte`, `RegisterModal.svelte`)
-- ✅ Common components (`Button.svelte`, `Input.svelte`, etc.)
-
-## Tailwind Configuration
-
-Dark mode is enabled in `app.html`:
-
-```javascript
-tailwind.config = {
-  darkMode: 'class', // Use class-based dark mode
-  // ... rest of config
-}
-```
-
-## System Theme Detection
-
-The app listens for system theme changes:
-
-```javascript
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-  if (currentTheme === 'system') {
-    // Update dark class when system theme changes
-  }
-});
-```
-
-## Testing Dark Mode
-
-### Manual Testing
-
-1. **Toggle button**: Click theme toggle in header
-   - First click: Changes to opposite of current system theme
-   - Second click: Switches to system mode
-   - Third click: Cycles to the other manual mode
-
-2. **Browser DevTools**:
-   - Chrome: DevTools → Command Palette (Cmd+Shift+P) → "Emulate CSS prefers-color-scheme: dark"
-   - Firefox: DevTools → Inspector → :root → Toggle prefers-color-scheme
-
-3. **OS Settings**:
-   - macOS: System Preferences → General → Appearance
-   - Windows: Settings → Personalization → Colors → Choose your mode
-
-### Verify No Flash
-
-On page load, theme should apply **instantly** without flash because:
-- Theme script runs before Tailwind loads
-- Stored preference is applied synchronously
-- No FOUC (Flash of Unstyled Content)
-
-## Customization
-
-### Change Theme Colors
-
-Edit color gradients in components:
-
-```svelte
-<!-- Light mode -->
-from-emerald-50 to-lime-50
-
-<!-- Dark mode -->
-dark:from-emerald-900/30 dark:to-lime-900/30
-```
-
-### Add New Theme
-
-1. Update `themeStore.toggle()` in `lib/stores/theme.js`
-2. Add new icon in `ThemeToggle.svelte`
-3. Define theme colors in your components
-
-### Customize Toggle Behavior
-
-Edit `lib/components/common/ThemeToggle.svelte`:
-
-```svelte
-function cycleTheme() {
-  // Change cycling order:
-  // light → dark → system → light
-  themeStore.toggle();
-}
-```
-
-## Accessibility
-
-Dark mode improves accessibility by:
-
-- **Reducing eye strain** in low-light environments
-- **Following user preferences** (respects system settings)
-- **Maintaining contrast ratios** (WCAG AA compliant)
-- **Clear visual feedback** (theme toggle shows current state)
-
-## Browser Support
-
-- ✅ Chrome/Edge 76+
-- ✅ Firefox 67+
-- ✅ Safari 12.1+
-- ✅ All modern mobile browsers
+1. Toggle the button repeatedly; it should cycle `light → dark → system`.
+2. Refresh the page—stored preference must persist without any flash of light mode.
+3. Switch your OS preference; when the toggle shows “system”, the UI should follow automatically.
+4. Inspect the `<html>` element in DevTools to confirm class updates.
 
 ## Troubleshooting
 
-### Theme not persisting
-
-Check localStorage:
-```javascript
-console.log(localStorage.getItem('theme'));
-```
-
-### Flash on page load
-
-Ensure script in `app.html` runs before Tailwind:
-```html
-<!-- Dark Mode Script - Must run before Tailwind -->
-<script>...</script>
-
-<!-- Tailwind CSS CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
-```
-
-### Dark mode not applying
-
-1. Check `<html>` element has `dark` class
-2. Verify Tailwind config has `darkMode: 'class'`
-3. Confirm all styles use `dark:` prefix
-
-## Future Enhancements
-
-Possible additions:
-
-- **Custom themes**: Allow user-defined color schemes
-- **Scheduled themes**: Auto-switch at specific times
-- **Per-page themes**: Different themes for different sections
-- **Reduced motion**: Respect prefers-reduced-motion
-- **High contrast mode**: Enhanced accessibility option
-
----
-
-**Built with:** SvelteKit, Tailwind CSS, and localStorage
+- If the theme snaps back on reload, confirm the inline script still runs before the Tailwind CDN include.
+- When debugging hydration mismatches, ensure no component writes to `document.documentElement` outside the theme store.
+- Safari caches the HTML document aggressively; empty storage via “Develop → Empty Caches” if changes seem ignored.

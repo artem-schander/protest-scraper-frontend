@@ -1,19 +1,30 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-The SvelteKit app lives in `src/`, with route entries and server loads under `src/routes/`. Shared UI belongs in `src/lib/components/{auth,common,event,layout}`, while global state sits in `src/lib/stores/`, utilities in `src/lib/utils/`, and locale files in `src/lib/i18n/`. Place static assets (maps, fonts, imagery) in `static/`. Project-wide configuration is maintained in `svelte.config.js`, `vite.config.js`, and the onboarding notes in `README.md` plus `QUICKSTART.md`.
+- Application code lives in `src/`. SvelteKit routes and server loads are under `src/routes/`, shared UI in `src/lib/components/`, utilities in `src/lib/utils/`, stores in `src/lib/stores/`, and i18n resources in `src/lib/i18n/`.
+- Static assets (images, fonts, maps) belong in `static/`. Build configs are at project root (`svelte.config.js`, `vite.config.js`).
+- Keep new modules colocated with related features; follow the folder naming already in place (e.g., `src/lib/components/event/` for event UI).
 
 ## Build, Test, and Development Commands
-Run `npm install` once to sync dependencies (Node 18+). Use `npm run dev` for the Vite dev server at `http://localhost:5173`. Bundle production assets with `npm run build`, then sanity-check the output via `npm run preview`. If you add custom scripts (e.g., lint or test), document them in `package.json` and this guide.
+- `npm install` — install dependencies (Node 18+ required).
+- `npm run dev` — start the Vite dev server at `http://localhost:5173`.
+- `npm run build` — generate production bundles; used by CI.
+- `npm run preview` — serve the production build locally.
 
 ## Coding Style & Naming Conventions
-The `.editorconfig` enforces UTF-8, LF endings, two-space indentation, trailing newline, and single quotes in JS/TS. Name Svelte components in PascalCase (`EventCard.svelte`), stores and helpers in camelCase modules, and prefix derived store factories with `use` or `create`. Favor Tailwind utility classes in markup and keep business logic within `<script>` blocks above the template.
+- Formatting is enforced via `.editorconfig`: UTF-8, LF line endings, two-space indentation, trailing newline.
+- Prefer Svelte components in PascalCase (`EventCard.svelte`), stores in camelCase, and derived store factories prefixed with `use` or `create`.
+- Business logic stays in `<script>` blocks; markup should primarily leverage Tailwind utility classes.
+- When adding scripts/tools (linting, formatting), document them in `package.json`.
 
 ## Testing Guidelines
-No automated suite ships today; run manual passes across event listing, filtering, auth modals, and map interactions before shipping. When adding coverage, colocate specs as `ComponentName.spec.ts` within `src/`, and prefer Vitest for unit coverage or Playwright for end-to-end flows. Note new commands in `package.json` and mention manual verification steps in reviews.
+- No automated suite ships yet. Run manual checks across event listing, filtering, auth flows, and the Leaflet map before merging.
+- If you add automated tests, place unit specs next to the component (`ComponentName.spec.ts`) and use Vitest; document any new npm scripts.
 
 ## Commit & Pull Request Guidelines
-Follow the repository style: concise, lower-case summaries (`list+filters done`). Fixes belong in focused commits that reference issues when relevant (`Fixes #123`). Pull requests should describe the problem, highlight before/after behavior, attach screenshots for UI changes, and list any manual test steps or new env/config requirements.
+- Follow short, lowercase commit summaries (`add map radius control`). Reference issues with “Fixes #123” when applicable.
+- Pull requests should describe the problem, capture before/after behavior, and include screenshots for UI changes. Note manual verification steps and new env/config requirements.
 
 ## Security & Configuration Tips
-Copy `.env.example` to `.env` and supply the required `VITE_` variables (`VITE_API_URL` must target a running backend). Only `PUBLIC_` values are safe for the client bundle. Confirm `.svelte-kit/` stays ignored, avoid committing secrets, and manage OAuth keys via local secret managers.
+- Copy `.env.example` to `.env` and supply required `VITE_` variables (`VITE_API_URL` must target the backend). Only expose `PUBLIC_` values in the client bundle.
+- Ensure `.svelte-kit/` remains untracked. Do not commit secrets; manage OAuth keys via local secret stores.
