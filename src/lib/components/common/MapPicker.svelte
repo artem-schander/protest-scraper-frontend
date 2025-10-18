@@ -9,6 +9,15 @@ import { t } from '$lib/i18n';
   export let lon = null;
   export let radius = 10; // km
 
+  function normalizeRadius(value) {
+    const parsed = Number.parseFloat(value);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }
+
+  let internalLat = lat !== null ? parseFloat(lat) : null;
+  let internalLon = lon !== null ? parseFloat(lon) : null;
+  let internalRadius = normalizeRadius(radius);
+
   const dispatch = createEventDispatcher();
 
   let map;
@@ -28,8 +37,8 @@ let locationErrorKey = null;
     L = await import('leaflet');
 
     // Initialize map centered on Berlin (default)
-    const defaultLat = lat || 52.52;
-    const defaultLon = lon || 13.40;
+    const defaultLat = lat ? parseFloat(lat) : 52.52;
+    const defaultLon = lon ? parseFloat(lon) : 13.4;
 
     map = L.map(mapContainer, {
       zoomControl: false, // Remove +/- zoom buttons
@@ -54,8 +63,12 @@ let locationErrorKey = null;
     updateTileLayer();
 
     // If we have initial coordinates, add marker and circle
-    if (lat && lon) {
-      updateMapMarker(lat, lon);
+    if (lat != null && lon != null) {
+      const latNum = parseFloat(lat);
+      const lonNum = parseFloat(lon);
+      if (!Number.isNaN(latNum) && !Number.isNaN(lonNum)) {
+        updateMapMarker(latNum, lonNum);
+      }
     }
 
     // Click event to place marker
@@ -104,6 +117,9 @@ let locationErrorKey = null;
   function updateMapMarker(newLat, newLon, shouldUpdateZoom = true) {
     if (!L || !map) return;
 
+    internalLat = newLat;
+    internalLon = newLon;
+
     // Remove existing marker and circle
     if (marker) map.removeLayer(marker);
     if (circle) map.removeLayer(circle);
@@ -138,27 +154,44 @@ let locationErrorKey = null;
     marker = L.marker([newLat, newLon], { icon }).addTo(map);
 
     // Add circle showing search radius
+    const effectiveRadius = normalizeRadius(radius);
+
     circle = L.circle([newLat, newLon], {
       color: '#E10600',
       opacity: 0.1,
       fillColor: '#E10600',
       fillOpacity: 0.1,
-      radius: radius * 1000 // Convert km to meters
+      radius: effectiveRadius * 1000 // Convert km to meters
     }).addTo(map);
 
     // Pan to new location with appropriate zoom
     if (shouldUpdateZoom) {
-      const zoom = calculateZoomLevel(radius, newLat);
+      const zoom = calculateZoomLevel(effectiveRadius || radius, newLat);
       map.setView([newLat, newLon], zoom);
     }
 
     // Update component state
-    lat = newLat;
-    lon = newLon;
+    if (lat !== newLat) lat = newLat;
+    if (lon !== newLon) lon = newLon;
+    internalRadius = effectiveRadius;
+  }
+
+  function clearMapMarker() {
+    if (!map) return;
+    if (marker) {
+      map.removeLayer(marker);
+      marker = null;
+    }
+    if (circle) {
+      map.removeLayer(circle);
+      circle = null;
+    }
   }
 
   function handleRadiusChange(event) {
     radius = parseInt(event.target.value);
+
+    internalRadius = normalizeRadius(radius);
 
     // Update circle radius if it exists
     if (circle) {
@@ -216,11 +249,9 @@ let locationErrorKey = null;
 }
 
 function clearLocation() {
-  if (marker) map.removeLayer(marker);
-  if (circle) map.removeLayer(circle);
-
-  marker = null;
-  circle = null;
+  clearMapMarker();
+  internalLat = null;
+  internalLon = null;
   lat = null;
   lon = null;
   locationErrorKey = null;
@@ -258,9 +289,34 @@ function clearLocation() {
     }
   }
 
-  // Update circle when lat/lon/radius change externally
-  $: if (lat && lon && map && L) {
-    updateMapMarker(lat, lon, false);
+  // Update marker when lat/lon change externally
+  $: if (map && L) {
+    if (lat != null && lon != null) {
+      const latNum = typeof lat === 'string' ? parseFloat(lat) : lat;
+      const lonNum = typeof lon === 'string' ? parseFloat(lon) : lon;
+      if (!Number.isNaN(latNum) && !Number.isNaN(lonNum)) {
+        if (internalLat !== latNum || internalLon !== lonNum) {
+          updateMapMarker(latNum, lonNum, false);
+        }
+      }
+    } else if (internalLat != null || internalLon != null) {
+      clearMapMarker();
+      internalLat = null;
+      internalLon = null;
+    }
+  }
+
+  // Update circle when radius changes externally
+  $: if (circle && map) {
+    const normalized = normalizeRadius(radius);
+    if (normalized !== internalRadius) {
+      internalRadius = normalized;
+      circle.setRadius(normalized * 1000);
+      if (internalLat != null && internalLon != null) {
+        const zoom = calculateZoomLevel(normalized || radius, internalLat);
+        map.setView([internalLat, internalLon], zoom, { animate: true });
+      }
+    }
   }
 
   // Watch for theme changes and update tile layer

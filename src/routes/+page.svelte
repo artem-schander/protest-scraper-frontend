@@ -1,30 +1,102 @@
 <script>
-  import { goto, invalidate } from '$app/navigation';
+import { goto, invalidate } from '$app/navigation';
+import { tick } from 'svelte';
+import { get } from 'svelte/store';
+  import { fly } from 'svelte/transition';
   import EventCard from '$lib/components/event/EventCard.svelte';
   import FilterSidebar from '$lib/components/layout/FilterSidebar.svelte';
+  import ExportActions from '$lib/components/layout/ExportActions.svelte';
+  import QuickFilters from '$lib/components/event/QuickFilters.svelte';
   import Icon from '$lib/components/common/Icon.svelte';
   import { t } from '$lib/i18n';
 
   export let data;
 
+  const HAPPENING_SOON_DAYS = '7';
+  const DEFAULT_NEAR_RADIUS = '50';
+
   let searchQuery = data.filters.search || '';
   let showMobileFilters = false;
+  let showExportPanel = false;
+  let appliedSearch = data.filters.search || '';
+  let isPendingNavigation = false;
+  let activeQuickFilters = [];
+
+  const desktopExportBaseClass = 'hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm font-bold whitespace-nowrap transition-all duration-200';
+  const mobileExportBaseClass = 'lg:hidden flex items-center justify-center w-11 h-11 rounded-full border-2 transition-all duration-200';
+
+  $: desktopExportToggleClass = `${desktopExportBaseClass} ${
+    showExportPanel
+      ? 'bg-[#E10600] border-[#E10600] text-white shadow-md hover:bg-[#C10500] dark:hover:bg-[#C10500] hover:border-[#C10500] dark:hover:border-[#C10500]'
+      : 'bg-white dark:bg-stone-800 border-black dark:border-white text-black dark:text-white hover:bg-[#E10600] dark:hover:bg-[#E10600] hover:border-[#E10600] dark:hover:border-[#E10600] hover:text-white dark:hover:text-white hover:shadow-md'
+  }`;
+
+  $: mobileExportToggleClass = `${mobileExportBaseClass} ${
+    showExportPanel
+      ? 'bg-[#E10600] border-[#E10600] text-white shadow-md hover:bg-[#C10500] dark:hover:bg-[#C10500] hover:border-[#C10500] dark:hover:border-[#C10500]'
+      : 'bg-white dark:bg-stone-800 border-black dark:border-white text-black dark:text-white hover:bg-[#E10600] dark:hover:bg-[#E10600] hover:border-[#E10600] dark:hover:border-[#E10600] hover:text-white dark:hover:text-white hover:shadow-md'
+  }`;
+
+  function translate(key, options) {
+    return get(t)(key, options);
+  }
+
+  function formatDateForApi(date) {
+    const copy = new Date(date.getTime());
+    copy.setHours(0, 0, 0, 0);
+    const utc = new Date(copy.getTime() - copy.getTimezoneOffset() * 60000);
+    return utc.toISOString().split('T')[0];
+  }
+
+  function getUpcomingWeekendBounds() {
+    const today = new Date();
+    const day = today.getDay();
+    const offsetToFriday = (5 - day + 7) % 7;
+    const friday = new Date(today);
+    friday.setDate(friday.getDate() + offsetToFriday);
+    const sunday = new Date(friday);
+    sunday.setDate(friday.getDate() + 2);
+    return {
+      start: formatDateForApi(friday),
+      end: formatDateForApi(sunday)
+    };
+  }
+
+  function getUpcomingDaysRange(days) {
+    const count = Math.max(1, Number.parseInt(days, 10) || 1);
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(end.getDate() + (count - 1));
+    return {
+      start: formatDateForApi(start),
+      end: formatDateForApi(end)
+    };
+  }
 
   async function handleSearch(e) {
     e.preventDefault();
 
     const url = new URL(window.location.href);
-    if (!searchQuery.trim()) {
+    const trimmedSearch = searchQuery.trim();
+    if (!trimmedSearch) {
       // remove search param if empty
       url.searchParams.delete('search');
     } else {
-      url.searchParams.set('search', searchQuery.trim());
+      url.searchParams.set('search', trimmedSearch);
     }
 
     url.searchParams.delete('page'); // Reset to page 1
 
-    await goto(url.pathname + url.search, { replaceState: false, keepFocus: true, noScroll: true });
-    await invalidate(() => true);
+    isPendingNavigation = true;
+    appliedSearch = trimmedSearch;
+
+    try {
+      await goto(url.pathname + url.search, { replaceState: false, keepFocus: true, noScroll: true });
+      await invalidate(() => true);
+    } finally {
+      isPendingNavigation = false;
+    }
 
     // Smooth scroll to results
     if (typeof window !== 'undefined') {
@@ -37,6 +109,198 @@
 
   function toggleMobileFilters() {
     showMobileFilters = !showMobileFilters;
+  }
+
+  function toggleExportPanel() {
+    showExportPanel = !showExportPanel;
+  }
+
+  async function clearSearch() {
+    if (typeof window === 'undefined') return;
+
+    searchQuery = '';
+    appliedSearch = '';
+    isPendingNavigation = true;
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('search');
+    url.searchParams.delete('page');
+
+    try {
+      await goto(url.pathname + url.search, { replaceState: false, keepFocus: true, noScroll: true });
+      await invalidate(() => true);
+    } finally {
+      isPendingNavigation = false;
+    }
+  }
+
+  function getActiveQuickFilters() {
+    const active = [];
+    const filters = data.filters || {};
+    if ((filters.days || '') === HAPPENING_SOON_DAYS) {
+      active.push('soon');
+    }
+    const weekend = getUpcomingWeekendBounds();
+    if ((filters.startDate || '') === weekend.start && (filters.endDate || '') === weekend.end) {
+      active.push('weekend');
+    }
+    if ((filters.near || '') === '1') {
+      active.push('near');
+    }
+    return active;
+  }
+
+  function deriveQuickFiltersFromParams(params) {
+    const active = [];
+    if (params.get('days') === HAPPENING_SOON_DAYS) {
+      active.push('soon');
+    }
+    const weekend = getUpcomingWeekendBounds();
+    if (params.get('startDate') === weekend.start && params.get('endDate') === weekend.end) {
+      active.push('weekend');
+    }
+    if (params.get('near') === '1') {
+      active.push('near');
+    }
+    return active;
+  }
+
+  function setQuickFilterState(filterId, nextActive) {
+    if (nextActive) {
+      if (!activeQuickFilters.includes(filterId)) {
+        activeQuickFilters = [...activeQuickFilters, filterId];
+      }
+    } else {
+      if (activeQuickFilters.includes(filterId)) {
+        activeQuickFilters = activeQuickFilters.filter((id) => id !== filterId);
+      }
+    }
+  }
+
+  async function updateFilters(apply) {
+    if (typeof window === 'undefined') return;
+
+    const url = new URL(window.location.href);
+    apply(url.searchParams);
+    url.searchParams.delete('page');
+
+    activeQuickFilters = deriveQuickFiltersFromParams(url.searchParams);
+
+    isPendingNavigation = true;
+    try {
+      await goto(url.pathname + url.search, { replaceState: false, keepFocus: true, noScroll: true });
+      await invalidate(() => true);
+    } finally {
+      isPendingNavigation = false;
+    }
+  }
+
+  function getCurrentPosition() {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+  }
+
+  async function handleQuickFilterToggle(filterId, { active }) {
+    if (typeof window === 'undefined') return;
+
+    const markPending = () => {
+      if (!isPendingNavigation) {
+        isPendingNavigation = true;
+      }
+    };
+
+    if (filterId === 'near') {
+      if (!active) {
+        if (typeof navigator === 'undefined' || !navigator.geolocation) {
+          alert(translate('filters.locationError.unsupported'));
+          return;
+        }
+
+        let position;
+        try {
+          position = await getCurrentPosition();
+        } catch (error) {
+          console.error('Geolocation error:', error);
+          let errorKey = 'filters.locationError.unknown';
+          if (error.code === error.PERMISSION_DENIED) {
+            errorKey = 'filters.locationError.denied';
+          } else if (error.code === error.POSITION_UNAVAILABLE) {
+            errorKey = 'filters.locationError.unavailable';
+          } else if (error.code === error.TIMEOUT) {
+            errorKey = 'filters.locationError.timeout';
+          }
+          alert(translate(errorKey));
+          isPendingNavigation = false;
+          return;
+        }
+
+        markPending();
+        setQuickFilterState(filterId, true);
+        await tick();
+        await updateFilters((params) => {
+          params.set('lat', position.coords.latitude.toString());
+          params.set('lon', position.coords.longitude.toString());
+          params.set('radius', params.get('radius') || DEFAULT_NEAR_RADIUS);
+          params.set('near', '1');
+        });
+        return;
+      }
+
+      markPending();
+      setQuickFilterState(filterId, false);
+      await tick();
+      await updateFilters((params) => {
+        params.delete('lat');
+        params.delete('lon');
+        params.delete('radius');
+        params.delete('near');
+      });
+      return;
+    }
+
+    if (filterId === 'soon') {
+      if (active) {
+        markPending();
+        setQuickFilterState(filterId, false);
+        await tick();
+        await updateFilters((params) => {
+          params.delete('days');
+        });
+      } else {
+        markPending();
+        setQuickFilterState(filterId, true);
+        await tick();
+        await updateFilters((params) => {
+          params.set('days', HAPPENING_SOON_DAYS);
+          params.delete('startDate');
+          params.delete('endDate');
+        });
+      }
+      return;
+    }
+
+    if (filterId === 'weekend') {
+      const weekend = getUpcomingWeekendBounds();
+      if (active) {
+        markPending();
+        setQuickFilterState(filterId, false);
+        await tick();
+        await updateFilters((params) => {
+          params.delete('startDate');
+          params.delete('endDate');
+        });
+      } else {
+        markPending();
+        setQuickFilterState(filterId, true);
+        await tick();
+        await updateFilters((params) => {
+          params.delete('days');
+          params.set('startDate', weekend.start);
+          params.set('endDate', weekend.end);
+        });
+      }
+    }
   }
 
   async function goToPage(pageNum) {
@@ -66,6 +330,11 @@
 
   // Reactive key to force re-render when page or filters change
   $: key = `page:${data.page}-search:${data.filters.search}-dates:${data.filters.startDate}-${data.filters.endDate}-location:${data.filters.lat}-${data.filters.lon}-${data.filters.radius}`;
+
+  $: if (!isPendingNavigation) {
+    appliedSearch = data.filters.search || '';
+    activeQuickFilters = getActiveQuickFilters();
+  }
 
   // Update search query when data changes (e.g., filters reset)
   // $: searchQuery = data.filters.search || '';
@@ -165,10 +434,41 @@
         <div class="flex-1 text-sm text-black/60 dark:text-white/60">
           {$t('home.mobileSummary', { values: { count: data.total } })}
         </div>
+        <button
+          type="button"
+          on:click={toggleExportPanel}
+          class={mobileExportToggleClass}
+          aria-label={showExportPanel ? $t('home.exportHide') : $t('home.exportShow')}
+          aria-pressed={showExportPanel}
+          aria-expanded={showExportPanel}
+        >
+          <Icon icon="heroicons:arrow-down-tray" class="w-5 h-5" />
+        </button>
       </div>
 
-      <!-- TODO: Quick Filters -->
-      <!-- <QuickFilters activeFilter="all" /> -->
+      <QuickFilters
+        searchTerm={appliedSearch}
+        onClearSearch={clearSearch}
+        activeFilters={activeQuickFilters}
+        onFilterToggle={handleQuickFilterToggle}
+      >
+        <button
+          type="button"
+          on:click={toggleExportPanel}
+          class={desktopExportToggleClass}
+          aria-pressed={showExportPanel}
+          aria-expanded={showExportPanel}
+        >
+          <Icon icon="heroicons:arrow-down-tray" class="w-4 h-4" />
+          {showExportPanel ? $t('home.exportHide') : $t('home.exportShow')}
+        </button>
+      </QuickFilters>
+
+      {#if showExportPanel}
+        <div transition:fly={{ y: -10, duration: 180, opacity: 0 }}>
+          <ExportActions filters={data.filters} />
+        </div>
+      {/if}
 
       <!-- Results Count (Desktop) -->
       <div class="hidden lg:flex items-center justify-between">

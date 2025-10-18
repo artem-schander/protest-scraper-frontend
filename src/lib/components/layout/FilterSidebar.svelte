@@ -29,13 +29,7 @@ import { t } from '$lib/i18n';
     return new Date(year, month - 1, day);
   }
 
-  // Set initial dates from filters
-  if (filters.startDate) {
-    startDate = parseDateFromAPI(filters.startDate);
-  }
-  if (filters.endDate) {
-    endDate = parseDateFromAPI(filters.endDate);
-  }
+  let lastFiltersKey = '';
 
   function formatDateForAPI(date) {
     if (!date) return null;
@@ -65,6 +59,7 @@ import { t } from '$lib/i18n';
     url.searchParams.delete('lat');
     url.searchParams.delete('lon');
     url.searchParams.delete('radius');
+    url.searchParams.delete('near');
     url.searchParams.delete('page'); // Reset to page 1 when filters change
 
     // Add date params
@@ -115,6 +110,60 @@ import { t } from '$lib/i18n';
   function handleBackdropClick(e) {
     if (e.target === e.currentTarget) {
       dispatch('close');
+    }
+  }
+
+  function getUpcomingDaysRange(days, baseStart = null) {
+    const count = Math.max(1, Number.parseInt(days, 10) || 1);
+    const start = baseStart ? new Date(baseStart.getTime()) : new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(end.getDate() + (count - 1));
+    return { start, end };
+  }
+
+  function updateStateFromFilters() {
+    const daysValue = filters.days ? Number.parseInt(filters.days, 10) || 0 : 0;
+    const hasDaysPreset = daysValue > 0;
+
+    if (hasDaysPreset) {
+      const presetStart = filters.startDate ? parseDateFromAPI(filters.startDate) : null;
+      const range = getUpcomingDaysRange(daysValue, presetStart || null);
+      startDate = range.start;
+      endDate = range.end;
+      dateMode = daysValue === 1 ? 'day' : 'range';
+    } else {
+      startDate = filters.startDate ? parseDateFromAPI(filters.startDate) : null;
+      endDate = filters.endDate ? parseDateFromAPI(filters.endDate) : null;
+      if (startDate && endDate) {
+        dateMode = startDate.getTime() === endDate.getTime() ? 'day' : 'range';
+      } else {
+        dateMode = 'day';
+      }
+    }
+
+    city = filters.city || '';
+    lat = filters.lat ? parseFloat(filters.lat) : null;
+    lon = filters.lon ? parseFloat(filters.lon) : null;
+    radius = filters.radius ? parseInt(filters.radius, 10) || 10 : 10;
+  }
+
+  updateStateFromFilters();
+
+  $: {
+    const nextKey = JSON.stringify({
+      startDate: filters.startDate || '',
+      endDate: filters.endDate || '',
+      days: filters.days || '',
+      city: filters.city || '',
+      lat: filters.lat || '',
+      lon: filters.lon || '',
+      radius: filters.radius || ''
+    });
+
+    if (nextKey !== lastFiltersKey) {
+      lastFiltersKey = nextKey;
+      updateStateFromFilters();
     }
   }
 </script>

@@ -18,6 +18,9 @@
     "filterButton": "Filters",
     "filterAria": "Open filters",
     "mobileSummary": "{count, plural, =0 {No events} one {# event} other {# events}}",
+    "clearSearchChip": "Clear \"{query}\" search",
+    "exportShow": "Show downloads & calendar",
+    "exportHide": "Hide downloads & calendar",
     "resultsFound": "{count, plural, =0 {No upcoming events found} one {Found # upcoming event} other {Found # upcoming events}}",
     "errorTitle": "Error loading events",
     "errorDescription": "We couldn't load events right now. Please try again.",
@@ -72,7 +75,37 @@
     "radiusMax": "100 km",
     "selectedLocation": "Selected location",
     "mapHint": "Click on the map or use your location to search nearby events",
-    "selection": "Selection"
+    "selection": "Selection",
+    "export": {
+      "title": "Data export & calendar",
+      "subtitle": "Download the current dataset or plug the calendar feed into your tools.",
+      "downloadTitle": "Downloads",
+      "downloadDescription": "Exports respect the filters currently applied to the results list.",
+      "downloadEmphasis": "Files contain exactly the protest list shown after filters are applied.",
+      "downloadCsv": "Download CSV",
+      "downloadJson": "Download JSON",
+      "downloadIcs": "Download ICS file",
+      "calendarTitle": "Calendar subscription",
+      "calendarDescription": "Use a subscribable ICS link that refreshes automatically. Date range filters are ignored; pick the number of days ahead instead.",
+      "calendarDaysLabel": "Days ahead",
+      "calendarDaysOption": "{days} days",
+      "calendarDaysHelp": "The feed always includes protests happening within this many days from today.",
+      "calendarHowToTitle": "Subscribe in your calendar",
+      "calendarStepCopy": "Copy the ICS link above.",
+      "calendarStepAdd": "Add it to your calendar app (e.g. Google Calendar → Add calendar → From URL).",
+      "copyLabel": "Shareable calendar link",
+      "copyAction": "Copy link",
+      "copySuccessShort": "Copied",
+      "copySuccess": "Calendar link copied to your clipboard.",
+      "copyUnsupported": "Copy is not supported in this browser—select the URL above to copy manually.",
+      "copyError": "We could not copy the link. Please copy it manually."
+    },
+    "quick": {
+      "soon": "Happening soon",
+      "weekend": "This weekend",
+      "near": "Near me",
+      "clearFilter": "Remove {filter} filter"
+    }
   },
   "imprint": {
     "title": "Imprint",

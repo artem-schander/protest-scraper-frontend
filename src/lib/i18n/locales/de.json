@@ -18,6 +18,9 @@
     "filterButton": "Filter",
     "filterAria": "Filter öffnen",
     "mobileSummary": "{count, plural, =0 {Keine Veranstaltungen} one {# Veranstaltung} other {# Veranstaltungen}}",
+    "clearSearchChip": "Suche \"{query}\" löschen",
+    "exportShow": "Downloads & Kalender anzeigen",
+    "exportHide": "Downloads & Kalender ausblenden",
     "resultsFound": "{count, plural, =0 {Keine bevorstehenden Veranstaltungen gefunden} one {# bevorstehende Veranstaltung gefunden} other {# bevorstehende Veranstaltungen gefunden}}",
     "errorTitle": "Fehler beim Laden der Veranstaltungen",
     "errorDescription": "Die Veranstaltungen konnten derzeit nicht geladen werden. Bitte versuche es erneut.",
@@ -72,7 +75,37 @@
     "radiusMax": "100 km",
     "selectedLocation": "Ausgewählter Standort",
     "mapHint": "Klicke auf die Karte oder nutze deinen Standort, um nach Veranstaltungen in der Nähe zu suchen",
-    "selection": "Auswahl"
+    "selection": "Auswahl",
+    "export": {
+      "title": "Datenexport & Kalender",
+      "subtitle": "Lade den aktuellen Datenbestand herunter oder abonniere den Kalender-Feed.",
+      "downloadTitle": "Downloads",
+      "downloadDescription": "Exporte übernehmen die Filter, die aktuell in der Ergebnisliste gelten.",
+      "downloadEmphasis": "Dateien enthalten genau die Liste der angezeigten Versammlungen nach Anwendung der Filter.",
+      "downloadCsv": "CSV herunterladen",
+      "downloadJson": "JSON herunterladen",
+      "downloadIcs": "ICS-Datei herunterladen",
+      "calendarTitle": "Kalender-Abonnement",
+      "calendarDescription": "Nutze einen abonnierbaren ICS-Link, der sich automatisch aktualisiert. Datumsfilter werden ignoriert – wähle stattdessen die Anzahl der Tage in die Zukunft.",
+      "calendarDaysLabel": "Tage in die Zukunft",
+      "calendarDaysOption": "{days} Tage",
+      "calendarDaysHelp": "Der Feed enthält immer Versammlungen innerhalb dieses Zeitraums ab heute.",
+      "calendarHowToTitle": "So abonnierst du den Kalender",
+      "calendarStepCopy": "Kopiere den ICS-Link oben.",
+      "calendarStepAdd": "Füge ihn in deiner Kalender-App hinzu (z. B. Google Kalender → Kalender hinzufügen → Per URL).",
+      "copyLabel": "Teilbarer Kalender-Link",
+      "copyAction": "Link kopieren",
+      "copySuccessShort": "Kopiert",
+      "copySuccess": "Kalender-Link wurde in die Zwischenablage kopiert.",
+      "copyUnsupported": "Kopieren wird in diesem Browser nicht unterstützt – markiere die URL oben und kopiere sie manuell.",
+      "copyError": "Der Link konnte nicht kopiert werden. Bitte kopiere ihn manuell."
+    },
+    "quick": {
+      "soon": "Steht bevor",
+      "weekend": "Dieses Wochenende",
+      "near": "In meiner Nähe",
+      "clearFilter": "Filter {filter} entfernen"
+    }
   },
   "imprint": {
     "title": "Impressum",

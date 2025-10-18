@@ -138,9 +138,12 @@ export async function deleteProtest(id) {
  */
 export function getExportUrl(format = 'json', filters = {}) {
   const queryParams = new URLSearchParams(filters);
-  return `${API_BASE_URL}/export/${format}?${queryParams}`;
+  const queryString = queryParams.toString();
+  return queryString ? `${API_BASE_URL}/export/${format}?${queryString}` : `${API_BASE_URL}/export/${format}`;
 }
 
-export function getCalendarSubscriptionUrl() {
-  return `${API_BASE_URL}/export/ics`;
+export function getCalendarSubscriptionUrl(filters = {}) {
+  const queryParams = new URLSearchParams(filters);
+  const queryString = queryParams.toString();
+  return queryString ? `${API_BASE_URL}/export/ics?${queryString}` : `${API_BASE_URL}/export/ics`;
 }
