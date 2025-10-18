@@ -2,11 +2,12 @@
   import { onMount } from 'svelte';
   import Icon from '$lib/components/common/Icon.svelte';
   import {
-    formatDate,
-    formatTime,
     formatDateRange,
+    formatTimeRange,
     getDaysUntil,
+    getRelativeTime
   } from '$lib/utils/dateFormat';
+import { locale, t } from '$lib/i18n';
 
   export let event;
 
@@ -63,20 +64,15 @@
   const eventEndDate = parseEventDate(end);
 
   // Create a copy for getDaysUntil to prevent mutation
-  const daysUntil = eventDate ? getDaysUntil(new Date(eventDate)) : null;
+const daysUntil = eventDate ? getDaysUntil(new Date(eventDate)) : null;
 
-  // Safe date formatting with fallbacks
-  const month = eventDate ? formatDate(eventDate, 'MMM').toUpperCase() : '';
-  const day = eventDate ? formatDate(eventDate, 'DD') : '';
+let dateRangeText = '';
+let timeRangeText = '';
+let relativeTime = '';
 
-  // Format date and time range
-  const dateRangeText = start ? formatDateRange(start, end) : 'Date TBA';
-  const startTime = eventDate ? formatTime(eventDate) : '';
-  const endTime = eventEndDate ? formatTime(eventEndDate) : '';
-
-  const timeRangeText = startTime && endTime && startTime !== endTime
-    ? `${startTime} - ${endTime}`
-    : startTime;
+$: dateRangeText = eventDate ? formatDateRange(eventDate, eventEndDate, $locale) : '';
+$: timeRangeText = eventDate ? formatTimeRange(eventDate, eventEndDate, {}, $locale) : '';
+$: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
 
   // // Location
   // const locationParts = [];
@@ -152,7 +148,7 @@
       <!-- Date Range -->
       <p class="flex items-center gap-2">
         <Icon icon="heroicons:calendar-days" class="w-4 h-4 flex-shrink-0" />
-        <span>{dateRangeText}</span>
+        <span>{dateRangeText || $t('event.dateTBA')}</span>
       </p>
 
       <!-- Time Range -->
@@ -201,16 +197,10 @@
     <!-- Footer -->
     <div class="flex items-center justify-between pt-3 border-t border-black/5 dark:border-white/5">
       <div class="flex items-center gap-3 text-xs text-black/60 dark:text-white/60 flex-wrap">
-        {#if daysUntil !== null}
+        {#if relativeTime}
           <span class="flex items-center gap-1 {urgencyClass}">
             <Icon icon="heroicons:calendar-days" class="w-4 h-4" />
-            {#if daysUntil === 0}
-              Today
-            {:else if daysUntil === 1}
-              Tomorrow
-            {:else}
-              In {daysUntil} days
-            {/if}
+            {relativeTime}
           </span>
         {/if}
         {#if attendees}
