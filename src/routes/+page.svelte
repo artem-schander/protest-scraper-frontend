@@ -22,7 +22,7 @@ import { get } from 'svelte/store';
   let isPendingNavigation = false;
   let activeQuickFilters = [];
 
-  const desktopExportBaseClass = 'hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm font-bold whitespace-nowrap transition-all duration-200';
+  const desktopExportBaseClass = 'hidden lg:inline-flex items-center justify-center gap-2 w-10 h-10 rounded-full border-2 text-sm font-bold whitespace-nowrap transition-all duration-200';
   const mobileExportBaseClass = 'lg:hidden flex items-center justify-center w-11 h-11 rounded-full border-2 transition-all duration-200';
 
   $: desktopExportToggleClass = `${desktopExportBaseClass} ${
@@ -456,11 +456,12 @@ import { get } from 'svelte/store';
           type="button"
           on:click={toggleExportPanel}
           class={desktopExportToggleClass}
+          aria-label={showExportPanel ? $t('home.exportHide') : $t('home.exportShow')}
           aria-pressed={showExportPanel}
           aria-expanded={showExportPanel}
         >
           <Icon icon="heroicons:arrow-down-tray" class="w-4 h-4" />
-          {showExportPanel ? $t('home.exportHide') : $t('home.exportShow')}
+          <!-- {showExportPanel ? $t('home.exportHide') : $t('home.exportShow')} -->
         </button>
       </QuickFilters>
 

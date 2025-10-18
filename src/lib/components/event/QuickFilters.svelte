@@ -28,20 +28,39 @@
     }
   }
 
-  function isActive(id) {
-    return Array.isArray(activeFilters) && activeFilters.includes(id);
+  function normalizeActiveFilters(filters) {
+    if (!Array.isArray(filters)) return [];
+    const cleaned = filters.filter(Boolean);
+    return cleaned.length ? Array.from(new Set(cleaned)) : [];
   }
 
+  let localActiveFilters = normalizeActiveFilters(activeFilters);
+  let lastSyncedFiltersRef = activeFilters;
+
+  $: if (activeFilters !== lastSyncedFiltersRef) {
+    localActiveFilters = normalizeActiveFilters(activeFilters);
+    lastSyncedFiltersRef = activeFilters;
+  }
+
+  $: activeFilterSet = new Set(localActiveFilters);
+
   function handleToggle(filterId) {
+    const wasActive = activeFilterSet.has(filterId);
+    const nextFilters = wasActive
+      ? localActiveFilters.filter((id) => id !== filterId)
+      : [...localActiveFilters, filterId];
+
+    localActiveFilters = nextFilters;
+
     if (typeof onFilterToggle === 'function') {
-      onFilterToggle(filterId, { active: isActive(filterId) });
+      onFilterToggle(filterId, { active: wasActive });
     }
   }
 </script>
 
 <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
   {#if hasSearch}
-    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-[#E10600] text-white text-sm font-bold shadow-sm">
+    <div class="flex items-center gap-2 px-4 pr-2 h-10 rounded-full border-2 border-[#E10600] bg-[#E10600] text-white text-sm font-bold shadow-sm">
       <Icon icon="heroicons:magnifying-glass" class="w-4 h-4" />
       <span class="max-w-[12rem] truncate whitespace-nowrap" title={normalizedSearch}>{displaySearch}</span>
       <button
@@ -56,8 +75,8 @@
   {/if}
 
   {#each QUICK_FILTERS as filter}
-    {#if isActive(filter.id)}
-      <div class="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-[#E10600] bg-[#E10600] text-white text-sm font-bold shadow-md">
+    {#if activeFilterSet.has(filter.id)}
+      <div class="flex items-center gap-2 px-4 pr-2 h-10 rounded-full border-2 border-[#E10600] bg-[#E10600] text-white text-sm font-bold shadow-md">
         <Icon icon={filter.icon} class="w-4 h-4" />
         <span class="whitespace-nowrap">{$t(filter.labelKey)}</span>
         <button
@@ -72,9 +91,9 @@
     {:else}
       <button
         type="button"
-        class="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-black dark:border-white text-sm font-bold whitespace-nowrap text-black dark:text-white bg-white dark:bg-stone-800 hover:bg-[#E10600] dark:hover:bg-[#E10600] hover:border-[#E10600] dark:hover:border-[#E10600] hover:text-white dark:hover:text-white hover:shadow-md transition-all duration-200"
+        class="flex items-center gap-2 px-4 h-10 rounded-full border-2 border-black dark:border-white text-sm font-bold whitespace-nowrap text-black dark:text-white bg-white dark:bg-stone-800 hover:bg-[#E10600] dark:hover:bg-[#E10600] hover:border-[#E10600] dark:hover:border-[#E10600] hover:text-white dark:hover:text-white hover:shadow-md transition-all duration-200"
         on:click={() => handleToggle(filter.id)}
-        aria-pressed={isActive(filter.id)}
+        aria-pressed={activeFilterSet.has(filter.id)}
       >
         <Icon icon={filter.icon} class="w-4 h-4" />
         <span class="whitespace-nowrap">{$t(filter.labelKey)}</span>
