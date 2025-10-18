@@ -18,6 +18,7 @@ cp .env.example .env   # configure VITE_API_URL and optional imprint/privacy fie
 npm run dev            # start Vite on http://localhost:5173
 npm run build          # produce production bundle
 npm run preview        # serve the built output
+npm run start          # run the Node adapter build via server.cjs
 ```
 
 Set `VITE_API_URL` to the protest-scraper backend (defaults to `http://localhost:3000/api`). Extra `PUBLIC_IMPRINT_*` and `PUBLIC_PRIVACY_*` keys fill the legal pages. OAuth keys are optional placeholders.

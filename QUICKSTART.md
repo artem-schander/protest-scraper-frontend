@@ -20,6 +20,7 @@ PUBLIC_IMPRINT_* / PUBLIC_PRIVACY_*       # optional legal copy
 npm run dev        # dev server on http://localhost:5173
 npm run build      # compile for production
 npm run preview    # serve the build locally
+npm run start      # launch Node server (uses server.cjs wrapper)
 ```
 
 Append `-- --host` when testing on another device.
