@@ -13,7 +13,7 @@ import { get } from 'svelte/store';
   export let data;
 
   const HAPPENING_SOON_DAYS = '7';
-  const DEFAULT_NEAR_RADIUS = '50';
+  const DEFAULT_NEAR_RADIUS = '30';
 
   let searchQuery = data.filters.search || '';
   let showMobileFilters = false;

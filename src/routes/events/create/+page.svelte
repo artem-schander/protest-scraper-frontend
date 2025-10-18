@@ -184,10 +184,11 @@
             />
 
             <div>
-              <label class="block text-sm text-black/60 dark:text-white/60 mb-2">
+              <label class="block text-sm text-black/60 dark:text-white/60 mb-2" for="event-description">
                 Description <span class="text-red-500">*</span>
               </label>
               <textarea
+                id="event-description"
                 bind:value={formData.description}
                 required
                 rows="5"
@@ -262,10 +263,11 @@
             />
 
             <div>
-              <label class="block text-sm text-black/60 dark:text-white/60 mb-2">
+              <label class="block text-sm text-black/60 dark:text-white/60 mb-2" for="event-country">
                 Country <span class="text-red-500">*</span>
               </label>
               <select
+                id="event-country"
                 bind:value={formData.country}
                 required
                 class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white rounded-xl focus:outline-none focus:border-black dark:focus:border-white focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 transition-all"
@@ -322,10 +324,11 @@
             <h2 class="text-2xl font-medium text-black dark:text-white">Additional Details</h2>
 
             <div>
-              <label class="block text-sm text-black/60 dark:text-white/60 mb-2">
+              <label class="block text-sm text-black/60 dark:text-white/60 mb-2" for="event-source">
                 Source/Organization <span class="text-red-500">*</span>
               </label>
               <select
+                id="event-source"
                 bind:value={formData.source}
                 required
                 class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white rounded-xl focus:outline-none focus:border-black dark:focus:border-white focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 transition-all"

@@ -31,6 +31,13 @@
       close();
     }
   }
+
+  function handleBackdropKeydown(e) {
+    if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      close();
+    }
+  }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -40,13 +47,16 @@
   <div
     class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
     on:click={handleBackdropClick}
+    on:keydown={handleBackdropKeydown}
+    tabindex="-1"
+    role="presentation"
     transition:fade={{ duration: 200 }}
-    role="dialog"
-    aria-modal="true"
   >
     <!-- Modal -->
     <div
       class="w-full {maxWidths[maxWidth]} bg-white rounded-2xl shadow-2xl overflow-hidden"
+      role="dialog"
+      aria-modal="true"
       transition:scale={{ duration: 200, start: 0.95 }}
     >
       <!-- Header -->

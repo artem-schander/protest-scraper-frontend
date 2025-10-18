@@ -22,6 +22,12 @@ import { t } from '$lib/i18n';
   let lon = filters.lon ? parseFloat(filters.lon) : null;
   let radius = filters.radius ? parseInt(filters.radius) : 10;
 
+  const instanceSuffix = Math.random().toString(36).slice(2, 8);
+  const desktopDateLabelId = `filters-date-range-${instanceSuffix}-desktop`;
+  const mobileDateLabelId = `filters-date-range-${instanceSuffix}-mobile`;
+  const desktopLocationLabelId = `filters-location-${instanceSuffix}-desktop`;
+  const mobileLocationLabelId = `filters-location-${instanceSuffix}-mobile`;
+
   // Initialize dates from URL params
   function parseDateFromAPI(dateStr) {
     if (!dateStr) return null;
@@ -184,11 +190,11 @@ import { t } from '$lib/i18n';
     </div>
 
     <!-- Date Range -->
-    <div>
-      <label class="flex items-center text-sm font-medium text-black dark:text-white mb-3">
+    <div aria-labelledby={desktopDateLabelId}>
+      <p id={desktopDateLabelId} class="flex items-center text-sm font-medium text-black dark:text-white mb-3">
         <Icon icon="heroicons:calendar-days" class="inline w-4 h-4" />
         <span class="ml-1">{$t('filters.dateRange')}</span>
-      </label>
+      </p>
       <DateRangePicker
         bind:startDate
         bind:endDate
@@ -198,11 +204,11 @@ import { t } from '$lib/i18n';
     </div>
 
     <!-- Map Location Picker -->
-    <div>
-      <label class="flex items-center text-sm font-medium text-black dark:text-white mb-3">
+    <div aria-labelledby={desktopLocationLabelId}>
+      <p id={desktopLocationLabelId} class="flex items-center text-sm font-medium text-black dark:text-white mb-3">
         <Icon icon="heroicons:map" class="inline w-4 h-4" />
         <span class="ml-1">{$t('filters.location')}</span>
-      </label>
+      </p>
       <MapPicker
         bind:lat
         bind:lon
@@ -232,7 +238,6 @@ import { t } from '$lib/i18n';
     <!-- Drawer -->
     <div
       class="fixed inset-x-0 bottom-0 max-h-[80vh] bg-white dark:bg-stone-800 rounded-t-2xl shadow-2xl overflow-y-auto"
-      on:click|stopPropagation
       role="dialog"
       aria-modal="true"
       transition:fly={{ y: 500, duration: 300 }}
@@ -261,11 +266,11 @@ import { t } from '$lib/i18n';
         </div>
 
         <!-- Date Range -->
-        <div>
-          <label class="block text-sm font-medium text-black dark:text-white mb-3">
+        <div aria-labelledby={mobileDateLabelId}>
+          <p id={mobileDateLabelId} class="flex items-center text-sm font-medium text-black dark:text-white mb-3">
             <Icon icon="heroicons:calendar-days" class="inline w-4 h-4 mr-1" />
             {$t('filters.dateRange')}
-          </label>
+          </p>
           <DateRangePicker
             bind:startDate
             bind:endDate
@@ -275,11 +280,11 @@ import { t } from '$lib/i18n';
         </div>
 
         <!-- Map Location Picker -->
-        <div>
-          <label class="block text-sm font-medium text-black dark:text-white mb-3">
+        <div aria-labelledby={mobileLocationLabelId}>
+          <p id={mobileLocationLabelId} class="flex items-center text-sm font-medium text-black dark:text-white mb-3">
             <Icon icon="heroicons:map" class="inline w-4 h-4 mr-1" />
             {$t('filters.location')}
-          </label>
+          </p>
           <MapPicker
             bind:lat
             bind:lon

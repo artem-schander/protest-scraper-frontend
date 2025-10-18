@@ -1,3 +1,11 @@
+<script context="module">
+  let idCounter = 0;
+  export function nextInputId() {
+    idCounter += 1;
+    return `input-${idCounter}`;
+  }
+</script>
+
 <script>
   export let label = '';
   export let type = 'text';
@@ -8,13 +16,21 @@
   export let required = false;
   export let disabled = false;
   export let icon = '';
+  export let id = '';
 
   import Icon from '$lib/components/common/Icon.svelte';
+
+  const generatedId = nextInputId();
+
+  $: inputId = id || generatedId;
+  $: helperId = helper ? `${inputId}-helper` : undefined;
+  $: errorId = error ? `${inputId}-error` : undefined;
+  $: describedBy = error ? errorId : helperId;
 </script>
 
 <div class="w-full">
   {#if label}
-    <label class="block text-sm text-black/60 dark:text-white/60 mb-2">
+    <label class="block text-sm text-black/60 dark:text-white/60 mb-2" for={inputId}>
       {label}
       {#if required}
         <span class="text-red-500">*</span>
@@ -31,6 +47,7 @@
 
     {#if type === 'textarea'}
       <textarea
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -39,6 +56,8 @@
         on:blur
         on:focus
         rows="4"
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -55,6 +74,7 @@
     {:else if type === 'text'}
       <input
         type="text"
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -62,6 +82,8 @@
         on:input
         on:blur
         on:focus
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -77,6 +99,7 @@
     {:else if type === 'email'}
       <input
         type="email"
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -84,6 +107,8 @@
         on:input
         on:blur
         on:focus
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -99,6 +124,7 @@
     {:else if type === 'password'}
       <input
         type="password"
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -106,6 +132,8 @@
         on:input
         on:blur
         on:focus
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -121,6 +149,7 @@
     {:else if type === 'number'}
       <input
         type="number"
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -128,6 +157,8 @@
         on:input
         on:blur
         on:focus
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -143,6 +174,7 @@
     {:else if type === 'url'}
       <input
         type="url"
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -150,6 +182,8 @@
         on:input
         on:blur
         on:focus
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -165,6 +199,7 @@
     {:else if type === 'tel'}
       <input
         type="tel"
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -172,6 +207,8 @@
         on:input
         on:blur
         on:focus
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -187,6 +224,7 @@
     {:else if type === 'date'}
       <input
         type="date"
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -194,6 +232,8 @@
         on:input
         on:blur
         on:focus
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -209,6 +249,7 @@
     {:else if type === 'time'}
       <input
         type="time"
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -216,6 +257,8 @@
         on:input
         on:blur
         on:focus
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -231,6 +274,7 @@
     {:else if type === 'datetime-local'}
       <input
         type="datetime-local"
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -238,6 +282,8 @@
         on:input
         on:blur
         on:focus
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -254,6 +300,7 @@
       <!-- Fallback for any other type -->
       <input
         type="text"
+        id={inputId}
         {placeholder}
         {required}
         {disabled}
@@ -261,6 +308,8 @@
         on:input
         on:blur
         on:focus
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
         class="
           w-full px-4 py-3
           {icon ? 'pl-12' : ''}
@@ -277,12 +326,12 @@
   </div>
 
   {#if error}
-    <p class="mt-1 text-xs text-red-500 flex items-center gap-1">
+    <p class="mt-1 text-xs text-red-500 flex items-center gap-1" id={errorId}>
       <span>⚠</span>
       {error}
     </p>
   {:else if helper}
-    <p class="mt-1 text-xs text-black/40 dark:text-white/40">
+    <p class="mt-1 text-xs text-black/40 dark:text-white/40" id={helperId}>
       {helper}
     </p>
   {/if}
