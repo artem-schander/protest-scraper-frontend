@@ -21,6 +21,7 @@ import { get } from 'svelte/store';
   let appliedSearch = data.filters.search || '';
   let isPendingNavigation = false;
   let activeQuickFilters = [];
+  let nearCoordinates = extractNearCoordinatesFromFilters(data.filters);
 
   const desktopExportBaseClass = 'hidden lg:inline-flex items-center justify-center gap-2 w-10 h-10 rounded-full border-2 text-sm font-bold whitespace-nowrap transition-all duration-200';
   const mobileExportBaseClass = 'lg:hidden flex items-center justify-center w-11 h-11 rounded-full border-2 transition-all duration-200';
@@ -36,6 +37,8 @@ import { get } from 'svelte/store';
       ? 'bg-[#E10600] border-[#E10600] text-white shadow-md hover:bg-[#C10500] dark:hover:bg-[#C10500] hover:border-[#C10500] dark:hover:border-[#C10500]'
       : 'bg-white dark:bg-stone-800 border-black dark:border-white text-black dark:text-white hover:bg-[#E10600] dark:hover:bg-[#E10600] hover:border-[#E10600] dark:hover:border-[#E10600] hover:text-white dark:hover:text-white hover:shadow-md'
   }`;
+
+  $: nearLabel = formatNearLabel(nearCoordinates);
 
   function translate(key, options) {
     return get(t)(key, options);
@@ -72,6 +75,27 @@ import { get } from 'svelte/store';
       start: formatDateForApi(start),
       end: formatDateForApi(end)
     };
+  }
+
+  function extractNearCoordinatesFromFilters(filters = {}) {
+    const lat = filters.lat || '';
+    const lon = filters.lon || '';
+    return lat && lon ? { lat, lon } : null;
+  }
+
+  function extractNearCoordinatesFromParams(params) {
+    const lat = params.get('lat') || '';
+    const lon = params.get('lon') || '';
+    return lat && lon ? { lat, lon } : null;
+  }
+
+  function formatNearLabel(coords) {
+    if (!coords) return '';
+    const latNum = Number.parseFloat(coords.lat);
+    const lonNum = Number.parseFloat(coords.lon);
+    const latString = Number.isFinite(latNum) ? latNum.toFixed(3) : coords.lat;
+    const lonString = Number.isFinite(lonNum) ? lonNum.toFixed(3) : coords.lon;
+    return `${latString}, ${lonString}`;
   }
 
   async function handleSearch(e) {
@@ -144,7 +168,7 @@ import { get } from 'svelte/store';
     if ((filters.startDate || '') === weekend.start && (filters.endDate || '') === weekend.end) {
       active.push('weekend');
     }
-    if ((filters.near || '') === '1') {
+    if ((filters.lat || '') && (filters.lon || '')) {
       active.push('near');
     }
     return active;
@@ -159,7 +183,7 @@ import { get } from 'svelte/store';
     if (params.get('startDate') === weekend.start && params.get('endDate') === weekend.end) {
       active.push('weekend');
     }
-    if (params.get('near') === '1') {
+    if ((params.get('lat') || '') && (params.get('lon') || '')) {
       active.push('near');
     }
     return active;
@@ -185,6 +209,7 @@ import { get } from 'svelte/store';
     url.searchParams.delete('page');
 
     activeQuickFilters = deriveQuickFiltersFromParams(url.searchParams);
+    nearCoordinates = extractNearCoordinatesFromParams(url.searchParams);
 
     isPendingNavigation = true;
     try {
@@ -235,26 +260,29 @@ import { get } from 'svelte/store';
           return;
         }
 
+        const lat = position.coords.latitude.toString();
+        const lon = position.coords.longitude.toString();
+
         markPending();
         setQuickFilterState(filterId, true);
+        nearCoordinates = { lat, lon };
         await tick();
         await updateFilters((params) => {
-          params.set('lat', position.coords.latitude.toString());
-          params.set('lon', position.coords.longitude.toString());
+          params.set('lat', lat);
+          params.set('lon', lon);
           params.set('radius', params.get('radius') || DEFAULT_NEAR_RADIUS);
-          params.set('near', '1');
         });
         return;
       }
 
       markPending();
       setQuickFilterState(filterId, false);
+      nearCoordinates = null;
       await tick();
       await updateFilters((params) => {
         params.delete('lat');
         params.delete('lon');
         params.delete('radius');
-        params.delete('near');
       });
       return;
     }
@@ -334,6 +362,7 @@ import { get } from 'svelte/store';
   $: if (!isPendingNavigation) {
     appliedSearch = data.filters.search || '';
     activeQuickFilters = getActiveQuickFilters();
+    nearCoordinates = extractNearCoordinatesFromFilters(data.filters);
   }
 
   // Update search query when data changes (e.g., filters reset)
@@ -442,7 +471,7 @@ import { get } from 'svelte/store';
           aria-pressed={showExportPanel}
           aria-expanded={showExportPanel}
         >
-          <Icon icon="heroicons:arrow-down-tray" class="w-5 h-5" />
+          <Icon icon="heroicons:arrow-down-tray" class="w-5 h-5 download-icon" />
         </button>
       </div>
 
@@ -450,6 +479,7 @@ import { get } from 'svelte/store';
         searchTerm={appliedSearch}
         onClearSearch={clearSearch}
         activeFilters={activeQuickFilters}
+        nearLabel={nearLabel}
         onFilterToggle={handleQuickFilterToggle}
       >
         <button
@@ -460,7 +490,7 @@ import { get } from 'svelte/store';
           aria-pressed={showExportPanel}
           aria-expanded={showExportPanel}
         >
-          <Icon icon="heroicons:arrow-down-tray" class="w-4 h-4" />
+          <Icon icon="heroicons:arrow-down-tray" class="w-4 h-4 download-icon" />
           <!-- {showExportPanel ? $t('home.exportHide') : $t('home.exportShow')} -->
         </button>
       </QuickFilters>
@@ -655,3 +685,9 @@ import { get } from 'svelte/store';
 >
   <Icon icon="heroicons:plus" class="w-7 h-7" />
 </a>
+
+<style>
+  :global(.download-icon path) {
+    stroke-width: 2.25px;
+  }
+</style>

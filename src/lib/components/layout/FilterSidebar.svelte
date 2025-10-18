@@ -59,7 +59,6 @@ import { t } from '$lib/i18n';
     url.searchParams.delete('lat');
     url.searchParams.delete('lon');
     url.searchParams.delete('radius');
-    url.searchParams.delete('near');
     url.searchParams.delete('page'); // Reset to page 1 when filters change
 
     // Add date params

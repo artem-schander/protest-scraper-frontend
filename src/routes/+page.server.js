@@ -69,8 +69,7 @@ export async function load({ url, fetch }) {
         days: params.get('days') || '',
         lat: params.get('lat') || '',
         lon: params.get('lon') || '',
-        radius: params.get('radius') || '10',
-        near: params.get('near') || ''
+        radius: params.get('radius') || '10'
       }
     };
   } catch (error) {
@@ -91,8 +90,7 @@ export async function load({ url, fetch }) {
         days: '',
         lat: '',
         lon: '',
-        radius: '10',
-        near: ''
+        radius: '10'
       },
       error: error.message
     };

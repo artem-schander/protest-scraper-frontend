@@ -6,6 +6,7 @@
   export let onClearSearch = () => {};
   export let activeFilters = [];
   export let onFilterToggle = () => {};
+  export let nearLabel = '';
 
   const MAX_LABEL_LENGTH = 28;
 
@@ -78,12 +79,18 @@
     {#if activeFilterSet.has(filter.id)}
       <div class="flex items-center gap-2 px-4 pr-2 h-10 rounded-full border-2 border-[#E10600] bg-[#E10600] text-white text-sm font-bold shadow-md">
         <Icon icon={filter.icon} class="w-4 h-4" />
-        <span class="whitespace-nowrap">{$t(filter.labelKey)}</span>
+        <span class="whitespace-nowrap">
+          {filter.id === 'near' && nearLabel ? nearLabel : $t(filter.labelKey)}
+        </span>
         <button
           type="button"
           class="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 hover:bg-white/40 transition-colors"
           on:click={() => handleToggle(filter.id)}
-          aria-label={$t('filters.quick.clearFilter', { values: { filter: $t(filter.labelKey) } })}
+          aria-label={$t('filters.quick.clearFilter', {
+            values: {
+              filter: filter.id === 'near' && nearLabel ? nearLabel : $t(filter.labelKey)
+            }
+          })}
         >
           <Icon icon="heroicons:x-mark" class="w-3.5 h-3.5" />
         </button>
