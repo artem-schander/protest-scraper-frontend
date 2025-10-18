@@ -101,6 +101,7 @@ $: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
   let titleEl;
   let isClamped = false;
   let hydrated = false;
+  let showTooltip = false;
 
   onMount(() => {
     hydrated = true;
@@ -109,6 +110,14 @@ $: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
       // optional: resize observer etc.
     }
   });
+
+  function handleMouseEnter() {
+    if (isClamped) showTooltip = true;
+  }
+
+  function handleMouseLeave() {
+    showTooltip = false;
+  }
 </script>
 
 <div
@@ -117,111 +126,111 @@ $: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
     rounded-xl bg-stone-100 dark:bg-stone-700
     border border-stone-200 dark:border-stone-700
     shadow-md p-4 block
+    grid grid-rows-[auto_1fr_auto] gap-3
   "
 >
-  <!-- Content -->
-  <div class="space-y-3">
-    <div class="relative group inline-block">
-      <h3
-        bind:this={titleEl}
-        class="text-md font-medium text-black dark:text-white line-clamp-2 min-h-[2.8rem]"
+  <!-- Title -->
+  <div class="relative">
+    <h3
+      bind:this={titleEl}
+      class="text-md font-medium text-black dark:text-white line-clamp-2 leading-tight"
+      style="display: -webkit-box; -webkit-box-orient: vertical; height: 2.4em;"
+      on:mouseenter={handleMouseEnter}
+      on:mouseleave={handleMouseLeave}
+    >
+      {title}
+    </h3>
+
+    {#if hydrated && isClamped && showTooltip}
+      <div
+        class="absolute z-20 pointer-events-none
+          left-1/2 -translate-x-1/2 bottom-full mb-2
+          w-64 rounded-lg bg-black text-white text-sm px-3 py-2 shadow-xl whitespace-normal text-center
+          animate-in fade-in slide-in-from-bottom-1 duration-200"
       >
         {title}
-      </h3>
-
-      {#if hydrated && isClamped}
-        <div
-          class="absolute z-20 pointer-events-none
-            left-1/2 -translate-x-1/2 bottom-full mb-2
-            w-64 rounded-lg bg-black text-white text-sm px-3 py-2 shadow-lg whitespace-normal text-center
-            opacity-0 translate-y-1
-            group-hover:opacity-100 group-hover:translate-y-0
-            transition-all duration-200 ease-in-out
-            [visibility:hidden] group-hover:[visibility:visible]"
-        >
-          {title}
-        </div>
-      {/if}
-    </div>
-
-    <div class="space-y-1 text-sm text-black/60 dark:text-white/60">
-      <!-- Date Range -->
-      <p class="flex items-center gap-2">
-        <Icon icon="heroicons:calendar-days" class="w-4 h-4 flex-shrink-0" />
-        <span>{dateRangeText || $t('event.dateTBA')}</span>
-      </p>
-
-      <!-- Time Range -->
-      {#if timeRangeText}
-        <p class="flex items-center gap-2">
-          <Icon icon="heroicons:clock" class="w-4 h-4 flex-shrink-0" />
-          <span>{timeRangeText}</span>
-          <!-- <span>{start} | {eventDate?.toISOString()} | {timeRangeText}</span> -->
-        </p>
-      {/if}
-
-      <!-- Location -->
-      {#if mapLink}
-        <a href={mapLink} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[#E10600] dark:hover:text-red-400 transition-colors" on:click={(e) => e.stopPropagation()}>
-          <Icon icon="heroicons:map-pin" class="w-4 h-4 flex-shrink-0" />
-          <span class="truncate">{location}</span>
-          <Icon icon="heroicons:arrow-top-right-on-square" class="w-3 h-3 flex-shrink-0" />
-        </a>
-      {:else}
-        <p class="flex items-center gap-2">
-          <Icon icon="heroicons:map-pin" class="w-4 h-4 flex-shrink-0" />
-          <span class="truncate">{location}</span>
-        </p>
-      {/if}
-
-      {#if url}
-        <a href={url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[#E10600] dark:hover:text-red-400 transition-colors" on:click={(e) => e.stopPropagation()}>
-          <Icon icon="heroicons:globe-alt" class="w-4 h-4 flex-shrink-0" />
-          <span class="truncate">{source}</span>
-          <Icon icon="heroicons:arrow-top-right-on-square" class="w-3 h-3 flex-shrink-0" />
-        </a>
-      {/if}
-    </div>
-
-    <!-- Tags -->
-    <!-- {#if categories && categories.length > 0} -->
-    <!--  <div class="flex flex-wrap gap-2"> -->
-    <!--    {#each categories.slice(0, 3) as tag} -->
-    <!--      <span class="px-3 py-1 rounded-full bg-white/60 dark:bg-stone-700/60 text-xs text-black dark:text-white"> -->
-    <!--        {tag} -->
-    <!--      </span> -->
-    <!--    {/each} -->
-    <!--  </div> -->
-    <!-- {/if} -->
-
-    <!-- Footer -->
-    <div class="flex items-center justify-between pt-3 border-t border-black/5 dark:border-white/5">
-      <div class="flex items-center gap-3 text-xs text-black/60 dark:text-white/60 flex-wrap">
-        {#if relativeTime}
-          <span class="flex items-center gap-1 {urgencyClass}">
-            <Icon icon="heroicons:calendar-days" class="w-4 h-4" />
-            {relativeTime}
-          </span>
-        {/if}
-        {#if attendees}
-          <span class="flex items-center gap-1">
-            <Icon icon="heroicons:users" class="w-4 h-4" />
-            {attendees}+
-          </span>
-        {/if}
-        <!-- {#if url} -->
-        <!--  <a href={url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 hover:text-[#E10600] dark:hover:text-red-400 transition-colors" on:click={(e) => e.stopPropagation()}> -->
-        <!--    <Icon icon="heroicons:arrow-top-right-on-square" class="w-3 h-3" /> -->
-        <!--    {source} -->
-        <!--  </a> -->
-        <!-- {/if} -->
       </div>
-      {#if verified}
-        <span class="text-xs text-green-600 dark:text-green-400 flex items-center gap-1 font-medium">
-          <Icon icon="heroicons:check-circle" class="w-4 h-4" />
-          <!-- Verified -->
+    {/if}
+  </div>
+
+  <!-- Details -->
+  <div class="space-y-1 text-sm text-black/60 dark:text-white/60 min-w-0">
+    <!-- Date Range -->
+    <p class="flex items-center gap-2">
+      <Icon icon="heroicons:calendar-days" class="w-4 h-4 flex-shrink-0" />
+      <span>{dateRangeText || $t('event.dateTBA')}</span>
+    </p>
+
+    <!-- Time Range -->
+    {#if timeRangeText}
+      <p class="flex items-center gap-2">
+        <Icon icon="heroicons:clock" class="w-4 h-4 flex-shrink-0" />
+        <span>{timeRangeText}</span>
+        <!-- <span>{start} | {eventDate?.toISOString()} | {timeRangeText}</span> -->
+      </p>
+    {/if}
+
+    <!-- Location -->
+    {#if mapLink}
+      <a href={mapLink} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[#E10600] dark:hover:text-red-400 transition-colors min-w-0" on:click={(e) => e.stopPropagation()}>
+        <Icon icon="heroicons:map-pin" class="w-4 h-4 flex-shrink-0" />
+        <span class="truncate min-w-0">{location}</span>
+        <Icon icon="heroicons:arrow-top-right-on-square" class="w-3 h-3 flex-shrink-0" />
+      </a>
+    {:else}
+      <p class="flex items-center gap-2 min-w-0">
+        <Icon icon="heroicons:map-pin" class="w-4 h-4 flex-shrink-0" />
+        <span class="truncate min-w-0">{location}</span>
+      </p>
+    {/if}
+
+    {#if url}
+      <a href={url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[#E10600] dark:hover:text-red-400 transition-colors min-w-0" on:click={(e) => e.stopPropagation()}>
+        <Icon icon="heroicons:globe-alt" class="w-4 h-4 flex-shrink-0" />
+        <span class="truncate min-w-0">{source}</span>
+        <Icon icon="heroicons:arrow-top-right-on-square" class="w-3 h-3 flex-shrink-0" />
+      </a>
+    {/if}
+  </div>
+
+  <!-- Tags -->
+  <!-- {#if categories && categories.length > 0} -->
+  <!--  <div class="flex flex-wrap gap-2"> -->
+  <!--    {#each categories.slice(0, 3) as tag} -->
+  <!--      <span class="px-3 py-1 rounded-full bg-white/60 dark:bg-stone-700/60 text-xs text-black dark:text-white"> -->
+  <!--        {tag} -->
+  <!--      </span> -->
+  <!--    {/each} -->
+  <!--  </div> -->
+  <!-- {/if} -->
+
+  <!-- Footer -->
+  <div class="flex items-center justify-between pt-3 border-t border-black/5 dark:border-white/5">
+    <div class="flex items-center gap-3 text-xs text-black/60 dark:text-white/60 flex-wrap">
+      {#if relativeTime}
+        <span class="flex items-center gap-1 {urgencyClass}">
+          <Icon icon="heroicons:calendar-days" class="w-4 h-4" />
+          {relativeTime}
         </span>
       {/if}
+      {#if attendees}
+        <span class="flex items-center gap-1">
+          <Icon icon="heroicons:users" class="w-4 h-4" />
+          {attendees}+
+        </span>
+      {/if}
+      <!-- {#if url} -->
+      <!--  <a href={url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 hover:text-[#E10600] dark:hover:text-red-400 transition-colors" on:click={(e) => e.stopPropagation()}> -->
+      <!--    <Icon icon="heroicons:arrow-top-right-on-square" class="w-3 h-3" /> -->
+      <!--    {source} -->
+      <!--  </a> -->
+      <!-- {/if} -->
     </div>
+    {#if verified}
+      <span class="text-xs text-green-600 dark:text-green-400 flex items-center gap-1 font-medium">
+        <Icon icon="heroicons:check-circle" class="w-4 h-4" />
+        <!-- Verified -->
+      </span>
+    {/if}
   </div>
 </div>

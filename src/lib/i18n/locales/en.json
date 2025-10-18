@@ -167,29 +167,27 @@
       "timestamp": "Submission timestamp",
       "userId": "Your user ID (if logged in)"
     },
-    "autoCollected": "Automatically Collected Data",
-    "autoCollectedText": "When you use our service, we automatically collect:",
+    "autoCollected": "Server Logs (Automatically Collected)",
+    "autoCollectedText": "Our web server automatically logs technical information for security and abuse prevention purposes:",
     "autoCollectedItems": {
-      "ip": "IP address",
+      "ip": "IP address (for security monitoring)",
       "browser": "Browser type and version",
-      "os": "Operating system",
-      "referrer": "Referrer URL",
-      "pages": "Pages visited and time spent",
-      "device": "Device information"
+      "timestamp": "Access timestamp",
+      "requestedPage": "Requested URL/page",
+      "httpStatus": "HTTP status code",
+      "referrer": "Referrer URL (when available)"
     },
     "locationData": "Location Data",
-    "locationDataText": "With your explicit consent, we may access your device's location to help you find nearby events. This data is processed only on your device and not stored on our servers.",
+    "locationDataText": "When you use the \"Near me\" feature, your browser may request your device's location. This data is processed only in your browser and is never sent to or stored on our servers. You must explicitly grant permission each time.",
     "dataUsage": "How We Use Your Data",
     "dataUsageText": "We use your personal data for the following purposes:",
     "dataUsageItems": {
-      "provide": "To provide and maintain our service",
+      "provide": "To provide and maintain the protest listing service",
       "manage": "To manage your account and authenticate you",
-      "display": "To display event information you submit",
-      "communicate": "To send you service-related communications",
-      "improve": "To improve our service and develop new features",
-      "prevent": "To detect and prevent fraud or abuse",
-      "comply": "To comply with legal obligations",
-      "analyze": "To analyze usage patterns and optimize performance"
+      "display": "To display event information you submit publicly on the platform",
+      "communicate": "To send account verification and password reset emails",
+      "prevent": "To detect and prevent spam, abuse, and security threats",
+      "comply": "To comply with legal obligations under GDPR and German law"
     },
     "legalBasis": "Legal Basis for Processing",
     "legalBasisText": "We process your personal data based on:",
@@ -200,22 +198,21 @@
       "legitimate": "Legitimate Interest: To improve our service and prevent abuse"
     },
     "dataSharing": "Data Sharing and Disclosure",
-    "dataSharingText": "We do not sell your personal data to third parties. We may share your data with:",
+    "dataSharingText": "We do not sell your personal data. We may share your data with:",
     "dataSharingItems": {
-      "providers": "Service Providers: Companies that help us operate our service (hosting, analytics)",
-      "legal": "Legal Authorities: When required by law or to protect our rights",
-      "public": "Public Display: Event information you submit is publicly visible"
+      "providers": "Hosting Provider: Our hosting provider (located in Germany/EU) has technical access to server data and databases as part of infrastructure operations",
+      "oauth": "OAuth Providers: When you log in with Google or Apple, authentication is handled by their services according to their privacy policies",
+      "legal": "Legal Authorities: When required by law, court order, or to protect our rights and comply with legal obligations",
+      "public": "Public Display: Event information you submit (title, description, date, location) is publicly visible to all users"
     },
-    "dataSharingNote": "All third-party service providers are contractually obligated to handle your data securely and only for the purposes we specify.",
-    "cookies": "Cookies and Tracking",
-    "cookiesText": "We use cookies and similar technologies to:",
+    "dataSharingNote": "All data is stored within Germany/EU. We do not use analytics services or tracking tools.",
+    "cookies": "Cookies",
+    "cookiesText": "We use cookies for essential functionality only:",
     "cookiesItems": {
-      "login": "Keep you logged in",
-      "preferences": "Remember your preferences (theme, language)",
-      "analyze": "Analyze usage patterns",
-      "improve": "Improve service performance"
+      "login": "Session Cookie (HTTP-only): Secure authentication cookie to keep you logged in to your account. This cookie is HTTP-only and cannot be accessed by JavaScript, providing enhanced security.",
+      "preferences": "Language Preference: Remembers your selected language (English/German) for 1 year"
     },
-    "cookiesNote": "You can control cookies through your browser settings. However, disabling cookies may limit some functionality of our service.",
+    "cookiesNote": "We do not use any analytics cookies, tracking technologies, or browser localStorage. All cookies are strictly necessary for the service to function. Clearing your cookies will log you out and reset your preferences.",
     "dataSecurity": "Data Security",
     "dataSecurityText": "We implement appropriate technical and organizational measures to protect your data:",
     "dataSecurityItems": {
@@ -228,14 +225,14 @@
     },
     "dataSecurityNote": "However, no method of transmission or storage is 100% secure. While we strive to protect your data, we cannot guarantee absolute security.",
     "dataRetention": "Data Retention",
-    "dataRetentionText": "We retain your personal data for as long as:",
+    "dataRetentionText": "We retain your data according to these specific periods:",
     "dataRetentionItems": {
-      "active": "Your account is active",
-      "necessary": "Necessary to provide our services",
-      "required": "Required by law",
-      "needed": "Needed to resolve disputes or enforce agreements"
+      "active": "User Accounts: Retained until you request account deletion",
+      "events": "Event Data: Automatically deleted 2 weeks after the event date has passed",
+      "logs": "Server Logs: Retained for security purposes according to legal requirements",
+      "emails": "Email Communications: Verification and password reset emails are transactional and not stored long-term"
     },
-    "dataRetentionNote": "After account deletion, we will delete or anonymize your personal data within 30 days, except where longer retention is required by law.",
+    "dataRetentionNote": "When you delete your account, all associated personal data (email, username, password) is permanently deleted. Event submissions you made become anonymous (user association removed). Server logs may be retained for legal compliance.",
     "yourRights": "Your Rights",
     "yourRightsText": "Under GDPR and applicable data protection laws, you have the right to:",
     "yourRightsItems": {

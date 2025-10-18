@@ -73,7 +73,7 @@ const safetyNoticeItems = ['verify', 'aware', 'consider', 'follow', 'respect'];
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('disclaimer.userContentText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each userContentItems as itemKey}
             <li>{$t(`disclaimer.userContentItems.${itemKey}`)}</li>
           {/each}
@@ -89,7 +89,7 @@ const safetyNoticeItems = ['verify', 'aware', 'consider', 'follow', 'respect'];
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('disclaimer.noWarrantyText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each noWarrantyItems as itemKey}
             <li>{$t(`disclaimer.noWarrantyItems.${itemKey}`)}</li>
           {/each}
@@ -104,7 +104,7 @@ const safetyNoticeItems = ['verify', 'aware', 'consider', 'follow', 'respect'];
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('disclaimer.limitationLiabilityText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each limitationLiabilityItems as itemKey}
             <li>{$t(`disclaimer.limitationLiabilityItems.${itemKey}`)}</li>
           {/each}
@@ -122,7 +122,7 @@ const safetyNoticeItems = ['verify', 'aware', 'consider', 'follow', 'respect'];
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('disclaimer.safetyNoticeText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each safetyNoticeItems as itemKey}
             <li>{$t(`disclaimer.safetyNoticeItems.${itemKey}`)}</li>
           {/each}

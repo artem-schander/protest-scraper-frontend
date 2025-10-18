@@ -31,14 +31,13 @@
 
   const accountInfoKeys = ['email', 'username', 'password', 'creationDate'];
   const eventSubmissionKeys = ['details', 'contact', 'timestamp', 'userId'];
-  const autoCollectedKeys = ['ip', 'browser', 'os', 'referrer', 'pages', 'device'];
-  const dataUsageKeys = ['provide', 'manage', 'display', 'communicate', 'improve', 'prevent', 'comply', 'analyze'];
+  const autoCollectedKeys = ['ip', 'browser', 'timestamp', 'requestedPage', 'httpStatus', 'referrer'];
+  const dataUsageKeys = ['provide', 'manage', 'display', 'communicate', 'prevent', 'comply'];
   const legalBasisKeys = ['consent', 'contract', 'legal', 'legitimate'];
-  const dataSharingKeys = ['providers', 'legal', 'public'];
-  // const cookiesKeys = ['login', 'preferences', 'analyze', 'improve'];
+  const dataSharingKeys = ['providers', 'oauth', 'legal', 'public'];
   const cookiesKeys = ['login', 'preferences'];
   const dataSecurityKeys = ['encryption', 'passwords', 'updates', 'access', 'audits', 'backup'];
-  const dataRetentionKeys = ['active', 'necessary', 'required', 'needed'];
+  const dataRetentionKeys = ['active', 'events', 'logs', 'emails'];
   const yourRightsKeys = ['access', 'rectification', 'erasure', 'restriction', 'portability', 'object', 'withdraw', 'complaint'];
 
   const lastUpdated = new Date();
@@ -157,7 +156,7 @@
         <div>
           <h3 class="font-semibold text-black dark:text-white">{$t('privacy.accountInfo')}</h3>
           <p>{$t('privacy.accountInfoText')}</p>
-          <ul class="list-disc list-inside space-y-2 ml-4">
+          <ul class="list-disc list-outside space-y-2 pl-5">
             {#each accountInfoKeys as key}
               <li>{$t(`privacy.accountInfoItems.${key}`)}</li>
             {/each}
@@ -167,7 +166,7 @@
         <div>
           <h3 class="font-semibold text-black dark:text-white">{$t('privacy.eventSubmissions')}</h3>
           <p>{$t('privacy.eventSubmissionsText')}</p>
-          <ul class="list-disc list-inside space-y-2 ml-4">
+          <ul class="list-disc list-outside space-y-2 pl-5">
             {#each eventSubmissionKeys as key}
               <li>{$t(`privacy.eventSubmissionsItems.${key}`)}</li>
             {/each}
@@ -177,7 +176,7 @@
         <div>
           <h3 class="font-semibold text-black dark:text-white">{$t('privacy.autoCollected')}</h3>
           <p>{$t('privacy.autoCollectedText')}</p>
-          <ul class="list-disc list-inside space-y-2 ml-4">
+          <ul class="list-disc list-outside space-y-2 pl-5">
             {#each autoCollectedKeys as key}
               <li>{$t(`privacy.autoCollectedItems.${key}`)}</li>
             {/each}
@@ -198,7 +197,7 @@
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('privacy.dataUsageText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each dataUsageKeys as key}
             <li>{$t(`privacy.dataUsageItems.${key}`)}</li>
           {/each}
@@ -213,7 +212,7 @@
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('privacy.legalBasisText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each legalBasisKeys as key}
             <li>{$t(`privacy.legalBasisItems.${key}`)}</li>
           {/each}
@@ -228,7 +227,7 @@
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('privacy.dataSharingText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each dataSharingKeys as key}
             <li>{$t(`privacy.dataSharingItems.${key}`)}</li>
           {/each}
@@ -244,7 +243,7 @@
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('privacy.cookiesText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each cookiesKeys as key}
             <li>{$t(`privacy.cookiesItems.${key}`)}</li>
           {/each}
@@ -260,7 +259,7 @@
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('privacy.dataSecurityText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each dataSecurityKeys as key}
             <li>{$t(`privacy.dataSecurityItems.${key}`)}</li>
           {/each}
@@ -276,7 +275,7 @@
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('privacy.dataRetentionText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each dataRetentionKeys as key}
             <li>{$t(`privacy.dataRetentionItems.${key}`)}</li>
           {/each}
@@ -292,7 +291,7 @@
       </h2>
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('privacy.yourRightsText')}</p>
-        <ul class="list-disc list-inside space-y-2 ml-4">
+        <ul class="list-disc list-outside space-y-2 pl-5">
           {#each yourRightsKeys as key}
             <li>{$t(`privacy.yourRightsItems.${key}`)}</li>
           {/each}

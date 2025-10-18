@@ -167,29 +167,27 @@
       "timestamp": "Zeitstempel der Einreichung",
       "userId": "Ihre Benutzer-ID (falls angemeldet)"
     },
-    "autoCollected": "Automatisch erfasste Daten",
-    "autoCollectedText": "Wenn Sie unseren Dienst nutzen, erfassen wir automatisch:",
+    "autoCollected": "Server-Protokolle (automatisch erfasst)",
+    "autoCollectedText": "Unser Webserver protokolliert automatisch technische Informationen für Sicherheits- und Missbrauchsschutzzwecke:",
     "autoCollectedItems": {
-      "ip": "IP-Adresse",
+      "ip": "IP-Adresse (für Sicherheitsüberwachung)",
       "browser": "Browsertyp und -version",
-      "os": "Betriebssystem",
-      "referrer": "Referrer-URL",
-      "pages": "Besuchte Seiten und Verweildauer",
-      "device": "Geräteinformationen"
+      "timestamp": "Zugriffszeitstempel",
+      "requestedPage": "Angeforderte URL/Seite",
+      "httpStatus": "HTTP-Statuscode",
+      "referrer": "Referrer-URL (falls verfügbar)"
     },
     "locationData": "Standortdaten",
-    "locationDataText": "Mit Ihrer ausdrücklichen Zustimmung können wir auf den Standort Ihres Geräts zugreifen, um Ihnen bei der Suche nach Veranstaltungen in Ihrer Nähe zu helfen. Diese Daten werden nur auf Ihrem Gerät verarbeitet und nicht auf unseren Servern gespeichert.",
+    "locationDataText": "Wenn Sie die Funktion \"In meiner Nähe\" verwenden, kann Ihr Browser Ihren Gerätestandort anfragen. Diese Daten werden nur in Ihrem Browser verarbeitet und niemals an unsere Server gesendet oder gespeichert. Sie müssen jedes Mal explizit die Erlaubnis erteilen.",
     "dataUsage": "Wie wir Ihre Daten verwenden",
     "dataUsageText": "Wir verwenden Ihre personenbezogenen Daten für folgende Zwecke:",
     "dataUsageItems": {
-      "provide": "Zur Bereitstellung und Aufrechterhaltung unseres Dienstes",
+      "provide": "Zur Bereitstellung und Aufrechterhaltung des Protest-Verzeichnisdienstes",
       "manage": "Zur Verwaltung Ihres Kontos und Ihrer Authentifizierung",
-      "display": "Zur Anzeige von Veranstaltungsinformationen, die Sie einreichen",
-      "communicate": "Zum Versenden von dienstbezogenen Mitteilungen",
-      "improve": "Zur Verbesserung unseres Dienstes und Entwicklung neuer Funktionen",
-      "prevent": "Zur Erkennung und Verhinderung von Betrug oder Missbrauch",
-      "comply": "Zur Erfüllung gesetzlicher Verpflichtungen",
-      "analyze": "Zur Analyse von Nutzungsmustern und Optimierung der Leistung"
+      "display": "Zur öffentlichen Anzeige von Veranstaltungsinformationen, die Sie einreichen",
+      "communicate": "Zum Versenden von Konto-Verifizierungs- und Passwort-Zurücksetzungs-E-Mails",
+      "prevent": "Zur Erkennung und Verhinderung von Spam, Missbrauch und Sicherheitsbedrohungen",
+      "comply": "Zur Erfüllung gesetzlicher Verpflichtungen gemäß DSGVO und deutschem Recht"
     },
     "legalBasis": "Rechtsgrundlage für die Verarbeitung",
     "legalBasisText": "Wir verarbeiten Ihre personenbezogenen Daten auf folgender Grundlage:",
@@ -200,22 +198,21 @@
       "legitimate": "Berechtigtes Interesse: Zur Verbesserung unseres Dienstes und Verhinderung von Missbrauch"
     },
     "dataSharing": "Datenweitergabe und Offenlegung",
-    "dataSharingText": "Wir verkaufen Ihre personenbezogenen Daten nicht an Dritte. Wir können Ihre Daten weitergeben an:",
+    "dataSharingText": "Wir verkaufen Ihre personenbezogenen Daten nicht. Wir können Ihre Daten weitergeben an:",
     "dataSharingItems": {
-      "providers": "Dienstleister: Unternehmen, die uns beim Betrieb unseres Dienstes helfen (Hosting, Analyse)",
-      "legal": "Rechtsbehörden: Wenn dies gesetzlich vorgeschrieben ist oder zum Schutz unserer Rechte",
-      "public": "Öffentliche Anzeige: Von Ihnen eingereichte Veranstaltungsinformationen sind öffentlich sichtbar"
+      "providers": "Hosting-Anbieter: Unser Hosting-Anbieter (in Deutschland/EU) hat technischen Zugriff auf Serverdaten und Datenbanken im Rahmen des Infrastrukturbetriebs",
+      "oauth": "OAuth-Anbieter: Wenn Sie sich mit Google oder Apple anmelden, erfolgt die Authentifizierung über deren Dienste gemäß deren Datenschutzrichtlinien",
+      "legal": "Rechtsbehörden: Wenn dies gesetzlich vorgeschrieben ist, durch gerichtliche Anordnung erfolgt oder zum Schutz unserer Rechte und zur Erfüllung gesetzlicher Verpflichtungen erforderlich ist",
+      "public": "Öffentliche Anzeige: Von Ihnen eingereichte Veranstaltungsinformationen (Titel, Beschreibung, Datum, Ort) sind für alle Nutzer öffentlich sichtbar"
     },
-    "dataSharingNote": "Alle Drittanbieter sind vertraglich verpflichtet, Ihre Daten sicher zu behandeln und nur für die von uns festgelegten Zwecke zu verwenden.",
-    "cookies": "Cookies und Tracking",
-    "cookiesText": "Wir verwenden Cookies und ähnliche Technologien, um:",
+    "dataSharingNote": "Alle Daten werden innerhalb Deutschlands/EU gespeichert. Wir verwenden keine Analyse- oder Tracking-Dienste.",
+    "cookies": "Cookies",
+    "cookiesText": "Wir verwenden Cookies ausschließlich für essentielle Funktionen:",
     "cookiesItems": {
-      "login": "Sie angemeldet zu halten",
-      "preferences": "Ihre Einstellungen zu speichern (Theme, Sprache)",
-      "analyze": "Nutzungsmuster zu analysieren",
-      "improve": "Die Dienstleistung zu verbessern"
+      "login": "Sitzungs-Cookie (HTTP-only): Sicheres Authentifizierungs-Cookie, um Sie in Ihrem Konto angemeldet zu halten. Dieses Cookie ist HTTP-only und kann nicht von JavaScript zugegriffen werden, was erhöhte Sicherheit bietet.",
+      "preferences": "Sprachpräferenz: Speichert Ihre gewählte Sprache (Deutsch/Englisch) für 1 Jahr"
     },
-    "cookiesNote": "Sie können Cookies über Ihre Browsereinstellungen steuern. Das Deaktivieren von Cookies kann jedoch einige Funktionen unseres Dienstes einschränken.",
+    "cookiesNote": "Wir verwenden keine Analyse-Cookies, Tracking-Technologien oder Browser-localStorage. Alle Cookies sind unbedingt erforderlich, damit der Dienst funktioniert. Das Löschen Ihrer Cookies meldet Sie ab und setzt Ihre Einstellungen zurück.",
     "dataSecurity": "Datensicherheit",
     "dataSecurityText": "Wir implementieren angemessene technische und organisatorische Maßnahmen zum Schutz Ihrer Daten:",
     "dataSecurityItems": {
@@ -228,14 +225,14 @@
     },
     "dataSecurityNote": "Keine Übertragungs- oder Speichermethode ist jedoch zu 100% sicher. Obwohl wir uns bemühen, Ihre Daten zu schützen, können wir keine absolute Sicherheit garantieren.",
     "dataRetention": "Datenspeicherung",
-    "dataRetentionText": "Wir speichern Ihre personenbezogenen Daten so lange:",
+    "dataRetentionText": "Wir speichern Ihre Daten gemäß folgenden spezifischen Zeiträumen:",
     "dataRetentionItems": {
-      "active": "Ihr Konto aktiv ist",
-      "necessary": "Dies zur Bereitstellung unserer Dienste erforderlich ist",
-      "required": "Dies gesetzlich vorgeschrieben ist",
-      "needed": "Dies zur Beilegung von Streitigkeiten oder Durchsetzung von Vereinbarungen erforderlich ist"
+      "active": "Benutzerkonten: Gespeichert bis Sie die Kontolöschung beantragen",
+      "events": "Veranstaltungsdaten: Automatisch gelöscht 2 Wochen nachdem das Veranstaltungsdatum verstrichen ist",
+      "logs": "Server-Protokolle: Für Sicherheitszwecke gemäß gesetzlichen Anforderungen gespeichert",
+      "emails": "E-Mail-Kommunikation: Verifizierungs- und Passwort-Zurücksetzungs-E-Mails sind transaktional und werden nicht langfristig gespeichert"
     },
-    "dataRetentionNote": "Nach der Kontolöschung werden wir Ihre personenbezogenen Daten innerhalb von 30 Tagen löschen oder anonymisieren, es sei denn, eine längere Aufbewahrung ist gesetzlich vorgeschrieben.",
+    "dataRetentionNote": "Wenn Sie Ihr Konto löschen, werden alle zugehörigen personenbezogenen Daten (E-Mail, Benutzername, Passwort) dauerhaft gelöscht. Von Ihnen eingereichte Veranstaltungen werden anonymisiert (Benutzerzuordnung entfernt). Server-Protokolle können zur Einhaltung gesetzlicher Verpflichtungen aufbewahrt werden.",
     "yourRights": "Ihre Rechte",
     "yourRightsText": "Gemäß DSGVO und geltenden Datenschutzgesetzen haben Sie das Recht auf:",
     "yourRightsItems": {

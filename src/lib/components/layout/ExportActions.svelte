@@ -253,7 +253,7 @@
       <p class="text-xs font-medium text-black dark:text-white">
         {$t('filters.export.calendarHowToTitle')}
       </p>
-      <ol class="list-decimal list-inside text-xs text-black/60 dark:text-white/60 space-y-1">
+      <ol class="list-decimal list-outside text-xs text-black/60 dark:text-white/60 space-y-1 pl-5">
         <li>{$t('filters.export.calendarStepCopy')}</li>
         <li>{$t('filters.export.calendarStepAdd')}</li>
       </ol>
