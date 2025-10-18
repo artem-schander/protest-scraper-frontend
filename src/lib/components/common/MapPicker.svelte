@@ -295,8 +295,9 @@ function clearLocation() {
       const latNum = typeof lat === 'string' ? parseFloat(lat) : lat;
       const lonNum = typeof lon === 'string' ? parseFloat(lon) : lon;
       if (!Number.isNaN(latNum) && !Number.isNaN(lonNum)) {
-        if (internalLat !== latNum || internalLon !== lonNum) {
-          updateMapMarker(latNum, lonNum, false);
+        const hadExistingMarker = internalLat != null && internalLon != null;
+        if (internalLat !== latNum || internalLon !== lonNum || !hadExistingMarker) {
+          updateMapMarker(latNum, lonNum, !hadExistingMarker);
         }
       }
     } else if (internalLat != null || internalLon != null) {
