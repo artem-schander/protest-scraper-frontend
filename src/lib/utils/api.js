@@ -137,13 +137,31 @@ export async function deleteProtest(id) {
  * Export API
  */
 export function getExportUrl(format = 'json', filters = {}) {
-  const queryParams = new URLSearchParams(filters);
+  const queryParams = new URLSearchParams();
+
+  // Manually build query params from filters object
+  Object.keys(filters).forEach(key => {
+    const value = filters[key];
+    if (value !== null && value !== undefined && value !== '') {
+      queryParams.append(key, String(value));
+    }
+  });
+
   const queryString = queryParams.toString();
   return queryString ? `${API_BASE_URL}/export/${format}?${queryString}` : `${API_BASE_URL}/export/${format}`;
 }
 
 export function getCalendarSubscriptionUrl(filters = {}) {
-  const queryParams = new URLSearchParams(filters);
+  const queryParams = new URLSearchParams();
+
+  // Manually build query params from filters object
+  Object.keys(filters).forEach(key => {
+    const value = filters[key];
+    if (value !== null && value !== undefined && value !== '') {
+      queryParams.append(key, String(value));
+    }
+  });
+
   const queryString = queryParams.toString();
   return queryString ? `${API_BASE_URL}/export/ics?${queryString}` : `${API_BASE_URL}/export/ics`;
 }

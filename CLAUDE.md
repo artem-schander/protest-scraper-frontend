@@ -7,15 +7,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a SvelteKit SSR frontend for listing upcoming protests and demonstrations. It connects to the [protest-scraper](https://github.com/artem-schander/protest-scraper) backend API.
 
 **Key Technologies:**
-- **SvelteKit** (SSR with file-based routing)
+- **SvelteKit** (SSR with file-based routing, Node adapter)
 - **Tailwind CSS** (via CDN, configured in `src/app.html`)
+- **svelte-i18n** (internationalization with EN/DE support)
+- **date-fns** (locale-aware date formatting)
+- **Leaflet** (map-based radius picker)
 - **Iconify** (@iconify/svelte for icons from icones.js.org)
-- **No build-time CSS processing** - Tailwind is loaded via CDN
 
 ## Development Commands
 
 ```bash
-# Install dependencies
+# Install dependencies (Node 18+)
 npm install
 
 # Start development server (http://localhost:5173)
@@ -26,18 +28,29 @@ npm run build
 
 # Preview production build
 npm run preview
+
+# Run Node adapter build
+npm run start
 ```
 
 ## Environment Configuration
 
 Required: Create `.env` from `.env.example`:
 ```bash
+# Backend API URL
 VITE_API_URL=http://localhost:3000/api
+
+# GitHub repository URL
+PUBLIC_GITHUB_URL=https://github.com/artem-schander/protest-scraper-frontend
+
+# Optional: Imprint/legal page data (PUBLIC_IMPRINT_*)
+# Optional: Privacy policy data (PUBLIC_PRIVACY_*)
+# Optional: OAuth credentials (VITE_GOOGLE_CLIENT_ID)
 ```
 
-The API URL is used in:
-- `src/routes/+page.server.js` (hardcoded, should use env)
-- `src/lib/utils/api.js` (reads from import.meta.env.VITE_API_URL)
+**Environment variable usage:**
+- `VITE_API_URL` - Used in `src/routes/+page.server.js` (via `$env/static/private`) and `src/lib/utils/api.js` (via `import.meta.env`)
+- `PUBLIC_*` - Accessible in both server and client code
 
 ## Architecture & Key Patterns
 
@@ -60,6 +73,46 @@ export async function load({ url, fetch }) {
 ```
 
 Data flows: Server → +page.server.js → +page.svelte component
+
+### Internationalization (i18n)
+
+**Critical Architecture:**
+The app supports EN/DE localization using `svelte-i18n` with SSR-safe cookie persistence.
+
+**Setup flow:**
+1. `src/hooks.server.js` runs on every request:
+   - Reads `protest-scraper-locale` cookie
+   - Falls back to `Accept-Language` header
+   - Calls `setupI18n()` to resolve locale
+   - Sets cookie if missing/changed
+   - Stores in `event.locals.locale`
+
+2. Locale resolution priority (in `src/lib/i18n/index.js`):
+   - Provided locale (from cookie/header)
+   - Browser cookie (client-side)
+   - Navigator language (client-side)
+   - Fallback to 'en'
+
+**Key functions:**
+- `setupI18n(initialLocale, { persist })` - Initialize i18n, optionally persist to cookie
+- `setAppLocale(nextLocale)` - Change language (client-side), updates store + cookie
+- `$t('key.path')` - Translate using current locale
+- `$locale` - Reactive current locale store
+
+**Usage in components:**
+```svelte
+<script>
+  import { t, locale } from '$lib/i18n';
+</script>
+
+<p>{$t('filters.export.title')}</p>
+<p>Current locale: {$locale}</p>
+```
+
+**Adding new translations:**
+1. Add key to `src/lib/i18n/locales/en.json`
+2. Add corresponding key to `src/lib/i18n/locales/de.json`
+3. Use `$t('your.new.key')` in components
 
 ### State Management with Stores
 
@@ -149,24 +202,35 @@ async function apiRequest(endpoint, options) {
 - Build query params from URL searchParams
 
 **Backend API Endpoints:**
-- `GET /api/protests` - List with filters (city, source, language, dateRange, page, lat, lon, radius)
+- `GET /api/protests` - List with filters (search, city, country, startDate, endDate, days, lat, lon, radius, skip, limit)
 - `GET /api/protests/:id` - Single event
 - `POST /api/protests` - Create (auth required)
 - `PUT /api/protests/:id` - Update (auth required)
 - `DELETE /api/protests/:id` - Delete (auth required)
 - `POST /api/auth/login` - Returns {token, user}
 - `POST /api/auth/register` - Returns {token, user}
-- `GET /api/export/ics` - Calendar subscription
+- `GET /api/export/csv` - CSV export with filters
+- `GET /api/export/json` - JSON export with filters
+- `GET /api/export/ics` - ICS download with filters
+- `GET /api/export/ics` - ICS calendar subscription (webcal://)
+
+**Filter parameters:**
+- `search` - Text search across title/description
+- `city`, `country` - Location filters
+- `startDate`, `endDate` - Date range (ISO format)
+- `days` - Legacy/subscription date filter (events in next N days)
+- `lat`, `lon`, `radius` - Geolocation (radius in km)
+- `skip`, `limit` - Pagination (skip = (page - 1) * limit)
 
 ### Component Organization
 
 **Component hierarchy:**
 ```
 lib/components/
-├── common/          # Reusable primitives (Button, Input, Modal)
+├── common/          # Reusable primitives (Button, Input, Modal, Icon, ThemeToggle, MapPicker, DateRangePicker)
 ├── event/           # Event-specific (EventCard, QuickFilters)
 ├── auth/            # Auth modals (LoginModal, RegisterModal)
-└── layout/          # Layout components (Header, FilterSidebar)
+└── layout/          # Layout components (Header, Footer, FilterSidebar, ExportActions)
 ```
 
 **Key component patterns:**
@@ -184,6 +248,21 @@ else → sky/indigo gradient
 - Mobile: Drawer with backdrop, triggered by mobile filter button
 - Updates URL searchParams on apply
 - Uses SvelteKit's `goto()` for navigation
+- Includes DateRangePicker and MapPicker (Leaflet)
+
+**ExportActions** - Export and calendar subscription panel:
+- Sanitizes filters before building export URLs
+- CSV/JSON/ICS downloads (snapshot of current results)
+- ICS calendar subscription URL (live feed with configurable horizon)
+- Subscription excludes date range filters, uses `days` parameter instead
+- Copy-to-clipboard functionality with visual feedback
+- Located in `src/lib/components/layout/ExportActions.svelte`
+
+**MapPicker** - Leaflet-based radius selector:
+- Interactive map for selecting lat/lon and radius
+- Supports geolocation ("Near me" button)
+- Circle overlay shows selected radius
+- Updates filter state on change
 
 **Modal Pattern:**
 ```svelte
@@ -221,14 +300,37 @@ $: if (!$authStore.isAuthenticated && typeof window !== 'undefined') {
 
 **Location:** `src/lib/utils/dateFormat.js`
 
-Key functions:
-- `formatDate(date, 'DD/MM/YYYY')` - Custom format strings
-- `formatTime(date, use24Hour)` - Time formatting
-- `getDaysUntil(date)` - Returns number of days until future date
-- `formatDateRange(start, end)` - Smart range formatting
-- `getRelativeTime(date)` - "Tomorrow", "In 3 days", etc.
+All date formatting functions are **locale-aware** and integrate with the i18n system via `date-fns` locales.
 
-**Important:** All dates from API should be ISO strings, parsed with `new Date()`
+**Key functions:**
+- `formatDate(date, formatStr, localeCode)` - Format date with pattern (defaults to current locale)
+- `formatTime(date, { use24Hour }, localeCode)` - Time formatting
+- `formatTimeRange(startDate, endDate, options, localeCode)` - Format time range
+- `getDaysUntil(date)` - Returns number of days until future date (calendar days)
+- `formatDateRange(start, end, localeCode)` - Smart range formatting (same day/month/year)
+- `getRelativeTime(date, localeCode)` - "in 3 days", "vor 2 Tagen", etc.
+
+**Implementation details:**
+- All functions accept ISO strings, Date objects, or timestamps
+- Invalid dates return empty string/null
+- `toDate()` helper validates and normalizes input
+- Uses `date-fns` with locale map: `{ en: enUS, de: de }`
+- Automatically reads current locale from `$locale` store if not provided
+
+**Usage:**
+```javascript
+import { formatDate, formatDateRange, getDaysUntil } from '$lib/utils/dateFormat';
+
+// Auto-detects current locale
+formatDate(protest.date); // "18 Oct 2025" or "18 Okt 2025"
+
+// Smart range formatting
+formatDateRange('2025-10-18', '2025-10-20'); // "18 – 20 Oct 2025"
+formatDateRange('2025-10-18', '2025-11-02'); // "18 Oct – 2 Nov 2025"
+
+// Days until calculation (for urgency logic)
+const days = getDaysUntil(protest.date); // 7
+```
 
 ## Design System Guidelines
 
@@ -259,6 +361,47 @@ Key functions:
 
 ## Common Development Tasks
 
+### Adding a New Translation
+
+1. Add English key to `src/lib/i18n/locales/en.json`:
+```json
+{
+  "your": {
+    "new": {
+      "key": "English text"
+    }
+  }
+}
+```
+
+2. Add German translation to `src/lib/i18n/locales/de.json`:
+```json
+{
+  "your": {
+    "new": {
+      "key": "Deutscher Text"
+    }
+  }
+}
+```
+
+3. Use in components:
+```svelte
+<script>
+  import { t } from '$lib/i18n';
+</script>
+<p>{$t('your.new.key')}</p>
+```
+
+**For translations with variables:**
+```json
+// en.json
+"greeting": "Hello, {name}!"
+
+// In component
+$t('greeting', { values: { name: 'World' } })
+```
+
 ### Adding a New Page
 
 ```bash
@@ -282,6 +425,8 @@ export async function load({ params, url, fetch }) {
 ```svelte
 <!-- src/lib/components/category/ComponentName.svelte -->
 <script>
+  import { t } from '$lib/i18n';
+
   export let prop1;
   export let prop2 = 'default';
 
@@ -289,7 +434,8 @@ export async function load({ params, url, fetch }) {
 </script>
 
 <div class="text-black dark:text-white">
-  <!-- Always include dark: variants -->
+  <!-- Always include dark: variants and use $t() for text -->
+  <p>{$t('component.text.key')}</p>
 </div>
 ```
 
@@ -325,6 +471,28 @@ Token is automatically added by `apiRequest()` if it exists in localStorage.
 - **Browser checks required**: Always check `browser` from `$app/environment` before accessing localStorage/window
 - **Store initialization**: Stores that use localStorage must handle SSR (see auth/theme stores)
 - **Fetch in load functions**: Use SvelteKit's `fetch` for automatic SSR/CSR handling
+- **i18n in hooks**: `src/hooks.server.js` sets up i18n on every request, stores locale in `event.locals.locale`
+- **Cookie persistence**: Locale is persisted in `protest-scraper-locale` cookie (1 year max-age)
+
+### Internationalization Flow
+
+1. Server-side (`hooks.server.js`):
+   - Reads locale from cookie or Accept-Language header
+   - Calls `setupI18n()` with `{ persist: false }` (already in cookie)
+   - Sets `event.locals.locale` for use in components
+   - Updates cookie if changed
+
+2. Client-side (components):
+   - Import `t` and `locale` from `$lib/i18n`
+   - Use `$t('key')` for reactive translations
+   - Use `setAppLocale(newLocale)` to change language
+   - Date formatting automatically uses current locale
+
+3. **Adding new locales:**
+   - Add to `SUPPORTED_LOCALES` in `src/lib/i18n/index.js`
+   - Add to `LANGUAGE_OPTIONS` array
+   - Create locale file in `src/lib/i18n/locales/`
+   - Add to `localeMap` in `src/lib/utils/dateFormat.js` (import from date-fns)
 
 ### Authentication Flow
 
@@ -348,6 +516,11 @@ Filters are stored in URL searchParams (not in a store). This enables:
 
 Update filters → call `goto(newUrl)` → triggers SSR load → new data
 
+**Filter processing in `+page.server.js`:**
+- Supports both legacy `days` param and new `startDate/endDate`
+- Converts `page` to `skip` for API (skip = (page - 1) * limit)
+- Returns pagination metadata for client
+
 ### Event Card Urgency Logic
 
 Cards change gradient based on time until event:
@@ -355,7 +528,21 @@ Cards change gradient based on time until event:
 - **8-30 days**: Emerald/lime (upcoming)
 - **> 30 days**: Sky/indigo (future)
 
-This is calculated in EventCard component, not server-side.
+This is calculated in EventCard component using `getDaysUntil()`, not server-side.
+
+### Export and Calendar Subscription
+
+**Export URLs** (CSV/JSON/ICS download):
+- Include all current filters (search, date range, location, etc.)
+- Snapshot of results at time of download
+- Built via `getExportUrl(format, filters)` in `src/lib/utils/api.js`
+
+**Calendar subscription** (ICS live feed):
+- Excludes `startDate/endDate` filters
+- Uses `days` parameter for rolling window (default 120 days)
+- User can configure horizon in ExportActions component
+- Built via `getCalendarSubscriptionUrl(filters)`
+- Returns `webcal://` URL for calendar apps
 
 ## Debugging Tips
 
@@ -371,11 +558,22 @@ document.documentElement.classList.contains('dark')
 localStorage.getItem('theme')
 ```
 
+**Check current locale:**
+```javascript
+// In browser console
+document.cookie.match(/protest-scraper-locale=([^;]+)/)?.[1]
+localStorage.getItem('protest-scraper-locale') // Not used - cookie is source of truth
+
+// In Svelte component
+import { locale } from '$lib/i18n';
+console.log($locale); // Current locale code
+```
+
 **API connection issues:**
 - Verify `VITE_API_URL` in `.env`
 - Check backend is running
 - Look for CORS errors in browser console
-- Note: `+page.server.js` has hardcoded URL (needs fixing)
+- Server-side uses `$env/static/private`, client-side uses `import.meta.env`
 
 **Dark mode not working:**
 1. Check `app.html` script runs before Tailwind
@@ -383,9 +581,19 @@ localStorage.getItem('theme')
 3. Ensure components have `dark:` variants
 4. Check `themeStore.init()` is called in +layout.svelte
 
+**i18n not working:**
+1. Verify translation keys exist in both `en.json` and `de.json`
+2. Check `hooks.server.js` is setting locale cookie
+3. Use browser DevTools → Application → Cookies to inspect `protest-scraper-locale`
+4. Ensure `$t()` is used (not `t()`) for reactivity
+5. Check date formatting functions receive correct locale from store
+
 ## Reference Documentation
 
 - SvelteKit: https://kit.svelte.dev/docs
 - Tailwind CSS: https://tailwindcss.com/docs
+- svelte-i18n: https://github.com/kaisermann/svelte-i18n
+- date-fns: https://date-fns.org/docs
+- Leaflet: https://leafletjs.com/reference.html
 - Iconify: https://icones.js.org
 - Backend API: https://github.com/artem-schander/protest-scraper
