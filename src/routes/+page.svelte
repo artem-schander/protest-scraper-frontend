@@ -8,6 +8,7 @@ import { get } from 'svelte/store';
   import ExportActions from '$lib/components/layout/ExportActions.svelte';
   import QuickFilters from '$lib/components/event/QuickFilters.svelte';
   import Icon from '$lib/components/common/Icon.svelte';
+  import Pagination from '$lib/components/common/Pagination.svelte';
   import { t } from '$lib/i18n';
 
   export let data;
@@ -331,7 +332,8 @@ import { get } from 'svelte/store';
     }
   }
 
-  async function goToPage(pageNum) {
+  async function handlePageChange(event) {
+    const pageNum = event.detail.page;
     const url = new URL(window.location.href);
     url.searchParams.set('page', pageNum.toString());
     await goto(url.pathname + url.search, { replaceState: false, keepFocus: true, noScroll: true });
@@ -346,16 +348,6 @@ import { get } from 'svelte/store';
     }
   }
 
-  function nextPage() {
-    goToPage(data.page + 1);
-  }
-
-  function previousPage() {
-    if (data.page > 1) {
-      goToPage(data.page - 1);
-    }
-  }
-
   // Reactive key to force re-render when page or filters change
   $: key = `page:${data.page}-search:${data.filters.search}-dates:${data.filters.startDate}-${data.filters.endDate}-location:${data.filters.lat}-${data.filters.lon}-${data.filters.radius}`;
 
@@ -365,14 +357,6 @@ import { get } from 'svelte/store';
     nearCoordinates = extractNearCoordinatesFromFilters(data.filters);
   }
 
-  // Update search query when data changes (e.g., filters reset)
-  // $: searchQuery = data.filters.search || '';
-
-  // Calculate total pages
-  $: totalPages = Math.ceil(data.total / data.limit);
-  $: hasNextPage = data.page < totalPages;
-  $: pageStart = data.total ? (data.page - 1) * data.limit + 1 : 0;
-  $: pageEnd = data.total ? Math.min(data.page * data.limit, data.total) : 0;
 </script>
 
 <svelte:head>
@@ -555,124 +539,13 @@ import { get } from 'svelte/store';
       {/key}
 
       <!-- Pagination -->
-      {#if data.total > data.limit}
-        <div class="flex flex-col items-center gap-4 pt-8">
-          <!-- Results Info -->
-          <p class="text-sm text-black/60 dark:text-white/60">
-          {$t('home.paginationShowing', { values: { start: pageStart, end: pageEnd, total: data.total } })}
-          </p>
-
-          <!-- Pagination Controls -->
-          <nav class="flex w-full items-center gap-1 sm:gap-1" aria-label="Pagination">
-
-            <!-- Previous Page -->
-            <button
-              on:click={previousPage}
-              class="px-2 sm:px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
-              disabled={data.page === 1}
-              aria-label={$t('home.paginationAriaPrev')}
-            >
-              <Icon icon="heroicons:chevron-left" class="w-4 h-4" />
-              <span class="hidden md:inline">{$t('home.paginationPrev')}</span>
-            </button>
-
-            <div class="grow"></div>
-
-            <!-- First Page -->
-            {#if data.page > 3 && totalPages > 5}
-              <button
-                on:click={() => goToPage(1)}
-                class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg border border-stone-200 dark:border-stone-700 text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors flex items-center justify-center text-sm sm:text-base"
-              aria-label={$t('home.paginationAriaFirst')}
-              >
-                1
-              </button>
-              {#if data.page > 4}
-                <span class="w-6 sm:w-10 h-8 sm:h-10 flex items-center justify-center text-black/40 dark:text-white/40 text-sm">
-                  ...
-                </span>
-              {/if}
-            {/if}
-
-            <!-- Page Numbers -->
-            {#each Array.from({length: Math.min(5, totalPages)}, (_, i) => {
-              if (totalPages <= 5) {
-                // Show all pages if 5 or fewer
-                return i + 1;
-              } else {
-                // Show 5 pages centered around current page
-                const start = Math.max(1, Math.min(data.page - 2, totalPages - 4));
-                return start + i;
-              }
-            }) as pageNum}
-              <button
-                on:click={() => goToPage(pageNum)}
-                class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg transition-colors flex items-center justify-center font-medium text-sm sm:text-base
-                  {pageNum === data.page
-                    ? 'bg-red-600 text-white shadow-md'
-                    : 'border border-stone-200 dark:border-stone-700 text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700'}"
-                aria-label={$t('home.paginationAriaPage', { values: { page: pageNum } })}
-                aria-current={pageNum === data.page ? 'page' : undefined}
-              >
-                {pageNum}
-              </button>
-            {/each}
-
-            <!-- Last Page -->
-            {#if data.page < totalPages - 2 && totalPages > 5}
-              {#if data.page < totalPages - 3}
-                <span class="w-6 sm:w-10 h-8 sm:h-10 flex items-center justify-center text-black/40 dark:text-white/40 text-sm">
-                  ...
-                </span>
-              {/if}
-              <button
-                on:click={() => goToPage(totalPages)}
-                class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg border border-stone-200 dark:border-stone-700 text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors flex items-center justify-center text-sm sm:text-base"
-                aria-label={$t('home.paginationAriaLast')}
-              >
-                {totalPages}
-              </button>
-            {/if}
-
-            <div class="grow"></div>
-
-            <!-- Next Page -->
-            <button
-              on:click={nextPage}
-              class="px-2 sm:px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
-              disabled={!hasNextPage}
-              aria-label={$t('home.paginationAriaNext')}
-            >
-              <span class="hidden md:inline">{$t('home.paginationNext')}</span>
-              <Icon icon="heroicons:chevron-right" class="w-4 h-4" />
-            </button>
-          </nav>
-
-          <!-- Mobile: Page Input for Quick Navigation -->
-          <div class="flex items-center gap-2 text-xs sm:text-sm sm:hidden">
-            <label for="page-input" class="text-black/60 dark:text-white/60">
-              {$t('home.paginationGotoLabel')}
-            </label>
-            <input
-              id="page-input"
-              type="number"
-              min="1"
-              max={totalPages}
-              value={data.page}
-              on:change={(e) => {
-                const page = parseInt(e.target.value);
-                if (page >= 1 && page <= totalPages) {
-                  goToPage(page);
-                }
-              }}
-              class="w-12 px-1 py-1 text-center border border-stone-200 dark:border-stone-700 rounded bg-white dark:bg-stone-800 text-black dark:text-white text-xs"
-            />
-            <span class="text-black/60 dark:text-white/60">
-              {$t('home.paginationGotoSuffix', { values: { total: totalPages } })}
-            </span>
-          </div>
-        </div>
-      {/if}
+      <Pagination
+        currentPage={data.page}
+        totalItems={data.total}
+        itemsPerPage={data.limit}
+        maxVisiblePages="3"
+        on:pageChange={handlePageChange}
+      />
     </main>
   </div>
 </div>
