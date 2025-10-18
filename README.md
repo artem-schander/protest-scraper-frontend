@@ -54,4 +54,4 @@ Follow the workflow in `AGENTS.md`, ensure `npm run build` succeeds, and documen
 
 ## License
 
-This project is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+AGPL-3.0 License © 2025 Artem Schander
