@@ -362,6 +362,24 @@ import { get } from 'svelte/store';
 <svelte:head>
   <title>{$t('home.metaTitle')}</title>
   <meta name="description" content={$t('home.metaDescription')} />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://protest-listing.com/" />
+  <meta property="og:title" content={$t('home.metaTitle')} />
+  <meta property="og:description" content={$t('home.metaDescription')} />
+  <meta property="og:image" content="https://protest-listing.com/og-image.jpg" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="853" />
+  <meta property="og:image:alt" content={$t('home.heroImageAlt')} />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://protest-listing.com/" />
+  <meta name="twitter:title" content={$t('home.metaTitle')} />
+  <meta name="twitter:description" content={$t('home.metaDescription')} />
+  <meta name="twitter:image" content="https://protest-listing.com/og-image.jpg" />
+  <meta name="twitter:image:alt" content={$t('home.heroImageAlt')} />
 </svelte:head>
 
 <!-- Hero Section -->

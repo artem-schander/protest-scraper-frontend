@@ -9,8 +9,8 @@
   let errorMessage = '';
 
   onMount(() => {
-    // Get token from URL query params
-    const token = $page.url.searchParams.get('token');
+    // Get user from URL query params (token is in HTTP-only cookie)
+    const userParam = $page.url.searchParams.get('user');
     const error = $page.url.searchParams.get('error');
 
     if (error) {
@@ -20,23 +20,19 @@
       return;
     }
 
-    if (!token) {
+    if (!userParam) {
       status = 'error';
-      errorMessage = 'No authentication token received';
+      errorMessage = 'No user information received';
       setTimeout(() => goto('/'), 3000);
       return;
     }
 
     try {
-      // Note: We don't have user info from the backend in production mode
-      // The token contains the user info, but we'd need to decode it
-      // For now, we'll just store the token and let the app fetch user info if needed
-      authStore.login(token, {
-        // User info will be loaded by checkAuth() or subsequent API calls
-        id: '',
-        email: '',
-        role: 'USER'
-      });
+      // Parse user info from query param
+      const user = JSON.parse(decodeURIComponent(userParam));
+
+      // Store user info (token is already in HTTP-only cookie)
+      authStore.login(user);
 
       status = 'success';
 

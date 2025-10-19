@@ -92,28 +92,20 @@
     error = '';
 
     try {
-      // Prepare data for API
+      // Prepare data for API (matching backend schema)
       const protestData = {
         title: formData.title,
-        description: formData.description,
-        imageUrl: formData.imageUrl || undefined,
-        startDate: new Date(`${formData.startDate}T${formData.startTime}`).toISOString(),
-        endDate: formData.endDate && formData.endTime
-          ? new Date(`${formData.endDate}T${formData.endTime}`).toISOString()
-          : undefined,
-        location: {
-          address: formData.address,
-          city: formData.city,
-          country: formData.country,
-          coordinates: formData.lat && formData.lon ? {
-            lat: parseFloat(formData.lat),
-            lon: parseFloat(formData.lon)
-          } : undefined
-        },
-        source: formData.source,
-        sourceUrl: formData.sourceUrl || undefined,
-        tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : [],
-        expectedAttendees: formData.expectedAttendees ? parseInt(formData.expectedAttendees) : undefined
+        start: new Date(`${formData.startDate}T${formData.startTime}`),
+        end: formData.endDate && formData.endTime
+          ? new Date(`${formData.endDate}T${formData.endTime}`)
+          : null,
+        location: formData.address,
+        city: formData.city || null,
+        country: formData.country || null,
+        source: formData.source || 'Manual Submission',
+        url: formData.sourceUrl || '',
+        attendees: formData.expectedAttendees ? parseInt(formData.expectedAttendees) : null,
+        language: null // Could be added based on user's locale
       };
 
       const response = await createProtest(protestData);

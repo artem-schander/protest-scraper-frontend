@@ -11,10 +11,8 @@
 
   const dispatch = createEventDispatcher();
 
-  let name = '';
   let email = '';
   let password = '';
-  let confirmPassword = '';
   let agreeToTerms = false;
   let error = '';
   let isLoading = false;
@@ -24,8 +22,8 @@
     error = '';
 
     // Validation
-    if (password !== confirmPassword) {
-      error = 'Passwords do not match';
+    if (password.length < 8) {
+      error = 'Password must be at least 8 characters long';
       return;
     }
 
@@ -37,19 +35,18 @@
     isLoading = true;
 
     try {
-      const response = await register({ name, email, password });
+      const response = await register({ email, password });
 
-      if (response.token) {
-        authStore.login(response.token, response.user);
+      if (response.user) {
+        // Token is now in HTTP-only cookie, we only need user info
+        authStore.login(response.user);
         isOpen = false;
         // Reset form
-        name = '';
         email = '';
         password = '';
-        confirmPassword = '';
         agreeToTerms = false;
       } else {
-        error = response.message || 'Registration failed. Please try again.';
+        error = response.error || response.message || 'Registration failed. Please try again.';
       }
     } catch (err) {
       error = err.message || 'An error occurred. Please try again.';
@@ -84,19 +81,6 @@
       {/if}
 
       <Input
-        bind:value={name}
-        type="text"
-        label="Full Name"
-        placeholder="John Doe"
-        required
-        icon="heroicons:user"
-      >
-        <svelte:fragment slot="icon">
-          <Icon icon="heroicons:user" class="w-5 h-5" />
-        </svelte:fragment>
-      </Input>
-
-      <Input
         bind:value={email}
         type="email"
         label="Email"
@@ -115,20 +99,7 @@
         label="Password"
         placeholder="••••••••"
         required
-        helper="At least 8 characters"
-        icon="heroicons:lock-closed"
-      >
-        <svelte:fragment slot="icon">
-          <Icon icon="heroicons:lock-closed" class="w-5 h-5" />
-        </svelte:fragment>
-      </Input>
-
-      <Input
-        bind:value={confirmPassword}
-        type="password"
-        label="Confirm Password"
-        placeholder="••••••••"
-        required
+        helper="Minimum 8 characters"
         icon="heroicons:lock-closed"
       >
         <svelte:fragment slot="icon">

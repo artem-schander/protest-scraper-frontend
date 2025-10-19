@@ -2,32 +2,18 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 /**
- * Get authentication token from localStorage
- */
-function getAuthToken() {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('authToken');
-  }
-  return null;
-}
-
-/**
- * Make an authenticated API request
+ * Make an API request with credentials (cookies)
  */
 async function apiRequest(endpoint, options = {}) {
-  const token = getAuthToken();
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers
   };
 
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
-    headers
+    headers,
+    credentials: 'include' // Include cookies in requests
   });
 
   const data = await response.json();
@@ -59,6 +45,28 @@ export async function register(userData) {
     const response = await apiRequest('/auth/register', {
       method: 'POST',
       body: JSON.stringify(userData)
+    });
+    return response;
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+export async function logout() {
+  try {
+    const response = await apiRequest('/auth/logout', {
+      method: 'POST'
+    });
+    return response;
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+export async function refreshToken() {
+  try {
+    const response = await apiRequest('/auth/refresh', {
+      method: 'POST'
     });
     return response;
   } catch (error) {

@@ -4,7 +4,12 @@
     "lastUpdated": "Zuletzt aktualisiert"
   },
   "header": {
-    "language": "Sprache"
+    "language": "Sprache",
+    "createEvent": "Veranstaltung erstellen",
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "logout": "Abmelden",
+    "profile": "Profil"
   },
   "home": {
     "metaTitle": "Protest Listing – Bevorstehende Proteste & Demonstrationen",
@@ -445,6 +450,79 @@
         "Diese Plattform bündelt Protestinformationen aus öffentlichen Quellen und Community-Beiträgen. Trotz sorgfältiger Prüfung können wir Vollständigkeit oder Richtigkeit nicht garantieren.",
         "Bitte prüfe Veranstaltungsdetails vor dem Besuch eigenständig. Wir organisieren keine der aufgeführten Veranstaltungen und vertreten keine spezifischen politischen Positionen – unser Anliegen ist allein ein leichter Zugang zu Bürgerinformationen."
       ]
+    }
+  },
+  "createEvent": {
+    "title": "Veranstaltung erstellen",
+    "stepOf": "Schritt {current} von {total}",
+    "step1Title": "Grundlegende Informationen",
+    "step2Title": "Datum & Uhrzeit",
+    "step3Title": "Ort",
+    "step4Title": "Weitere Details",
+    "eventTitle": "Titel der Veranstaltung",
+    "eventTitlePlaceholder": "Klimaschutz-Demonstration",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Beschreibe die Veranstaltung...",
+    "descriptionHelper": "{count}/500 Zeichen",
+    "imageUrl": "Bild-URL der Veranstaltung",
+    "imageUrlPlaceholder": "https://images.unsplash.com/...",
+    "imageUrlHelper": "Optional: Link zu einem Bild von Unsplash oder Pexels",
+    "startDate": "Startdatum",
+    "startTime": "Startzeit",
+    "endDate": "Enddatum",
+    "endTime": "Endzeit",
+    "optional": "Optional",
+    "address": "Adresse/Treffpunkt",
+    "addressPlaceholder": "Brandenburger Tor",
+    "city": "Stadt",
+    "cityPlaceholder": "Berlin",
+    "country": "Land",
+    "selectCountry": "Land auswählen",
+    "latitude": "Breitengrad",
+    "longitude": "Längengrad",
+    "latPlaceholder": "52.516",
+    "lonPlaceholder": "13.377",
+    "useLocation": "Meinen Standort verwenden",
+    "gettingLocation": "Standort wird ermittelt...",
+    "source": "Quelle/Organisation",
+    "selectSource": "Quelle auswählen",
+    "sourceUrl": "Quellen-URL",
+    "sourceUrlPlaceholder": "https://...",
+    "sourceUrlHelper": "Optional: Link zur Originalankündigung",
+    "tags": "Tags",
+    "tagsPlaceholder": "klima, protest, umwelt",
+    "tagsHelper": "Mehrere Tags mit Kommas trennen",
+    "expectedAttendees": "Erwartete Teilnehmer",
+    "attendeesPlaceholder": "500",
+    "attendeesHelper": "Optional: Geschätzte Teilnehmerzahl",
+    "backButton": "Zurück zur Startseite",
+    "back": "Zurück",
+    "next": "Weiter",
+    "submit": "Veranstaltung erstellen",
+    "submitting": "Veranstaltung wird erstellt...",
+    "required": "Pflichtfeld",
+    "errorRequired": "Bitte fülle alle Pflichtfelder aus",
+    "errorDate": "Bitte wähle Startdatum und -uhrzeit aus",
+    "errorLocation": "Bitte fülle alle Ortsangaben aus",
+    "errorSource": "Bitte wähle eine Quelle aus",
+    "errorGeolocation": "Standort konnte nicht ermittelt werden. Bitte aktiviere die Standortdienste.",
+    "errorGeneric": "Ein Fehler ist aufgetreten. Bitte versuche es erneut.",
+    "countries": {
+      "germany": "🇩🇪 Deutschland",
+      "austria": "🇦🇹 Österreich",
+      "switzerland": "🇨🇭 Schweiz",
+      "france": "🇫🇷 Frankreich",
+      "uk": "🇬🇧 Vereinigtes Königreich",
+      "netherlands": "🇳🇱 Niederlande",
+      "belgium": "🇧🇪 Belgien",
+      "other": "🌍 Andere"
+    },
+    "sources": {
+      "berlinPolice": "Polizei Berlin",
+      "dresdenCity": "Stadt Dresden",
+      "friedenskooperative": "Friedenskooperative",
+      "demokrateam": "DemokraTEAM",
+      "other": "Andere"
     }
   }
 }

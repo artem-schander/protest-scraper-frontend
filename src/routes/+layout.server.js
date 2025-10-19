@@ -1,6 +1,7 @@
 /** @type {import('./$types').LayoutServerLoad} */
 export function load({ locals }) {
   return {
-    locale: locals.locale
+    locale: locals.locale,
+    user: locals.user || null
   };
 }

@@ -25,13 +25,14 @@
     try {
       const response = await login(email, password);
 
-      if (response.token) {
-        authStore.login(response.token, response.user);
+      if (response.user) {
+        // Token is now in HTTP-only cookie, we only need user info
+        authStore.login(response.user);
         isOpen = false;
         email = '';
         password = '';
       } else {
-        error = response.message || 'Login failed. Please try again.';
+        error = response.error || response.message || 'Login failed. Please try again.';
       }
     } catch (err) {
       error = err.message || 'An error occurred. Please try again.';
