@@ -11,9 +11,9 @@
   const MAX_LABEL_LENGTH = 28;
 
   const QUICK_FILTERS = [
+    { id: 'near', labelKey: 'filters.quick.near', icon: 'heroicons:map-pin' },
     { id: 'soon', labelKey: 'filters.quick.soon', icon: 'heroicons:bolt' },
     { id: 'weekend', labelKey: 'filters.quick.weekend', icon: 'heroicons:calendar-days' },
-    { id: 'near', labelKey: 'filters.quick.near', icon: 'heroicons:map-pin' }
   ];
 
   $: normalizedSearch = (searchTerm ?? '').trim();

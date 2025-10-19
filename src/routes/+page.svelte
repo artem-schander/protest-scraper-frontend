@@ -551,13 +551,14 @@ import { get } from 'svelte/store';
 </div>
 
 <!-- Floating Action Button (Mobile - Will be shown when authenticated) -->
-<a
-  href="/events/create"
-  class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-red-600 hover:bg-[#C10500] text-white text-2xl shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 flex items-center justify-center lg:hidden z-50"
-  aria-label={$t('home.floatingCreateAria')}
->
-  <Icon icon="heroicons:plus" class="w-7 h-7" />
-</a>
+<!-- TODO: only if authenticated -->
+<!-- <a -->
+<!--   href="/events/create" -->
+<!--   class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-red-600 hover:bg-[#C10500] text-white text-2xl shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 flex items-center justify-center lg:hidden z-50" -->
+<!--   aria-label={$t('home.floatingCreateAria')} -->
+<!-- > -->
+<!--   <Icon icon="heroicons:plus" class="w-7 h-7" /> -->
+<!-- </a> -->
 
 <style>
   :global(.download-icon path) {

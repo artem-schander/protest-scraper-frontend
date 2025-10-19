@@ -145,39 +145,6 @@
             {/each}
           </div>
         </div>
-        <nav class="flex flex-col gap-2">
-          {#if $authStore.isAuthenticated}
-            <a href="/events/create" class="px-4 py-2 text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors flex items-center gap-2">
-              <Icon icon="heroicons:plus" class="w-4 h-4" />
-              Create Event
-            </a>
-            <button
-              class="px-4 py-2 text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors flex items-center gap-2 text-left"
-            >
-              <Icon icon="heroicons:user-circle" class="w-4 h-4" />
-              {$authStore.user?.email || 'Profile'}
-            </button>
-            <button
-              on:click={handleLogout}
-              class="px-4 py-2 text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors text-left"
-            >
-              Logout
-            </button>
-          {:else}
-            <button
-              on:click={openLogin}
-              class="px-4 py-2 text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors text-left"
-            >
-              Login
-            </button>
-            <button
-              on:click={openRegister}
-              class="px-4 py-2 text-sm text-white bg-[#E10600] hover:bg-[#C10500] rounded-lg text-left"
-            >
-              Sign Up
-            </button>
-          {/if}
-        </nav>
       </div>
     {/if}
   </div>
