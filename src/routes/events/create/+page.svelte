@@ -2,36 +2,37 @@
   import { goto } from '$app/navigation';
   import { createProtest } from '$lib/utils/api';
   import { authStore } from '$lib/stores/auth';
+  import { t } from '$lib/i18n';
   import Icon from '$lib/components/common/Icon.svelte';
   import Button from '$lib/components/common/Button.svelte';
   import Input from '$lib/components/common/Input.svelte';
+  import AddressGeocoder from '$lib/components/common/AddressGeocoder.svelte';
+  import DateTimePicker from '$lib/components/common/DateTimePicker.svelte';
 
   let step = 1;
-  const totalSteps = 4;
+  const totalSteps = 3;
 
   // Form data
   let formData = {
     title: '',
     description: '',
-    imageUrl: '',
-    startDate: '',
-    startTime: '',
-    endDate: '',
-    endTime: '',
+    startDateTime: '',
+    endDateTime: '',
     address: '',
     city: '',
     country: '',
     lat: '',
     lon: '',
-    source: '',
-    sourceUrl: '',
+    detailsUrl: '',
     tags: '',
     expectedAttendees: ''
   };
 
   let error = '';
   let isLoading = false;
-  let useGeolocation = false;
+
+  // Helper to determine if error is a translation key or plain message
+  $: errorMessage = error && error.startsWith('createEvent.') ? $t(error) : error;
 
   // Check authentication
   $: if (!$authStore.isAuthenticated && typeof window !== 'undefined') {
@@ -40,16 +41,12 @@
 
   function nextStep() {
     // Validate current step
-    if (step === 1 && (!formData.title || !formData.description)) {
-      error = 'Please fill in all required fields';
+    if (step === 1 && (!formData.title || !formData.description || !formData.startDateTime)) {
+      error = 'createEvent.errorRequired';
       return;
     }
-    if (step === 2 && (!formData.startDate || !formData.startTime)) {
-      error = 'Please select start date and time';
-      return;
-    }
-    if (step === 3 && (!formData.address || !formData.city || !formData.country)) {
-      error = 'Please fill in all location fields';
+    if (step === 2 && (!formData.lat || !formData.lon || !formData.address)) {
+      error = 'createEvent.errorLocation';
       return;
     }
 
@@ -57,36 +54,30 @@
     step++;
   }
 
+  function handleAddressSelect(event) {
+    const { lat, lon, address, city, country } = event.detail;
+    formData.lat = lat.toString();
+    formData.lon = lon.toString();
+    formData.address = address;
+    formData.city = city;
+    formData.country = country;
+  }
+
+  function handleAddressClear() {
+    formData.lat = '';
+    formData.lon = '';
+    formData.address = '';
+    formData.city = '';
+    formData.country = '';
+  }
+
   function prevStep() {
     error = '';
     step--;
   }
 
-  function handleUseLocation() {
-    if (navigator.geolocation) {
-      useGeolocation = true;
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          formData.lat = position.coords.latitude.toString();
-          formData.lon = position.coords.longitude.toString();
-          useGeolocation = false;
-        },
-        (error) => {
-          console.error('Geolocation error:', error);
-          alert('Unable to get your location. Please enable location services.');
-          useGeolocation = false;
-        }
-      );
-    }
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
-
-    if (!formData.source) {
-      error = 'Please select a source';
-      return;
-    }
 
     isLoading = true;
     error = '';
@@ -95,15 +86,13 @@
       // Prepare data for API (matching backend schema)
       const protestData = {
         title: formData.title,
-        start: new Date(`${formData.startDate}T${formData.startTime}`),
-        end: formData.endDate && formData.endTime
-          ? new Date(`${formData.endDate}T${formData.endTime}`)
-          : null,
+        start: new Date(formData.startDateTime),
+        end: formData.endDateTime ? new Date(formData.endDateTime) : null,
         location: formData.address,
         city: formData.city || null,
         country: formData.country || null,
-        source: formData.source || 'Manual Submission',
-        url: formData.sourceUrl || '',
+        source: 'Manual Submission',
+        url: formData.detailsUrl || '',
         attendees: formData.expectedAttendees ? parseInt(formData.expectedAttendees) : null,
         language: null // Could be added based on user's locale
       };
@@ -125,10 +114,10 @@
 </script>
 
 <svelte:head>
-  <title>Create Event - Protest Listing</title>
+  <title>{$t('createEvent.title')} - Protest Listing</title>
 </svelte:head>
 
-<div class="min-h-screen bg-[#EEEEEE] dark:bg-gray-900 py-8 px-4">
+<div class="min-h-screen bg-stone-50 dark:bg-stone-900 py-8 px-4">
   <div class="max-w-2xl mx-auto">
     <!-- Back Button -->
     <button
@@ -136,16 +125,16 @@
       class="flex items-center gap-2 text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white mb-6 transition-colors"
     >
       <Icon icon="heroicons:arrow-left" class="w-5 h-5" />
-      Back to Home
+      {$t('common.backToHome')}
     </button>
 
     <!-- Progress Bar -->
     <div class="mb-8">
       <div class="flex justify-between text-sm text-black/60 dark:text-white/60 mb-2">
-        <span>Step {step} of {totalSteps}</span>
+        <span>{$t('createEvent.stepOf', { values: { current: step, total: totalSteps } })}</span>
         <span>{Math.round((step / totalSteps) * 100)}%</span>
       </div>
-      <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+      <div class="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
         <div
           class="h-full bg-[#E10600] transition-all duration-300"
           style="width: {(step / totalSteps) * 100}%"
@@ -154,207 +143,87 @@
     </div>
 
     <!-- Form Card -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8">
+    <div class="bg-white dark:bg-stone-800 rounded-2xl shadow-lg p-6 md:p-8">
       {#if error}
-        <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-          <Icon icon="heroicons:exclamation-circle" class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-          <p class="text-sm text-red-700">{error}</p>
+        <div class="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/50 flex items-start gap-3">
+          <Icon icon="heroicons:exclamation-circle" class="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
+          <p class="text-sm text-red-700 dark:text-red-300">{errorMessage}</p>
         </div>
       {/if}
 
       <form on:submit={handleSubmit}>
         {#if step === 1}
-          <!-- Step 1: Basic Info -->
+          <!-- Step 1: Basic Info & Date/Time -->
           <div class="space-y-6">
-            <h2 class="text-2xl font-medium text-black dark:text-white dark:text-white">Basic Information</h2>
+            <h2 class="text-2xl font-medium text-black dark:text-white">{$t('createEvent.step1Title')}</h2>
 
             <Input
               bind:value={formData.title}
-              label="Event Title"
-              placeholder="Climate Action March"
+              label={$t('createEvent.eventTitle')}
               required
             />
 
             <div>
               <label class="block text-sm text-black/60 dark:text-white/60 mb-2" for="event-description">
-                Description <span class="text-red-500">*</span>
+                {$t('createEvent.description')} <span class="text-red-500">*</span>
               </label>
               <textarea
                 id="event-description"
                 bind:value={formData.description}
                 required
                 rows="5"
-                class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 rounded-xl focus:outline-none focus:border-black dark:focus:border-white focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 resize-none transition-all"
-                placeholder="Describe the event..."
+                class="w-full px-4 py-3 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-700 text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 rounded-xl focus:outline-none focus:border-black dark:focus:border-white focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 resize-none transition-all"
               ></textarea>
               <span class="text-xs text-black/40 dark:text-white/40">
-                {formData.description.length}/500 characters
+                {$t('createEvent.charactersCount', { values: { count: formData.description.length } })}
               </span>
             </div>
 
-            <Input
-              bind:value={formData.imageUrl}
-              label="Event Image URL"
-              type="url"
-              placeholder="https://images.unsplash.com/..."
-              helper="Optional: Link to image from Unsplash or Pexels"
+            <DateTimePicker
+              bind:startDateTime={formData.startDateTime}
+              bind:endDateTime={formData.endDateTime}
+              required={true}
             />
           </div>
         {:else if step === 2}
-          <!-- Step 2: Date & Time -->
+          <!-- Step 2: Location -->
           <div class="space-y-6">
-            <h2 class="text-2xl font-medium text-black dark:text-white">Date & Time</h2>
+            <h2 class="text-2xl font-medium text-black dark:text-white">{$t('createEvent.step3Title')}</h2>
 
-            <div class="grid grid-cols-2 gap-4">
-              <Input
-                bind:value={formData.startDate}
-                label="Start Date"
-                type="date"
-                required
-              />
-              <Input
-                bind:value={formData.startTime}
-                label="Start Time"
-                type="time"
-                required
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <Input
-                bind:value={formData.endDate}
-                label="End Date"
-                type="date"
-                helper="Optional"
-              />
-              <Input
-                bind:value={formData.endTime}
-                label="End Time"
-                type="time"
-                helper="Optional"
-              />
-            </div>
+            <AddressGeocoder
+              initialAddress={formData.address}
+              initialCity={formData.city}
+              initialCountry={formData.country}
+              on:select={handleAddressSelect}
+              on:clear={handleAddressClear}
+            />
           </div>
         {:else if step === 3}
-          <!-- Step 3: Location -->
+          <!-- Step 3: Additional Info -->
           <div class="space-y-6">
-            <h2 class="text-2xl font-medium text-black dark:text-white">Location</h2>
+            <h2 class="text-2xl font-medium text-black dark:text-white">{$t('createEvent.step4Title')}</h2>
 
             <Input
-              bind:value={formData.address}
-              label="Address/Meeting Point"
-              placeholder="Brandenburg Gate"
-              required
-            />
-
-            <Input
-              bind:value={formData.city}
-              label="City"
-              placeholder="Berlin"
-              required
-            />
-
-            <div>
-              <label class="block text-sm text-black/60 dark:text-white/60 mb-2" for="event-country">
-                Country <span class="text-red-500">*</span>
-              </label>
-              <select
-                id="event-country"
-                bind:value={formData.country}
-                required
-                class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white rounded-xl focus:outline-none focus:border-black dark:focus:border-white focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 transition-all"
-              >
-                <option value="">Select country</option>
-                <option value="Germany">🇩🇪 Germany</option>
-                <option value="Austria">🇦🇹 Austria</option>
-                <option value="Switzerland">🇨🇭 Switzerland</option>
-                <option value="France">🇫🇷 France</option>
-                <option value="United Kingdom">🇬🇧 United Kingdom</option>
-                <option value="Netherlands">🇳🇱 Netherlands</option>
-                <option value="Belgium">🇧🇪 Belgium</option>
-                <option value="Other">🌍 Other</option>
-              </select>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <Input
-                bind:value={formData.lat}
-                label="Latitude"
-                type="number"
-                step="any"
-                placeholder="52.516"
-                helper="Optional"
-              />
-              <Input
-                bind:value={formData.lon}
-                label="Longitude"
-                type="number"
-                step="any"
-                placeholder="13.377"
-                helper="Optional"
-              />
-            </div>
-
-            <button
-              type="button"
-              on:click={handleUseLocation}
-              disabled={useGeolocation}
-              class="flex items-center gap-2 text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600] text-sm font-medium disabled:opacity-50"
-            >
-              {#if useGeolocation}
-                <Icon icon="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
-                Getting location...
-              {:else}
-                <Icon icon="heroicons:map-pin" class="w-4 h-4" />
-                Use my location
-              {/if}
-            </button>
-          </div>
-        {:else if step === 4}
-          <!-- Step 4: Additional Info -->
-          <div class="space-y-6">
-            <h2 class="text-2xl font-medium text-black dark:text-white">Additional Details</h2>
-
-            <div>
-              <label class="block text-sm text-black/60 dark:text-white/60 mb-2" for="event-source">
-                Source/Organization <span class="text-red-500">*</span>
-              </label>
-              <select
-                id="event-source"
-                bind:value={formData.source}
-                required
-                class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white rounded-xl focus:outline-none focus:border-black dark:focus:border-white focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 transition-all"
-              >
-                <option value="">Select source</option>
-                <option value="Berlin Police">Berlin Police</option>
-                <option value="Dresden City">Dresden City</option>
-                <option value="Friedenskooperative">Friedenskooperative</option>
-                <option value="DemokraTEAM">DemokraTEAM</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <Input
-              bind:value={formData.sourceUrl}
-              label="Source URL"
+              bind:value={formData.detailsUrl}
+              label={$t('createEvent.detailsUrl')}
               type="url"
-              placeholder="https://..."
-              helper="Optional: Link to original announcement"
+              placeholder={$t('createEvent.detailsUrlPlaceholder')}
+              helper={$t('createEvent.detailsUrlHelper')}
             />
 
             <Input
               bind:value={formData.tags}
-              label="Tags"
-              placeholder="climate, protest, environment"
-              helper="Separate multiple tags with commas"
+              label={$t('createEvent.tags')}
+              placeholder={$t('createEvent.tagsPlaceholder')}
+              helper={$t('createEvent.tagsHelper')}
             />
 
             <Input
               bind:value={formData.expectedAttendees}
-              label="Expected Attendees"
+              label={$t('createEvent.expectedAttendees')}
               type="number"
-              placeholder="500"
-              helper="Optional: Estimated number of participants"
+              placeholder={$t('createEvent.attendeesPlaceholder')}
+              helper={$t('createEvent.attendeesHelper')}
             />
           </div>
         {/if}
@@ -364,23 +233,23 @@
           {#if step > 1}
             <Button variant="secondary" on:click={prevStep} fullWidth>
               <Icon icon="heroicons:arrow-left" class="w-5 h-5" />
-              Back
+              {$t('createEvent.back')}
             </Button>
           {/if}
 
           {#if step < totalSteps}
             <Button variant="primary" on:click={nextStep} fullWidth>
-              Next
+              {$t('createEvent.next')}
               <Icon icon="heroicons:arrow-right" class="w-5 h-5" />
             </Button>
           {:else}
             <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
               {#if isLoading}
                 <Icon icon="heroicons:arrow-path" class="w-5 h-5 animate-spin" />
-                Creating Event...
+                {$t('createEvent.submitting')}
               {:else}
                 <Icon icon="heroicons:check" class="w-5 h-5" />
-                Create Event
+                {$t('createEvent.submit')}
               {/if}
             </Button>
           {/if}

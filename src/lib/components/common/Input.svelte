@@ -17,6 +17,7 @@
   export let disabled = false;
   export let icon = '';
   export let id = '';
+  export let step = undefined; // For number inputs
 
   import Icon from '$lib/components/common/Icon.svelte';
 
@@ -153,6 +154,7 @@
         {placeholder}
         {required}
         {disabled}
+        {step}
         bind:value
         on:input
         on:blur
@@ -336,3 +338,16 @@
     </p>
   {/if}
 </div>
+
+<style>
+  /* Remove spinner controls from number inputs */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+</style>
