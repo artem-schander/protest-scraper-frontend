@@ -101,6 +101,7 @@ export async function getProtests(filters = {}) {
   if (filters.lat) queryParams.append('lat', filters.lat);
   if (filters.lon) queryParams.append('lon', filters.lon);
   if (filters.radius) queryParams.append('radius', filters.radius);
+  if (filters.verified !== undefined) queryParams.append('verified', filters.verified);
 
   try {
     const response = await apiRequest(`/protests?${queryParams}`);

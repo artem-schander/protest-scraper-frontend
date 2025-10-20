@@ -3,7 +3,8 @@
     "backToHome": "Back to Home",
     "lastUpdated": "Last updated",
     "required": "required",
-    "optional": "Optional"
+    "optional": "Optional",
+    "at": "at"
   },
   "createEvent": {
     "title": "Create Event",
@@ -46,6 +47,7 @@
     "errorRequired": "Please fill in all required fields",
     "errorDateTime": "Please select start date and time",
     "errorLocation": "Please search for and select a location",
+    "redirecting": "Redirecting you to the homepage in a moment...",
     "geocoder": {
       "placeholder": "Enter address, city, or location",
       "search": "Search",
@@ -69,6 +71,7 @@
   "header": {
     "language": "Language",
     "createEvent": "Create Event",
+    "moderate": "Moderate",
     "login": "Login",
     "signup": "Sign Up",
     "logout": "Logout",
@@ -514,5 +517,29 @@
         "Please verify event details independently before attending. We are not the organisers of listed events and do not endorse specific political views—we simply make civic information easier to access."
       ]
     }
+  },
+  "moderate": {
+    "title": "Moderate Events",
+    "description": "Review and approve user-submitted events",
+    "loading": "Loading pending events...",
+    "refresh": "Refresh",
+    "noEvents": "All clear!",
+    "noEventsMessage": "There are no pending events to review at the moment.",
+    "eventCount": "{count} pending event(s)",
+    "source": "Source",
+    "viewDetails": "View details",
+    "submitted": "Submitted",
+    "approve": "Approve",
+    "reject": "Reject",
+    "approved": "Event Approved",
+    "approvedMessage": "'{title}' has been approved and is now visible.",
+    "rejected": "Event Rejected",
+    "rejectedMessage": "'{title}' has been rejected and deleted.",
+    "confirmReject": "Are you sure you want to reject '{title}'? This will permanently delete the event.",
+    "approveError": "Failed to approve event",
+    "rejectError": "Failed to reject event",
+    "loadError": "Failed to load pending events",
+    "accessDenied": "Access Denied",
+    "accessDeniedMessage": "You need moderator or admin permissions to access this page."
   }
 }

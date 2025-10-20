@@ -8,6 +8,8 @@
   export let initialAddress = '';
   export let initialCity = '';
   export let initialCountry = '';
+  export let initialLat = null;
+  export let initialLon = null;
 
   const dispatch = createEventDispatcher();
 
@@ -25,10 +27,27 @@
   let lightTileLayer;
   let darkTileLayer;
 
-  // Initialize search query from initial values
-  $: if (initialAddress || initialCity || initialCountry) {
+  // Helper to get normalized address from result
+  // For restored results, display_name is already normalized
+  // For new selections, we normalize from address object
+  $: getNormalizedAddress = (result) => {
+    if (!result) return '';
+    // If display_name exists and is already normalized (from restoration), use it
+    if (result.display_name && !result.address?.road && !result.address?.postcode) {
+      return result.display_name;
+    }
+    // Otherwise normalize from address object
+    return normalizeAddress(result.address);
+  };
+
+  // Initialize searchQuery only once from props (not reactive)
+  // This prevents the search field from being refilled when navigating back
+  if (!searchQuery && (initialAddress || initialCity || initialCountry)) {
     const parts = [initialAddress, initialCity, initialCountry].filter(Boolean);
-    searchQuery = parts.join(', ');
+    if (parts.length > 0 && !initialLat && !initialLon) {
+      // Only prefill if we don't have coordinates (new component, not restoration)
+      searchQuery = parts.join(', ');
+    }
   }
 
   onMount(async () => {
@@ -73,6 +92,20 @@
     onDestroy(() => {
       observer.disconnect();
     });
+
+    // If we have initial coordinates, restore the selected location
+    if (initialLat && initialLon && initialAddress) {
+      selectedResult = {
+        lat: initialLat,
+        lon: initialLon,
+        display_name: initialAddress,
+        address: {
+          city: initialCity,
+          country_code: initialCountry?.toLowerCase()
+        }
+      };
+      updateMapMarker(parseFloat(initialLat), parseFloat(initialLon), initialAddress);
+    }
   });
 
   onDestroy(() => {
@@ -98,6 +131,43 @@
     } else {
       lightTileLayer.addTo(map);
     }
+  }
+
+  /**
+   * Normalize address from Nominatim address components
+   * Format: {road} {house_number}, {postcode} {village}, {state} {county}
+   */
+  function normalizeAddress(address) {
+    if (!address) return '';
+
+    const parts = [];
+
+    // Part 1: road + house_number
+    const streetParts = [];
+    if (address.road) streetParts.push(address.road);
+    if (address.house_number) streetParts.push(address.house_number);
+    if (streetParts.length > 0) {
+      parts.push(streetParts.join(' '));
+    }
+
+    // Part 2: postcode + village/city/town
+    const cityParts = [];
+    if (address.postcode) cityParts.push(address.postcode);
+    const locality = address.village || address.city || address.town || address.municipality;
+    if (locality) cityParts.push(locality);
+    if (cityParts.length > 0) {
+      parts.push(cityParts.join(' '));
+    }
+
+    // Part 3: state + county
+    const regionParts = [];
+    if (address.state) regionParts.push(address.state);
+    if (address.county) regionParts.push(address.county);
+    if (regionParts.length > 0) {
+      parts.push(regionParts.join(' '));
+    }
+
+    return parts.join(', ');
   }
 
   async function searchAddress() {
@@ -141,17 +211,21 @@
   function selectResult(result) {
     selectedResult = result;
     showResults = false;
-    updateMapMarker(parseFloat(result.lat), parseFloat(result.lon), result.display_name);
+
+    // Normalize the address using address components
+    const normalizedAddress = normalizeAddress(result.address);
+
+    updateMapMarker(parseFloat(result.lat), parseFloat(result.lon), normalizedAddress);
 
     // Extract city and country code (ISO alpha-2)
     const city = result.address?.city || result.address?.town || result.address?.village || '';
     const countryCode = result.address?.country_code?.toUpperCase() || '';
 
-    // Emit the selected address data
+    // Emit the selected address data with normalized format
     dispatch('select', {
       lat: parseFloat(result.lat),
       lon: parseFloat(result.lon),
-      address: result.display_name,
+      address: normalizedAddress,
       city: city,
       country: countryCode // ISO alpha-2 code like "DE", "AT", etc.
     });
@@ -258,14 +332,9 @@
             <div class="flex items-start gap-2">
               <Icon icon="heroicons:map-pin" class="w-4 h-4 mt-0.5 text-black/60 dark:text-white/60 flex-shrink-0" />
               <div class="flex-1 min-w-0">
-                <div class="text-sm font-medium text-black dark:text-white truncate">
-                  {result.display_name}
+                <div class="text-sm font-medium text-black dark:text-white">
+                  {normalizeAddress(result.address)}
                 </div>
-                {#if result.address}
-                  <div class="text-xs text-black/60 dark:text-white/60 mt-0.5">
-                    {[result.address.city || result.address.town || result.address.village, result.address.country_code?.toUpperCase()].filter(Boolean).join(', ')}
-                  </div>
-                {/if}
               </div>
             </div>
           </button>
@@ -298,7 +367,7 @@
           <span class="font-medium">{$t('createEvent.geocoder.selected')}</span>
         </div>
         <div class="text-xs text-black dark:text-white break-words">
-          {selectedResult.display_name}
+          {getNormalizedAddress(selectedResult)}
         </div>
         <div class="text-xs text-black/40 dark:text-white/40 font-mono mt-1">
           {parseFloat(selectedResult.lat).toFixed(6)}, {parseFloat(selectedResult.lon).toFixed(6)}

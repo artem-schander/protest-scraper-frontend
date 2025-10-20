@@ -95,6 +95,17 @@
             <Icon icon="heroicons:plus" class="w-4 h-4" />
             {$t('header.createEvent')}
           </a>
+
+          <!-- Moderate Button (Moderator/Admin only) -->
+          {#if $authStore.user?.role === 'MODERATOR' || $authStore.user?.role === 'ADMIN'}
+            <a
+              href="/events/moderate"
+              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors"
+            >
+              <Icon icon="heroicons:shield-check" class="w-4 h-4" />
+              {$t('header.moderate')}
+            </a>
+          {/if}
         {/if}
 
         <!-- Settings Group -->
@@ -224,6 +235,15 @@
               <Icon icon="heroicons:plus" class="w-4 h-4" />
               {$t('header.createEvent')}
             </a>
+
+            <!-- Moderate Button (Moderator/Admin only) -->
+            {#if $authStore.user?.role === 'MODERATOR' || $authStore.user?.role === 'ADMIN'}
+              <a href="/events/moderate" class="px-4 py-2 text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors flex items-center gap-2">
+                <Icon icon="heroicons:shield-check" class="w-4 h-4" />
+                {$t('header.moderate')}
+              </a>
+            {/if}
+
             <button
               class="px-4 py-2 text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors flex items-center gap-2 text-left"
             >

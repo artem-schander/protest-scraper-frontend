@@ -1,11 +1,15 @@
 {
   "common": {
     "backToHome": "Zurück zur Startseite",
-    "lastUpdated": "Zuletzt aktualisiert"
+    "lastUpdated": "Zuletzt aktualisiert",
+    "required": "erforderlich",
+    "optional": "Optional",
+    "at": "um"
   },
   "header": {
     "language": "Sprache",
     "createEvent": "Veranstaltung erstellen",
+    "moderate": "Moderieren",
     "login": "Anmelden",
     "signup": "Registrieren",
     "logout": "Abmelden",
@@ -495,6 +499,7 @@
     "errorRequired": "Bitte fülle alle Pflichtfelder aus",
     "errorDateTime": "Bitte wähle Startdatum und -uhrzeit aus",
     "errorLocation": "Bitte suche nach einem Ort und wähle ihn aus",
+    "redirecting": "Du wirst in Kürze zur Startseite weitergeleitet...",
     "geocoder": {
       "placeholder": "Adresse, Stadt oder Ort eingeben",
       "search": "Suchen",
@@ -514,5 +519,29 @@
       "belgium": "🇧🇪 Belgien",
       "other": "🌍 Andere"
     }
+  },
+  "moderate": {
+    "title": "Veranstaltungen moderieren",
+    "description": "Nutzerübermittelte Veranstaltungen prüfen und freigeben",
+    "loading": "Ausstehende Veranstaltungen werden geladen...",
+    "refresh": "Aktualisieren",
+    "noEvents": "Alles erledigt!",
+    "noEventsMessage": "Momentan gibt es keine ausstehenden Veranstaltungen zu prüfen.",
+    "eventCount": "{count} ausstehende Veranstaltung(en)",
+    "source": "Quelle",
+    "viewDetails": "Details anzeigen",
+    "submitted": "Eingereicht",
+    "approve": "Genehmigen",
+    "reject": "Ablehnen",
+    "approved": "Veranstaltung genehmigt",
+    "approvedMessage": "'{title}' wurde genehmigt und ist jetzt sichtbar.",
+    "rejected": "Veranstaltung abgelehnt",
+    "rejectedMessage": "'{title}' wurde abgelehnt und gelöscht.",
+    "confirmReject": "Möchten Sie '{title}' wirklich ablehnen? Dies wird die Veranstaltung dauerhaft löschen.",
+    "approveError": "Veranstaltung konnte nicht genehmigt werden",
+    "rejectError": "Veranstaltung konnte nicht abgelehnt werden",
+    "loadError": "Ausstehende Veranstaltungen konnten nicht geladen werden",
+    "accessDenied": "Zugriff verweigert",
+    "accessDeniedMessage": "Sie benötigen Moderator- oder Admin-Berechtigungen, um auf diese Seite zuzugreifen."
   }
 }

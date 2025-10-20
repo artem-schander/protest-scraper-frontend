@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { createProtest } from '$lib/utils/api';
   import { authStore } from '$lib/stores/auth';
@@ -8,6 +9,7 @@
   import Input from '$lib/components/common/Input.svelte';
   import AddressGeocoder from '$lib/components/common/AddressGeocoder.svelte';
   import DateTimePicker from '$lib/components/common/DateTimePicker.svelte';
+  import { notificationStore } from '$lib/stores/notification';
 
   let step = 1;
   const totalSteps = 3;
@@ -34,14 +36,16 @@
   // Helper to determine if error is a translation key or plain message
   $: errorMessage = error && error.startsWith('createEvent.') ? $t(error) : error;
 
-  // Check authentication
-  $: if (!$authStore.isAuthenticated && typeof window !== 'undefined') {
-    goto('/');
-  }
+  // Check authentication on mount
+  onMount(() => {
+    if (!$authStore.isAuthenticated) {
+      goto('/');
+    }
+  });
 
   function nextStep() {
     // Validate current step
-    if (step === 1 && (!formData.title || !formData.description || !formData.startDateTime)) {
+    if (step === 1 && (!formData.title || !formData.startDateTime)) {
       error = 'createEvent.errorRequired';
       return;
     }
@@ -86,6 +90,7 @@
       // Prepare data for API (matching backend schema)
       const protestData = {
         title: formData.title,
+        description: formData.description || null,
         start: new Date(formData.startDateTime),
         end: formData.endDateTime ? new Date(formData.endDateTime) : null,
         location: formData.address,
@@ -94,15 +99,32 @@
         source: 'Manual Submission',
         url: formData.detailsUrl || '',
         attendees: formData.expectedAttendees ? parseInt(formData.expectedAttendees) : null,
-        language: null // Could be added based on user's locale
+        language: null, // Could be added based on user's locale
+        geoLocation: formData.lat && formData.lon ? {
+          type: 'Point',
+          coordinates: [parseFloat(formData.lon), parseFloat(formData.lat)]
+        } : null
       };
 
       const response = await createProtest(protestData);
 
+      console.log('Create protest response:', response);
+
       if (response.error) {
         error = response.error;
       } else {
-        // Success! Redirect to home or event detail
+        // Show success notification
+        const message = response.message || 'Event created successfully';
+        const isPending = message.includes('pending');
+
+        notificationStore.add({
+          type: 'success',
+          title: isPending ? 'Event Submitted!' : 'Event Created!',
+          message: message,
+          duration: 7000
+        });
+
+        // Redirect to home
         goto('/');
       }
     } catch (err) {
@@ -165,12 +187,12 @@
 
             <div>
               <label class="block text-sm text-black/60 dark:text-white/60 mb-2" for="event-description">
-                {$t('createEvent.description')} <span class="text-red-500">*</span>
+                {$t('createEvent.description')}
+                <span class="text-xs text-black/40 dark:text-white/40 ml-1">({$t('common.optional')})</span>
               </label>
               <textarea
                 id="event-description"
                 bind:value={formData.description}
-                required
                 rows="5"
                 class="w-full px-4 py-3 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-700 text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 rounded-xl focus:outline-none focus:border-black dark:focus:border-white focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 resize-none transition-all"
               ></textarea>
@@ -194,6 +216,8 @@
               initialAddress={formData.address}
               initialCity={formData.city}
               initialCountry={formData.country}
+              initialLat={formData.lat}
+              initialLon={formData.lon}
               on:select={handleAddressSelect}
               on:clear={handleAddressClear}
             />

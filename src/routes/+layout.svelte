@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import Header from '$lib/components/layout/Header.svelte';
   import Footer from '$lib/components/layout/Footer.svelte';
+  import Notification from '$lib/components/common/Notification.svelte';
   import { themeStore } from '$lib/stores/theme';
   import { authStore } from '$lib/stores/auth';
   import { preloadIcons } from '$lib/utils/iconPreloader';
@@ -65,3 +66,6 @@
   </main>
   <Footer />
 </div>
+
+<!-- Global notification container -->
+<Notification />
