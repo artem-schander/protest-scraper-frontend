@@ -40,7 +40,7 @@
   const dataRetentionKeys = ['active', 'events', 'logs', 'emails'];
   const yourRightsKeys = ['access', 'rectification', 'erasure', 'restriction', 'portability', 'object', 'withdraw', 'complaint'];
 
-  const lastUpdated = new Date();
+  const lastUpdated = new Date('2025-10-20');
 </script>
 
 <svelte:head>

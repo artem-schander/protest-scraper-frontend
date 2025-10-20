@@ -72,10 +72,110 @@
     "language": "Language",
     "createEvent": "Create Event",
     "moderate": "Moderate",
+    "manageUsers": "Manage Users",
     "login": "Login",
     "signup": "Sign Up",
     "logout": "Logout",
-    "profile": "Profile"
+    "profile": "Profile",
+    "pendingModerationCount": "{count, plural, one {# pending event} other {# pending events}}"
+  },
+  "admin": {
+    "users": {
+      "title": "User Management",
+      "subtitle": "Create accounts, adjust roles, and control access for the platform.",
+      "create": {
+        "title": "Create new user",
+        "dialogTitle": "Create new user",
+        "emailLabel": "Email address",
+        "passwordLabel": "Password",
+        "passwordHelper": "Minimum 8 characters.",
+        "roleLabel": "Role",
+        "emailVerifiedLabel": "Mark email as verified",
+        "submitLabel": "Create user",
+        "submitting": "Creating…",
+        "openButton": "Create new user"
+      },
+      "roles": {
+        "user": "Standard user",
+        "moderator": "Moderator",
+        "admin": "Administrator"
+      },
+      "notifications": {
+        "fetchFailed": "We couldn't load the user list.",
+        "createFailed": "User creation failed.",
+        "createSuccess": "User created",
+        "createSuccessMessage": "Successfully created {email}.",
+        "updateFailed": "Update failed.",
+        "updateSuccess": "User updated",
+        "updateSuccessMessage": "Updated {email}.",
+        "deleteFailed": "Delete failed.",
+        "deleteSuccess": "User deleted",
+        "deleteSuccessMessage": "Deleted {email}.",
+        "banFailed": "Ban failed.",
+        "banSuccess": "User banned",
+        "banSuccessMessage": "Banned {email}.",
+        "unbanFailed": "Unban failed.",
+        "unbanSuccess": "User unbanned",
+        "unbanSuccessMessage": "Unbanned {email}.",
+        "resendFailed": "Could not resend verification email.",
+        "resendSuccess": "Verification email sent",
+        "resendSuccessMessage": "Sent a fresh verification code to {email}.",
+        "invalidDuration": "Provide a positive duration or choose forever."
+      },
+      "list": {
+        "title": "Existing users",
+        "refresh": "Refresh",
+        "headers": {
+          "email": "Email",
+          "role": "Role",
+          "status": "Status",
+          "banned": "Ban status",
+          "actions": "Actions"
+        },
+        "actionsMenuAria": "Open actions menu"
+      },
+      "loading": "Loading users…",
+      "empty": "No users found yet.",
+      "status": {
+        "verified": "Email verified",
+        "unverified": "Verification pending",
+        "bannedUntil": "Banned until {date}",
+        "notBanned": "Not banned"
+      },
+      "actions": {
+        "edit": "Edit",
+        "ban": "Ban",
+        "unban": "Unban",
+        "delete": "Delete",
+        "resend": "Resend verification"
+      },
+      "edit": {
+        "emailLabel": "Email",
+        "passwordLabel": "Password",
+        "passwordHelper": "Leave blank to keep the current password.",
+        "emailVerifiedLabel": "Email verified",
+        "dialogTitle": "Edit {email}",
+        "save": "Save changes",
+        "saving": "Saving…",
+        "cancel": "Cancel"
+      },
+      "ban": {
+        "title": "Ban {email}",
+        "dialogTitle": "Ban {email}",
+        "durationLabel": "Duration",
+        "durationPlaceholder": "Enter a number",
+        "unitLabel": "Unit",
+        "unitMinutes": "Minutes",
+        "unitHours": "Hours",
+        "unitDays": "Days",
+        "foreverLabel": "Ban indefinitely",
+        "reasonLabel": "Reason",
+        "reasonPlaceholder": "Optional reason for the ban",
+        "submit": "Confirm ban",
+        "cancel": "Cancel"
+      },
+      "confirmDelete": "Delete {email}? This action cannot be undone."
+    }
   },
   "home": {
     "metaTitle": "Protest Listing - Upcoming Protests & Demonstrations",
@@ -324,6 +424,99 @@
     "contactUs": "Contact Us",
     "contactUsText": "If you have any questions about this privacy policy or our data practices, please contact us:"
   },
+  "terms": {
+    "title": "Terms of Service",
+    "metaDescription": "Terms of Service governing how to use Protest Listing, the open directory for protests and demonstrations.",
+    "subtitle": "These terms explain how to use Protest Listing and outline the responsibilities that keep the directory trustworthy.",
+    "contact": {
+      "title": "Contact",
+      "intro": "If you have questions about these terms, please contact us by email:"
+    },
+    "sections": {
+      "platformPurpose": {
+        "title": "Platform Purpose",
+        "paragraphs": [
+          "Protest Listing is a volunteer civic-tech project maintained by a small team. We aggregate upcoming demonstrations from public data sources and vetted community submissions so people can plan civic participation more easily.",
+          "We may adapt or pause features over time in order to keep the dataset trustworthy and the moderation workflow manageable."
+        ]
+      },
+      "accountResponsibilities": {
+        "title": "Account Responsibilities",
+        "paragraphs": [
+          "By registering you confirm that you meet the minimum legal age in your region and that the email address you provide is yours.",
+          "Keep your credentials private, update your contact details when they change, and let us know if you suspect unauthorised access."
+        ],
+        "list": [
+          "Use a strong, unique password for your account.",
+          "Limit yourself to one account per person unless we explicitly approve otherwise.",
+          "Respond to moderator requests in a timely, respectful manner."
+        ]
+      },
+      "communitySubmissions": {
+        "title": "Community Submissions",
+        "paragraphs": [
+          "You can submit new events or corrections. Share details that are accurate to the best of your knowledge and cite public references wherever possible.",
+          "Avoid uploading personal data that has not already been publicly disclosed by the organiser or is not required by law."
+        ],
+        "list": [
+          "Provide source links or context that helps moderators verify the submission.",
+          "Stick to factual descriptions and avoid promotional or partisan slogans.",
+          "Respect sensitive locations and vulnerable communities when sharing map pins."
+        ]
+      },
+      "moderation": {
+        "title": "Moderation & Verification",
+        "paragraphs": [
+          "Moderators review every community submission before it is published.",
+          "Repeated attempts to spread misinformation or otherwise abuse the workflow can lead to account suspension. You can appeal moderation decisions via the contact email below."
+        ]
+      },
+      "acceptableUse": {
+        "title": "Acceptable Use",
+        "paragraphs": [
+          "Help us keep Protest Listing constructive. The following behaviour is not allowed:"
+        ],
+        "list": [
+          "Impersonating other contributors or misrepresenting your affiliation.",
+          "Harassing organisers, moderators, or other users.",
+          "Automating interactions in ways that degrade service availability.",
+          "Using the platform to plan unlawful activity or incite violence."
+        ]
+      },
+      "dataApi": {
+        "title": "Open Data & API Usage",
+        "paragraphs": [
+          "The scraper service exposes a public REST API. You are welcome to build tools or analyses on top of it provided you respect published rate limits, keep source attributions intact, and link back to Protest Listing when sharing results.",
+          "Bulk re-publication or commercial resale of the aggregated dataset requires prior written permission. See the scraper project documentation for endpoint details and export formats."
+        ]
+      },
+      "emailVerification": {
+        "title": "Email Verification",
+        "paragraphs": [
+          "A verified email address is required before you can submit or moderate events. We currently send only verification codes and security-related recovery emails."
+        ]
+      },
+      "termination": {
+        "title": "Termination",
+        "paragraphs": [
+          "We may suspend or delete accounts that violate these terms, threaten platform integrity, or ignore moderator requests. You can ask us to remove your account at any time; we may keep minimal audit logs to comply with legal requirements or prevent abuse."
+        ]
+      },
+      "disclaimer": {
+        "title": "Disclaimer & Liability",
+        "paragraphs": [
+          "Event schedules can change at short notice. We provide the directory \"as is\" without warranties of completeness or accuracy. Always double-check with organisers before travelling.",
+          "To the maximum extent permitted by law, we are not liable for losses that arise from using—or being unable to use—Protest Listing."
+        ]
+      },
+      "changes": {
+        "title": "Changes to These Terms",
+        "paragraphs": [
+          "We may update these terms when we ship new functionality, respond to legal requirements, or incorporate community feedback. Significant updates will be announced on the site and continued use after publication constitutes acceptance."
+        ]
+      }
+    }
+  },
   "disclaimer": {
     "title": "Disclaimer",
     "subtitle": "Important information about the use of this service",
@@ -386,6 +579,7 @@
     "links": {
       "home": "Home",
       "about": "About",
+      "terms": "Terms of Service",
       "imprint": "Imprint",
       "disclaimer": "Disclaimer",
       "privacy": "Privacy Policy"
@@ -532,10 +726,10 @@
     "approve": "Approve",
     "reject": "Reject",
     "approved": "Event Approved",
-    "approvedMessage": "'{title}' has been approved and is now visible.",
+    "approvedMessage": "\"{title}\" has been approved and is now visible.",
     "rejected": "Event Rejected",
-    "rejectedMessage": "'{title}' has been rejected and deleted.",
-    "confirmReject": "Are you sure you want to reject '{title}'? This will permanently delete the event.",
+    "rejectedMessage": "\"{title}\" has been rejected and deleted.",
+    "confirmReject": "Are you sure you want to reject \"{title}\"? This will permanently delete the event.",
     "approveError": "Failed to approve event",
     "rejectError": "Failed to reject event",
     "loadError": "Failed to load pending events",

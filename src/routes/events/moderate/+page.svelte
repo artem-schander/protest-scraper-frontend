@@ -8,6 +8,7 @@
   import { formatDate, formatTime } from '$lib/utils/dateFormat';
   import Icon from '$lib/components/common/Icon.svelte';
   import Button from '$lib/components/common/Button.svelte';
+  import { pendingModerationStore } from '$lib/stores/moderation';
 
   let pendingEvents = [];
   let isLoading = true;
@@ -45,8 +46,19 @@
         message: response.error,
         duration: 5000
       });
+      pendingModerationStore.reset();
     } else {
       pendingEvents = response.protests || [];
+      const parsedTotal = Number(response.total);
+      let total = 0;
+
+      if (Number.isFinite(parsedTotal) && parsedTotal >= 0) {
+        total = parsedTotal;
+      } else if (Array.isArray(response.protests)) {
+        total = response.protests.length;
+      }
+
+      pendingModerationStore.set(total);
     }
 
     isLoading = false;
@@ -80,6 +92,7 @@
 
       // Remove from list
       pendingEvents = pendingEvents.filter(e => e.id !== event.id);
+      pendingModerationStore.decrement();
     }
   }
 
@@ -115,6 +128,7 @@
 
       // Remove from list
       pendingEvents = pendingEvents.filter(e => e.id !== event.id);
+      pendingModerationStore.decrement();
     }
   }
 </script>
@@ -124,7 +138,7 @@
 </svelte:head>
 
 <div class="min-h-screen bg-stone-50 dark:bg-stone-900 py-8 px-4">
-  <div class="max-w-6xl mx-auto">
+  <div class="max-w-2xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
       <button

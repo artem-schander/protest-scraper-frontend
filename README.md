@@ -8,7 +8,7 @@ SvelteKit frontend for the protest-scraper API. The app ships with geolocation-a
 - **International & accessible** – `svelte-i18n` drives the copy, date-fns formats dates per locale, and language can be switched without reload flicker.
 - **Dark mode done right** – Theme preference is applied pre-hydration in `app.html`, persisted in `themeStore`, and toggled via `ThemeToggle.svelte`.
 - **Data portability** – Export panel generates CSV/JSON/ICS downloads and exposes an iCalendar subscription URL that mirrors active filters.
-- **Auth-ready flows** – Login/Register modals, auth store, and a four-step event creation wizard call the REST API once credentials are supplied.
+- **Auth-ready flows** – Login/Register modals, a six-character email verification modal, and the event creation wizard talk to the REST API once credentials are supplied.
 
 ## Development
 
@@ -21,7 +21,7 @@ npm run preview        # serve the built output
 npm run start          # run the Node adapter build via server.cjs
 ```
 
-Set `VITE_API_URL` to the protest-scraper backend (defaults to `http://localhost:3000/api`). Extra `PUBLIC_IMPRINT_*` and `PUBLIC_PRIVACY_*` keys fill the legal pages. OAuth keys are optional placeholders.
+Set `VITE_API_URL` to the protest-scraper backend (defaults to `http://localhost:3000/api`). Extra `PUBLIC_IMPRINT_*` and `PUBLIC_PRIVACY_*` keys fill the legal pages, and the Terms/Privacy/Disclaimer routes read those values. OAuth keys are optional placeholders.
 
 ## Project Layout
 
@@ -34,7 +34,7 @@ src/
 │  ├─ events/create/        # Auth-guarded creation wizard
 │  └─ about|imprint|privacy # Static content routes
 ├─ lib/
-│  ├─ components/           # common/, event/, layout/, auth/ UI
+│  ├─ components/           # common/, event/, layout/, auth/ UI (Login + Register + Verification modals)
 │  ├─ stores/               # theme and auth stores
 │  ├─ i18n/                 # locale loader + JSON dictionaries
 │  └─ utils/                # api.js, dateFormat.js (date-fns), iconPreloader.js
@@ -47,6 +47,8 @@ static/                     # hero imagery, fonts, favicon
 - Quick filters mutate URL params in place; the **Near me** chip reads browser geolocation and labels itself with the resolved coordinates.
 - `FilterSidebar.svelte` bundles the date range picker and Leaflet radius selector for both desktop and mobile overlays.
 - `ExportActions.svelte` sanitises active filters before building CSV/JSON/ICS links and exposes an ICS subscription link with adjustable horizon.
+- `EmailVerificationModal.svelte` collects the six-character verification code, handles resend cooldowns, and wires user state via `authStore`.
+- `/terms`, `/privacy`, and `/disclaimer` are static routes that share the legal metadata configured via `PUBLIC_IMPRINT_*` variables; the Terms page outlines acceptable use, API rules, and the verification policy.
 - `dateFormat.js` wraps `date-fns` helpers so EventCard, headers, and other components react instantly to locale changes.
 
 ## Contributing

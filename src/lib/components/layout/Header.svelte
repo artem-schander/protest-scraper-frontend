@@ -3,10 +3,20 @@
   import { authStore } from '$lib/stores/auth';
   import LoginModal from '$lib/components/auth/LoginModal.svelte';
   import RegisterModal from '$lib/components/auth/RegisterModal.svelte';
+  import EmailVerificationModal from '$lib/components/auth/EmailVerificationModal.svelte';
   import ThemeToggle from '$lib/components/common/ThemeToggle.svelte';
   import { LANGUAGE_OPTIONS, locale, setAppLocale, t } from '$lib/i18n';
-  import { logout } from '$lib/utils/api';
+  import { logout, getProtests } from '$lib/utils/api';
   import { get } from 'svelte/store';
+  import { goto } from '$app/navigation';
+  import { pendingModerationStore } from '$lib/stores/moderation';
+  import { browser } from '$app/environment';
+
+  export let pendingCount = 0;
+
+  if (browser) {
+    pendingModerationStore.set(pendingCount);
+  }
 
   let showLoginModal = false;
   let showRegisterModal = false;
@@ -14,11 +24,43 @@
   let showUserMenu = false;
   let showLangMenu = false;
   let selectedLocale = 'en';
+  let displayPendingCount = pendingCount;
+  let showPendingBadge = false;
+  let hasModerationAccess = false;
+  let isLoadingPendingCount = false;
+  let showVerificationModal = false;
+  let verificationEmail = '';
+  let verificationCode = '';
+  let moderationCountInitialized = false;
 
   $: selectedLocale = $locale;
 
   // Extract username from email for display
   $: displayName = $authStore.user?.email?.split('@')[0] || 'Profile';
+  $: hasModerationAccess =
+    $authStore.isAuthenticated && ($authStore.user?.role === 'MODERATOR' || $authStore.user?.role === 'ADMIN');
+  $: isAdmin = $authStore.isAuthenticated && $authStore.user?.role === 'ADMIN';
+  $: displayPendingCount = browser ? $pendingModerationStore : pendingCount;
+  $: showPendingBadge = hasModerationAccess && displayPendingCount > 0;
+  $: if (browser) {
+    if (hasModerationAccess) {
+      if (!moderationCountInitialized) {
+        moderationCountInitialized = true;
+        refreshPendingModerationCount();
+      }
+    } else {
+      moderationCountInitialized = false;
+      pendingModerationStore.reset();
+    }
+  }
+
+  $: if (!showVerificationModal) {
+    verificationCode = '';
+  }
+
+  function formatPendingCount(count) {
+    return count > 99 ? '99+' : count;
+  }
 
   function toggleMobileMenu() {
     showMobileMenu = !showMobileMenu;
@@ -39,6 +81,10 @@
     await logout();
     // Clear local auth state
     authStore.logout();
+    pendingModerationStore.reset();
+    showMobileMenu = false;
+    showUserMenu = false;
+    await goto('/');
   }
 
   function setLanguage(nextLocale) {
@@ -66,6 +112,73 @@
     if (!event.target.closest('.lang-menu-container')) {
       showLangMenu = false;
     }
+  }
+
+  function openVerificationFlow({ email: targetEmail, code }) {
+    if (!targetEmail) {
+      return;
+    }
+    verificationEmail = targetEmail.trim().toLowerCase();
+    verificationCode = code || '';
+    showVerificationModal = true;
+    showLoginModal = false;
+    showRegisterModal = false;
+    showMobileMenu = false;
+    showUserMenu = false;
+  }
+
+  function handleVerificationRequested(event) {
+    const detail = event.detail || {};
+    if (detail.email) {
+      openVerificationFlow({ email: detail.email, code: detail.code });
+    }
+  }
+
+  function handleVerificationRequired(event) {
+    const detail = event.detail || {};
+    if (detail.email) {
+      openVerificationFlow({ email: detail.email, code: detail.code });
+    } else if (verificationEmail) {
+      openVerificationFlow({ email: verificationEmail, code: detail.code });
+    }
+  }
+
+  function handleVerificationSuccess() {
+    showVerificationModal = false;
+    verificationEmail = '';
+    verificationCode = '';
+  }
+
+  function handleVerifiedWithoutCode(event) {
+    const detail = event.detail || {};
+    if (detail.user) {
+      authStore.login(detail.user);
+    }
+    showRegisterModal = false;
+  }
+
+  async function refreshPendingModerationCount() {
+    if (isLoadingPendingCount) {
+      return;
+    }
+
+    isLoadingPendingCount = true;
+    const response = await getProtests({ verified: 'false', limit: 1 });
+
+    if (!response.error && hasModerationAccess) {
+      const parsedTotal = Number(response.total);
+      let total = 0;
+
+      if (Number.isFinite(parsedTotal) && parsedTotal >= 0) {
+        total = parsedTotal;
+      } else if (Array.isArray(response.protests)) {
+        total = response.protests.length;
+      }
+
+      pendingModerationStore.set(total);
+    }
+
+    isLoadingPendingCount = false;
   }
 </script>
 
@@ -97,22 +210,39 @@
           </a>
 
           <!-- Moderate Button (Moderator/Admin only) -->
-          {#if $authStore.user?.role === 'MODERATOR' || $authStore.user?.role === 'ADMIN'}
+          {#if hasModerationAccess}
+            <div class="relative">
+              <a
+                href="/events/moderate"
+                class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors"
+              >
+                <Icon icon="heroicons:shield-check" class="w-4 h-4" />
+                {$t('header.moderate')}
+              </a>
+              {#if showPendingBadge}
+                <span
+                  class="absolute -top-2 -right-2 inline-flex items-center justify-center rounded-full bg-[#E10600] text-white text-xs font-semibold leading-none px-2 py-1 shadow-md"
+                  aria-label={$t('header.pendingModerationCount', { values: { count: displayPendingCount } })}
+                >
+                  {formatPendingCount(displayPendingCount)}
+                </span>
+              {/if}
+            </div>
+          {/if}
+
+          {#if isAdmin}
             <a
-              href="/events/moderate"
+              href="/admin/users"
               class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors"
             >
-              <Icon icon="heroicons:shield-check" class="w-4 h-4" />
-              {$t('header.moderate')}
+              <Icon icon="heroicons:user-group" class="w-4 h-4" />
+              {$t('header.manageUsers')}
             </a>
           {/if}
         {/if}
 
         <!-- Settings Group -->
         <div class="flex items-center gap-2 border-l border-stone-200 dark:border-stone-700 pl-4">
-          <!-- Theme Toggle -->
-          <ThemeToggle />
-
           <!-- Language Dropdown -->
           <div class="relative lang-menu-container">
             <button
@@ -143,6 +273,9 @@
               </div>
             {/if}
           </div>
+
+          <!-- Theme Toggle -->
+          <ThemeToggle />
         </div>
 
         <!-- Auth Section -->
@@ -237,10 +370,27 @@
             </a>
 
             <!-- Moderate Button (Moderator/Admin only) -->
-            {#if $authStore.user?.role === 'MODERATOR' || $authStore.user?.role === 'ADMIN'}
-              <a href="/events/moderate" class="px-4 py-2 text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors flex items-center gap-2">
-                <Icon icon="heroicons:shield-check" class="w-4 h-4" />
-                {$t('header.moderate')}
+            {#if hasModerationAccess}
+              <div class="relative">
+                <a href="/events/moderate" class="px-4 py-2 text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors flex items-center gap-2 pr-10">
+                  <Icon icon="heroicons:shield-check" class="w-4 h-4" />
+                  {$t('header.moderate')}
+                </a>
+                {#if showPendingBadge}
+                  <span
+                    class="absolute top-0 right-3 inline-flex items-center justify-center rounded-full bg-[#E10600] text-white text-xs font-semibold leading-none px-2 py-1 shadow-md"
+                    aria-label={$t('header.pendingModerationCount', { values: { count: displayPendingCount } })}
+                  >
+                    {formatPendingCount(displayPendingCount)}
+                  </span>
+                {/if}
+              </div>
+            {/if}
+
+            {#if isAdmin}
+              <a href="/admin/users" class="px-4 py-2 text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors flex items-center gap-2">
+                <Icon icon="heroicons:user-group" class="w-4 h-4" />
+                {$t('header.manageUsers')}
               </a>
             {/if}
 
@@ -277,5 +427,20 @@
 </header>
 
 <!-- Auth Modals -->
-<LoginModal bind:isOpen={showLoginModal} on:switchToRegister={openRegister} />
-<RegisterModal bind:isOpen={showRegisterModal} on:switchToLogin={openLogin} />
+<LoginModal
+  bind:isOpen={showLoginModal}
+  on:switchToRegister={openRegister}
+  on:requireVerification={handleVerificationRequired}
+/>
+<RegisterModal
+  bind:isOpen={showRegisterModal}
+  on:switchToLogin={openLogin}
+  on:verificationRequested={handleVerificationRequested}
+  on:verifiedWithoutCode={handleVerifiedWithoutCode}
+/>
+<EmailVerificationModal
+  bind:isOpen={showVerificationModal}
+  email={verificationEmail}
+  initialCode={verificationCode}
+  on:verified={handleVerificationSuccess}
+/>

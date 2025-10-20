@@ -61,6 +61,7 @@ PUBLIC_GITHUB_URL=https://github.com/artem-schander/protest-scraper-frontend
 - `src/routes/+page.server.js` = SSR data loader for landing page
 - `src/routes/+layout.svelte` = Root layout wrapper
 - `src/routes/events/create/+page.svelte` = `/events/create`
+- `src/routes/admin/users/+page.svelte` = `/admin/users` (admin-only user management dashboard via SSR guard)
 
 **SSR Pattern:**
 ```javascript
@@ -142,6 +143,15 @@ The app supports EN/DE localization using `svelte-i18n` with SSR-safe cookie per
   authStore.login(token, user);
 </script>
 ```
+
+### Authentication UX Flow
+
+The header mounts the three auth modals (`LoginModal`, `RegisterModal`, `EmailVerificationModal`). Keep these interactions in sync when changing any of the modals:
+
+- **Registration** now returns a six-character verification code. `RegisterModal` emits `verificationRequested` so the layout can open the verification modal with the freshly issued code.
+- **Login** checks for HTTP 403 responses with `requiresVerification` and triggers the same flow if an unverified user tries to sign in.
+- **EmailVerificationModal** handles code entry, resend cooldowns, and updates `authStore` on success. Do not bypass this modal when adding new auth routes—send users through the same event cycle so the header badge and stores stay coherent.
+- The pending moderation pill in the header uses `pendingModerationStore`; make sure to reset it when logging out or when verification closes the auth modals.
 
 ### Dark Mode Implementation
 

@@ -6,8 +6,11 @@
   import { themeStore } from '$lib/stores/theme';
   import { authStore } from '$lib/stores/auth';
   import { preloadIcons } from '$lib/utils/iconPreloader';
-  import { setupI18n, t } from '$lib/i18n';
+  import { setupI18n } from '$lib/i18n';
   import { refreshToken } from '$lib/utils/api';
+  import { page } from '$app/stores';
+  import { browser } from '$app/environment';
+  import { pendingModerationStore } from '$lib/stores/moderation';
 
   export let data;
 
@@ -16,14 +19,22 @@
   // Initialize auth from SSR data if available
   if (data?.user) {
     authStore.login(data.user);
+  } else {
+    authStore.logout();
+  }
+
+  if (browser) {
+    pendingModerationStore.set(data?.pendingModerationCount ?? 0);
   }
 
   let refreshInterval;
+  let previousPathname = browser ? window.location.pathname : '';
 
   onMount(() => {
     themeStore.init();
     preloadIcons();
     setupI18n(data?.locale);
+    pendingModerationStore.set(data?.pendingModerationCount ?? 0);
 
     // Auto-refresh token every 10 minutes (before 15-minute expiry)
     // Only if user is authenticated
@@ -46,6 +57,14 @@
       clearInterval(refreshInterval);
     }
   });
+
+  $: if (browser) {
+    const currentPathname = $page.url.pathname;
+    if (previousPathname && currentPathname !== previousPathname) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    previousPathname = currentPathname;
+  }
 </script>
 
 <svelte:head>
@@ -60,7 +79,7 @@
 </svelte:head>
 
 <div class="min-h-screen bg-stone-50 dark:bg-stone-900 transition-colors flex flex-col">
-  <Header />
+  <Header pendingCount={data?.pendingModerationCount ?? 0} />
   <main class="flex-1">
     <slot />
   </main>

@@ -47,6 +47,9 @@
           <a href="/disclaimer" class="text-black/60 dark:text-white/60 hover:text-[#E10600] dark:hover:text-red-400 transition-colors">
             {$t('footer.links.disclaimer')}
           </a>
+          <a href="/terms" class="text-black/60 dark:text-white/60 hover:text-[#E10600] dark:hover:text-red-400 transition-colors">
+            {$t('footer.links.terms')}
+          </a>
           <a href="/privacy" class="text-black/60 dark:text-white/60 hover:text-[#E10600] dark:hover:text-red-400 transition-colors">
             {$t('footer.links.privacy')}
           </a>

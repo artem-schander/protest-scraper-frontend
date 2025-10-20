@@ -41,7 +41,7 @@
 
   <div class="relative">
     {#if icon}
-      <div class="absolute left-4 top-1/2 -translate-y-1/2 text-black/40 dark:text-white/40">
+      <div class="flex items-center justify-center absolute left-4 top-1/2 -translate-y-1/2 text-black/40 dark:text-white/40">
         <Icon icon={icon} class="w-5 h-5" />
       </div>
     {/if}

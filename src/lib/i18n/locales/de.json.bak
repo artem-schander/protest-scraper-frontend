@@ -22,56 +22,56 @@
       "title": "Benutzerverwaltung",
       "subtitle": "Erstelle Konten, passe Rollen an und sperre Zugänge bei Bedarf.",
       "create": {
-        "title": "Neuen Benutzer anlegen",
-        "dialogTitle": "Neuen Benutzer anlegen",
-        "emailLabel": "E-Mail-Adresse",
-        "passwordLabel": "Passwort",
-        "passwordHelper": "Mindestens 8 Zeichen.",
-        "roleLabel": "Rolle",
-        "emailVerifiedLabel": "E-Mail als verifiziert markieren",
-        "submitLabel": "Benutzer erstellen",
-        "submitting": "Wird erstellt …",
-        "openButton": "Neuen Benutzer erstellen"
-      },
+      "title": "Neuen Benutzer anlegen",
+      "dialogTitle": "Neuen Benutzer anlegen",
+      "emailLabel": "E-Mail-Adresse",
+      "passwordLabel": "Passwort",
+      "passwordHelper": "Mindestens 8 Zeichen.",
+      "roleLabel": "Rolle",
+      "emailVerifiedLabel": "E-Mail als verifiziert markieren",
+      "submitLabel": "Benutzer erstellen",
+      "submitting": "Wird erstellt …",
+      "openButton": "Neuen Benutzer erstellen"
+    },
       "roles": {
         "user": "Standardnutzer",
         "moderator": "Moderator:in",
         "admin": "Administrator:in"
       },
-      "notifications": {
-        "fetchFailed": "Benutzerliste konnte nicht geladen werden.",
-        "createFailed": "Benutzer konnte nicht erstellt werden.",
-        "createSuccess": "Benutzer erstellt",
-        "createSuccessMessage": "{email} wurde erfolgreich erstellt.",
-        "updateFailed": "Aktualisierung fehlgeschlagen.",
-        "updateSuccess": "Benutzer aktualisiert",
-        "updateSuccessMessage": "{email} wurde aktualisiert.",
-        "deleteFailed": "Löschen fehlgeschlagen.",
-        "deleteSuccess": "Benutzer gelöscht",
-        "deleteSuccessMessage": "{email} wurde gelöscht.",
-        "banFailed": "Sperren fehlgeschlagen.",
-        "banSuccess": "Benutzer gesperrt",
-        "banSuccessMessage": "{email} wurde gesperrt.",
-        "unbanFailed": "Entsperren fehlgeschlagen.",
-        "unbanSuccess": "Benutzer entsperrt",
-        "unbanSuccessMessage": "{email} wurde entsperrt.",
-        "resendFailed": "Bestätigungs-E-Mail konnte nicht gesendet werden.",
-        "resendSuccess": "Bestätigungs-E-Mail gesendet",
-        "resendSuccessMessage": "Eine neue Verifizierungs-Mail wurde an {email} geschickt.",
-        "invalidDuration": "Gib eine positive Dauer an oder wähle \"dauerhaft\"."
+    "notifications": {
+      "fetchFailed": "Benutzerliste konnte nicht geladen werden.",
+      "createFailed": "Benutzer konnte nicht erstellt werden.",
+      "createSuccess": "Benutzer erstellt",
+      "createSuccessMessage": "{email} wurde erfolgreich erstellt.",
+      "updateFailed": "Aktualisierung fehlgeschlagen.",
+      "updateSuccess": "Benutzer aktualisiert",
+      "updateSuccessMessage": "{email} wurde aktualisiert.",
+      "deleteFailed": "Löschen fehlgeschlagen.",
+      "deleteSuccess": "Benutzer gelöscht",
+      "deleteSuccessMessage": "{email} wurde gelöscht.",
+      "banFailed": "Sperren fehlgeschlagen.",
+      "banSuccess": "Benutzer gesperrt",
+      "banSuccessMessage": "{email} wurde gesperrt.",
+      "unbanFailed": "Entsperren fehlgeschlagen.",
+      "unbanSuccess": "Benutzer entsperrt",
+      "unbanSuccessMessage": "{email} wurde entsperrt.",
+      "resendFailed": "Bestätigungs-E-Mail konnte nicht gesendet werden.",
+      "resendSuccess": "Bestätigungs-E-Mail gesendet",
+      "resendSuccessMessage": "Eine neue Verifizierungs-Mail wurde an {email} geschickt.",
+      "invalidDuration": "Gib eine positive Dauer an oder wähle \"dauerhaft\"."
+    },
+    "list": {
+      "title": "Bestehende Benutzer",
+      "refresh": "Aktualisieren",
+      "headers": {
+        "email": "E-Mail",
+        "role": "Rolle",
+        "status": "Status",
+        "banned": "Sperrstatus",
+        "actions": "Aktionen"
       },
-      "list": {
-        "title": "Bestehende Benutzer",
-        "refresh": "Aktualisieren",
-        "headers": {
-          "email": "E-Mail",
-          "role": "Rolle",
-          "status": "Status",
-          "banned": "Sperrstatus",
-          "actions": "Aktionen"
-        },
-        "actionsMenuAria": "Aktionsmenü öffnen"
-      },
+      "actionsMenuAria": "Aktionsmenü öffnen"
+    },
       "loading": "Benutzer werden geladen …",
       "empty": "Keine Benutzer vorhanden.",
       "status": {
@@ -80,30 +80,30 @@
         "bannedUntil": "Gesperrt bis {date}",
         "notBanned": "Nicht gesperrt"
       },
-      "actions": {
-        "edit": "Bearbeiten",
-        "ban": "Sperren",
-        "unban": "Entsperren",
-        "delete": "Löschen",
-        "resend": "Verifizierungs-E-Mail erneut senden"
-      },
-      "edit": {
-        "emailLabel": "E-Mail",
-        "passwordLabel": "Passwort",
-        "passwordHelper": "Leer lassen, um das aktuelle Passwort zu behalten.",
-        "emailVerifiedLabel": "E-Mail verifiziert",
-        "dialogTitle": "Benutzer {email} bearbeiten",
-        "save": "Änderungen speichern",
-        "saving": "Wird gespeichert …",
-        "cancel": "Abbrechen"
-      },
-      "ban": {
-        "title": "{email} sperren",
-        "dialogTitle": "Sperre für {email}",
-        "durationLabel": "Dauer",
-        "durationPlaceholder": "Zahl eingeben",
-        "unitLabel": "Einheit",
-        "unitMinutes": "Minuten",
+    "actions": {
+      "edit": "Bearbeiten",
+      "ban": "Sperren",
+      "unban": "Entsperren",
+      "delete": "Löschen",
+      "resend": "Verifizierungs-E-Mail erneut senden"
+    },
+    "edit": {
+      "emailLabel": "E-Mail",
+      "passwordLabel": "Passwort",
+      "passwordHelper": "Leer lassen, um das aktuelle Passwort zu behalten.",
+      "emailVerifiedLabel": "E-Mail verifiziert",
+      "dialogTitle": "Benutzer {email} bearbeiten",
+      "save": "Änderungen speichern",
+      "saving": "Wird gespeichert …",
+      "cancel": "Abbrechen"
+    },
+    "ban": {
+      "title": "{email} sperren",
+      "dialogTitle": "Sperre für {email}",
+      "durationLabel": "Dauer",
+      "durationPlaceholder": "Zahl eingeben",
+      "unitLabel": "Einheit",
+      "unitMinutes": "Minuten",
         "unitHours": "Stunden",
         "unitDays": "Tage",
         "foreverLabel": "Dauerhaft sperren",
@@ -452,6 +452,100 @@
         "paragraphs": [
           "Wir können diese Bedingungen bei neuen Funktionen, rechtlichen Vorgaben oder Community-Feedback anpassen. Wesentliche Änderungen kündigen wir auf der Website an; die weitere Nutzung gilt als Zustimmung."
         ]
+      }
+    }
+  },
+  "admin": {
+    "users": {
+      "title": "Benutzerverwaltung",
+      "subtitle": "Leg neue Konten an, passe Rollen an oder sperre missbräuchliche Zugänge.",
+      "loading": "Benutzerdaten werden geladen…",
+      "empty": "Keine Benutzer gefunden.",
+      "create": {
+        "title": "Neuen Benutzer anlegen",
+        "dialogTitle": "Neuen Benutzer anlegen",
+        "emailLabel": "E-Mail",
+        "passwordLabel": "Passwort",
+        "passwordHelper": "Mindestens 8 Zeichen",
+        "roleLabel": "Rolle",
+        "emailVerifiedLabel": "E-Mail als bestätigt markieren",
+        "submitLabel": "Benutzer erstellen",
+        "submitting": "Wird erstellt…"
+      },
+      "roles": {
+        "user": "Nutzer",
+        "moderator": "Moderator",
+        "admin": "Admin"
+      },
+      "list": {
+        "title": "Bestehende Benutzer",
+        "refresh": "Aktualisieren",
+        "headers": {
+          "email": "E-Mail",
+          "role": "Rolle",
+          "status": "Status",
+          "banned": "Sperrstatus",
+          "actions": "Aktionen"
+        }
+      },
+      "status": {
+        "verified": "E-Mail bestätigt",
+        "unverified": "E-Mail nicht bestätigt",
+        "bannedUntil": "Gesperrt bis {date}",
+        "notBanned": "Nicht gesperrt"
+      },
+      "actions": {
+        "edit": "Bearbeiten",
+        "ban": "Sperren",
+        "unban": "Entsperren",
+        "delete": "Löschen",
+        "resend": "Verifizierungs-E-Mail erneut senden"
+      },
+      "edit": {
+        "dialogTitle": "Benutzer {email} bearbeiten",
+        "emailLabel": "E-Mail",
+        "passwordLabel": "Neues Passwort",
+        "passwordHelper": "Leer lassen, um das Passwort nicht zu ändern",
+        "emailVerifiedLabel": "E-Mail ist bestätigt",
+        "save": "Speichern",
+        "cancel": "Abbrechen"
+      },
+      "ban": {
+        "title": "{email} sperren",
+        "durationLabel": "Dauer",
+        "durationPlaceholder": "Zahl eingeben",
+        "unitLabel": "Einheit",
+        "unitMinutes": "Minuten",
+        "unitHours": "Stunden",
+        "unitDays": "Tage",
+        "foreverLabel": "Dauerhaft sperren",
+        "reasonLabel": "Grund (optional)",
+        "reasonPlaceholder": "Optionaler Hinweis für das Moderationsteam",
+        "submit": "Sperre anwenden",
+        "cancel": "Abbrechen"
+      },
+      "confirmDelete": "Benutzer {email} löschen? Dies kann nicht rückgängig gemacht werden.",
+      "notifications": {
+        "fetchFailed": "Benutzer konnten nicht geladen werden",
+        "createSuccess": "Benutzer erstellt",
+        "createSuccessMessage": "{email} kann sich jetzt anmelden.",
+        "createFailed": "Benutzer konnte nicht erstellt werden",
+        "updateSuccess": "Benutzer aktualisiert",
+        "updateSuccessMessage": "Änderungen für {email} wurden gespeichert.",
+        "updateFailed": "Benutzer konnte nicht aktualisiert werden",
+        "deleteSuccess": "Benutzer gelöscht",
+        "deleteSuccessMessage": "{email} wurde entfernt.",
+        "deleteFailed": "Benutzer konnte nicht gelöscht werden",
+        "banSuccess": "Benutzer gesperrt",
+        "banSuccessMessage": "Der Zugriff für {email} wurde eingeschränkt.",
+        "banFailed": "Sperre konnte nicht angewendet werden",
+        "invalidDuration": "Bitte gib eine positive Dauer an oder wähle die permanente Sperre.",
+        "unbanSuccess": "Benutzer entsperrt",
+        "unbanSuccessMessage": "{email} kann sich wieder anmelden.",
+        "unbanFailed": "Sperre konnte nicht aufgehoben werden",
+        "resendSuccess": "Bestätigungs-E-Mail gesendet",
+        "resendSuccessMessage": "Neuer Bestätigungscode an {email} gesendet.",
+        "resendFailed": "Bestätigungs-E-Mail konnte nicht gesendet werden"
       }
     }
   },

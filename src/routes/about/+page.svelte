@@ -30,7 +30,7 @@ const contactSections = [
   { icon: 'heroicons:envelope', title: 'about.contact.sections.0.title', description: 'about.contact.sections.0.description' },
   { icon: 'heroicons:bug-ant', title: 'about.contact.sections.1.title', description: 'about.contact.sections.1.description' }
 ];
-const lastUpdated = new Date();
+const lastUpdated = new Date('2025-10-20');
 </script>
 
 <svelte:head>

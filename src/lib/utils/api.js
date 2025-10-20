@@ -16,13 +16,23 @@ async function apiRequest(endpoint, options = {}) {
     credentials: 'include' // Include cookies in requests
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'An error occurred');
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    data = null;
   }
 
-  return data;
+  if (!response.ok) {
+    const error = new Error(
+      (data && (data.error || data.message)) || response.statusText || 'An error occurred'
+    );
+    error.status = response.status;
+    error.data = data;
+    throw error;
+  }
+
+  return data ?? {};
 }
 
 /**
@@ -36,7 +46,11 @@ export async function login(email, password) {
     });
     return response;
   } catch (error) {
-    return { error: error.message };
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
   }
 }
 
@@ -48,7 +62,43 @@ export async function register(userData) {
     });
     return response;
   } catch (error) {
-    return { error: error.message };
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
+  }
+}
+
+export async function verifyEmailCode(email, code) {
+  try {
+    const response = await apiRequest('/auth/verify-email', {
+      method: 'POST',
+      body: JSON.stringify({ email, code })
+    });
+    return response;
+  } catch (error) {
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
+  }
+}
+
+export async function resendVerification(email) {
+  try {
+    const response = await apiRequest('/auth/resend-verification', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    });
+    return response;
+  } catch (error) {
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
   }
 }
 
@@ -59,7 +109,11 @@ export async function logout() {
     });
     return response;
   } catch (error) {
-    return { error: error.message };
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
   }
 }
 
@@ -70,7 +124,117 @@ export async function refreshToken() {
     });
     return response;
   } catch (error) {
-    return { error: error.message };
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
+  }
+}
+
+export async function fetchUsers() {
+  try {
+    const response = await apiRequest('/admin/users');
+    return response;
+  } catch (error) {
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
+  }
+}
+
+export async function createUserAccount(payload) {
+  try {
+    const response = await apiRequest('/admin/users', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    return response;
+  } catch (error) {
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
+  }
+}
+
+export async function updateUserAccount(id, payload) {
+  try {
+    const response = await apiRequest(`/admin/users/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload)
+    });
+    return response;
+  } catch (error) {
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
+  }
+}
+
+export async function deleteUserAccount(id) {
+  try {
+    await apiRequest(`/admin/users/${id}`, {
+      method: 'DELETE'
+    });
+    return { success: true };
+  } catch (error) {
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
+  }
+}
+
+export async function banUserAccount(id, payload) {
+  try {
+    const response = await apiRequest(`/admin/users/${id}/ban`, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    return response;
+  } catch (error) {
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
+  }
+}
+
+export async function unbanUserAccount(id) {
+  try {
+    const response = await apiRequest(`/admin/users/${id}/unban`, {
+      method: 'POST'
+    });
+    return response;
+  } catch (error) {
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
+  }
+}
+
+export async function resendUserVerification(id) {
+  try {
+    const response = await apiRequest(`/admin/users/${id}/resend-verification`, {
+      method: 'POST'
+    });
+    return response;
+  } catch (error) {
+    return {
+      error: error.message,
+      details: error.data,
+      status: error.status
+    };
   }
 }
 
@@ -101,6 +265,7 @@ export async function getProtests(filters = {}) {
   if (filters.lat) queryParams.append('lat', filters.lat);
   if (filters.lon) queryParams.append('lon', filters.lon);
   if (filters.radius) queryParams.append('radius', filters.radius);
+  if (filters.limit) queryParams.append('limit', filters.limit);
   if (filters.verified !== undefined) queryParams.append('verified', filters.verified);
 
   try {

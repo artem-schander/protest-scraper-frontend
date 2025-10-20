@@ -44,5 +44,9 @@ export const handle = async ({ event, resolve }) => {
     event.locals.user = null;
   }
 
-  return resolve(event);
+  return resolve(event, {
+    transformPageChunk: ({ html }) => {
+      return html.replace('<html lang="en">', `<html lang="${event.locals.locale}">`);
+    }
+  });
 };

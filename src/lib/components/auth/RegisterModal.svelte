@@ -4,7 +4,6 @@
   import Input from '$lib/components/common/Input.svelte';
   import Button from '$lib/components/common/Button.svelte';
   import Icon from '$lib/components/common/Icon.svelte';
-  import { authStore } from '$lib/stores/auth';
   import { register, initiateGoogleOAuth } from '$lib/utils/api';
 
   export let isOpen = false;
@@ -37,16 +36,29 @@
     try {
       const response = await register({ email, password });
 
-      if (response.user) {
-        // Token is now in HTTP-only cookie, we only need user info
-        authStore.login(response.user);
+      if (response.error) {
+        error = response.details?.error || response.error || response.message || 'Registration failed. Please try again.';
+        if (response.details?.debugVerificationCode) {
+          dispatch('verificationRequested', {
+            email,
+            code: response.details.debugVerificationCode
+          });
+        }
+      } else if (response.requiresVerification) {
+        dispatch('verificationRequested', {
+          email: response.email || email,
+          code: response.debugVerificationCode
+        });
         isOpen = false;
-        // Reset form
         email = '';
         password = '';
         agreeToTerms = false;
+      } else if (response.user) {
+        // Fallback if verification is disabled
+        dispatch('verifiedWithoutCode', { user: response.user });
+        isOpen = false;
       } else {
-        error = response.error || response.message || 'Registration failed. Please try again.';
+        error = 'Registration failed. Please try again.';
       }
     } catch (err) {
       error = err.message || 'An error occurred. Please try again.';
@@ -84,7 +96,6 @@
         bind:value={email}
         type="email"
         label="Email"
-        placeholder="your@email.com"
         required
         icon="heroicons:envelope"
       >
@@ -97,7 +108,6 @@
         bind:value={password}
         type="password"
         label="Password"
-        placeholder="••••••••"
         required
         helper="Minimum 8 characters"
         icon="heroicons:lock-closed"

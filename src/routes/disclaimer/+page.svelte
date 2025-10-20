@@ -4,7 +4,7 @@ import * as env from '$env/static/public';
 import { locale, t } from '$lib/i18n';
 
 const contactEmail = env.PUBLIC_IMPRINT_EMAIL || 'contact@example.com';
-const lastUpdatedDate = new Date();
+const lastUpdated = new Date('2025-10-20');
 
 const generalInfoParagraphs = ['generalInfoText1', 'generalInfoText2'];
 const liabilityContentParagraphs = ['liabilityContentText1', 'liabilityContentText2', 'liabilityContentText3'];
@@ -153,7 +153,7 @@ const safetyNoticeItems = ['verify', 'aware', 'consider', 'follow', 'respect'];
           year: 'numeric',
           month: 'long',
           day: 'numeric'
-        }).format(lastUpdatedDate)}
+        }).format(lastUpdated)}
       </p>
     </section>
   </div>

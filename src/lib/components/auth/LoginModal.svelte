@@ -26,13 +26,19 @@
       const response = await login(email, password);
 
       if (response.user) {
-        // Token is now in HTTP-only cookie, we only need user info
         authStore.login(response.user);
         isOpen = false;
         email = '';
         password = '';
+      } else if (response.details?.requiresVerification || response.status === 403) {
+        isOpen = false;
+        dispatch('requireVerification', {
+          email,
+          code: response.details?.debugVerificationCode
+        });
+        password = '';
       } else {
-        error = response.error || response.message || 'Login failed. Please try again.';
+        error = response.details?.error || response.error || response.message || 'Login failed. Please try again.';
       }
     } catch (err) {
       error = err.message || 'An error occurred. Please try again.';
@@ -70,7 +76,6 @@
         bind:value={email}
         type="email"
         label="Email"
-        placeholder="your@email.com"
         required
         icon="heroicons:envelope"
       >
@@ -83,7 +88,6 @@
         bind:value={password}
         type="password"
         label="Password"
-        placeholder="••••••••"
         required
         icon="heroicons:lock-closed"
       >
