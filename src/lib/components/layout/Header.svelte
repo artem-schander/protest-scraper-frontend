@@ -198,51 +198,9 @@
       </a>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex items-center gap-4">
-        <!-- Create Event Button (Authenticated) -->
-        {#if $authStore.isAuthenticated}
-          <a
-            href="/events/create"
-            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors"
-          >
-            <Icon icon="heroicons:plus" class="w-4 h-4" />
-            {$t('header.createEvent')}
-          </a>
-
-          <!-- Moderate Button (Moderator/Admin only) -->
-          {#if hasModerationAccess}
-            <div class="relative">
-              <a
-                href="/events/moderate"
-                class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors"
-              >
-                <Icon icon="heroicons:shield-check" class="w-4 h-4" />
-                {$t('header.moderate')}
-              </a>
-              {#if showPendingBadge}
-                <span
-                  class="absolute -top-2 -right-2 inline-flex items-center justify-center rounded-full bg-[#E10600] text-white text-xs font-semibold leading-none px-2 py-1 shadow-md"
-                  aria-label={$t('header.pendingModerationCount', { values: { count: displayPendingCount } })}
-                >
-                  {formatPendingCount(displayPendingCount)}
-                </span>
-              {/if}
-            </div>
-          {/if}
-
-          {#if isAdmin}
-            <a
-              href="/admin/users"
-              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors"
-            >
-              <Icon icon="heroicons:user-group" class="w-4 h-4" />
-              {$t('header.manageUsers')}
-            </a>
-          {/if}
-        {/if}
-
-        <!-- Settings Group -->
-        <div class="flex items-center gap-2 border-l border-stone-200 dark:border-stone-700 pl-4">
+      <nav class="hidden lg:flex items-center gap-2">
+        <!-- Settings Group (Always visible) -->
+        <div class="flex items-center gap-2">
           <!-- Language Dropdown -->
           <div class="relative lang-menu-container">
             <button
@@ -280,7 +238,7 @@
 
         <!-- Auth Section -->
         {#if $authStore.isAuthenticated}
-          <!-- User Dropdown -->
+          <!-- User Dropdown with Navigation -->
           <div class="relative user-menu-container">
             <button
               type="button"
@@ -288,23 +246,73 @@
               class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors"
             >
               <Icon icon="heroicons:user-circle" class="w-5 h-5" />
-              <span class="max-w-[150px] truncate">{displayName}</span>
+              <span class="max-w-[120px] truncate">{displayName}</span>
               <Icon icon="heroicons:chevron-down" class="w-4 h-4" />
+              {#if showPendingBadge}
+                <span
+                  class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#E10600] text-white text-[10px] font-bold leading-none shadow-md"
+                  aria-label={$t('header.pendingModerationCount', { values: { count: displayPendingCount } })}
+                >
+                  {formatPendingCount(displayPendingCount)}
+                </span>
+              {/if}
             </button>
 
             {#if showUserMenu}
               <div class="absolute right-0 mt-2 w-56 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 z-50">
-                <div class="px-4 py-2 border-b border-stone-200 dark:border-stone-700">
+                <div class="px-4 py-3 border-b border-stone-200 dark:border-stone-700">
                   <p class="text-xs text-black/60 dark:text-white/60">{$t('header.profile')}</p>
                   <p class="text-sm font-medium text-black dark:text-white truncate">{$authStore.user?.email}</p>
                 </div>
-                <button
-                  on:click={() => { showUserMenu = false; handleLogout(); }}
-                  class="w-full px-4 py-2 text-left text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors flex items-center gap-2"
-                >
-                  <Icon icon="heroicons:arrow-right-on-rectangle" class="w-4 h-4" />
-                  {$t('header.logout')}
-                </button>
+
+                <!-- Navigation Links -->
+                <div class="py-1">
+                  <a
+                    href="/events/create"
+                    on:click={() => showUserMenu = false}
+                    class="w-full px-4 py-2 text-left text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors flex items-center gap-2"
+                  >
+                    <Icon icon="heroicons:plus" class="w-4 h-4" />
+                    {$t('header.createEvent')}
+                  </a>
+
+                  {#if hasModerationAccess}
+                    <a
+                      href="/events/moderate"
+                      on:click={() => showUserMenu = false}
+                      class="w-full px-4 py-2 text-left text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors flex items-center gap-2 relative"
+                    >
+                      <Icon icon="heroicons:shield-check" class="w-4 h-4" />
+                      {$t('header.moderate')}
+                      {#if showPendingBadge}
+                        <span class="ml-auto inline-flex items-center justify-center rounded-full bg-[#E10600] text-white text-xs font-semibold leading-none px-2 py-0.5">
+                          {formatPendingCount(displayPendingCount)}
+                        </span>
+                      {/if}
+                    </a>
+                  {/if}
+
+                  {#if isAdmin}
+                    <a
+                      href="/admin/users"
+                      on:click={() => showUserMenu = false}
+                      class="w-full px-4 py-2 text-left text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors flex items-center gap-2"
+                    >
+                      <Icon icon="heroicons:user-group" class="w-4 h-4" />
+                      {$t('header.manageUsers')}
+                    </a>
+                  {/if}
+                </div>
+
+                <div class="border-t border-stone-200 dark:border-stone-700 pt-1">
+                  <button
+                    on:click={() => { showUserMenu = false; handleLogout(); }}
+                    class="w-full px-4 py-2 text-left text-sm text-black dark:text-white hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors flex items-center gap-2"
+                  >
+                    <Icon icon="heroicons:arrow-right-on-rectangle" class="w-4 h-4" />
+                    {$t('header.logout')}
+                  </button>
+                </div>
               </div>
             {/if}
           </div>
