@@ -427,7 +427,7 @@ import { get } from 'svelte/store';
         <button
           type="button"
           on:click={toggleMobileFilters}
-          class="lg:hidden absolute right-14 w-10 h-10 rounded-full text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white hover:bg-stone-50 dark:hover:bg-stone-600 flex items-center justify-center transition-colors"
+          class="lg:hidden absolute right-14 w-10 h-10 rounded-full text-black/60 hover:text-black hover:bg-stone-50 flex items-center justify-center transition-colors"
           aria-label={$t('home.filterAria')}
         >
           <Icon icon="heroicons:funnel" class="w-5 h-5" />
