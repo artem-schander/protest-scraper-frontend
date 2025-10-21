@@ -520,7 +520,8 @@
       "terms": "Nutzungsbedingungen",
       "imprint": "Impressum",
       "disclaimer": "Haftungsausschluss",
-      "privacy": "Datenschutzerklärung"
+      "privacy": "Datenschutzerklärung",
+      "contact": "Kontakt"
     },
     "githubAria": "GitHub-Repository öffnen",
     "copyright": "© {year} Protest Listing. Alle Rechte vorbehalten."
@@ -634,11 +635,11 @@
       "sections": [
         {
           "title": "Allgemeine Anfragen",
-          "description": "Vorschläge für neue Datenquellen oder allgemeines Feedback? Schreibe uns eine E-Mail oder nutze demnächst das Kontaktformular."
+          "description": "Vorschläge für neue Datenquellen oder allgemeines Feedback? Nutze unser Kontaktformular."
         },
         {
           "title": "Technische Themen",
-          "description": "Du hast einen Bug gefunden oder einen Feature-Wunsch? Eröffne ein Issue auf GitHub – so erreichst du das Entwicklungsteam am schnellsten."
+          "description": "Du hast einen Bug gefunden oder einen Feature-Wunsch? Melde es über unser Kontaktformular oder eröffne ein Issue auf GitHub."
         }
       ]
     },
@@ -737,5 +738,58 @@
     "loadError": "Ausstehende Veranstaltungen konnten nicht geladen werden",
     "accessDenied": "Zugriff verweigert",
     "accessDeniedMessage": "Sie benötigen Moderator- oder Admin-Berechtigungen, um auf diese Seite zuzugreifen."
+  },
+  "contact": {
+    "pageTitle": "Kontakt",
+    "metaDescription": "Kontaktieren Sie das Protest Listing Team. Wir helfen Ihnen bei Fragen, Support und Feedback.",
+    "title": "Kontakt aufnehmen",
+    "subtitle": "Haben Sie eine Frage, einen Vorschlag oder benötigen Unterstützung? Wir sind für Sie da. Senden Sie uns eine Nachricht und wir melden uns schnellstmöglich bei Ihnen.",
+    "form": {
+      "name": "Ihr Name",
+      "namePlaceholder": "Max Mustermann",
+      "email": "Ihre E-Mail",
+      "emailPlaceholder": "max@beispiel.de",
+      "topic": "Thema",
+      "topicPlaceholder": "Bitte wählen Sie ein Thema",
+      "customTopic": "Thema angeben",
+      "customTopicPlaceholder": "Bitte beschreiben Sie Ihr Thema",
+      "message": "Nachricht",
+      "messagePlaceholder": "Teilen Sie uns mit, was Ihnen am Herzen liegt...",
+      "characters": "Zeichen",
+      "send": "Nachricht senden",
+      "sending": "Wird gesendet...",
+      "cancel": "Abbrechen"
+    },
+    "topics": {
+      "general_inquiry": "Allgemeine Anfrage",
+      "suggest_data_source": "Datenquelle vorschlagen",
+      "technical_support": "Technischer Support",
+      "report_event_issue": "Veranstaltungsproblem melden",
+      "partnership_inquiry": "Partnerschaftsanfrage",
+      "press_&_media": "Presse & Medien",
+      "privacy_concerns": "Datenschutzanliegen",
+      "legal_question": "Rechtliche Frage",
+      "other": "Sonstiges (bitte angeben)"
+    },
+    "errors": {
+      "nameRequired": "Bitte geben Sie Ihren Namen ein",
+      "nameTooShort": "Name muss mindestens 2 Zeichen lang sein",
+      "emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein",
+      "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+      "topicRequired": "Bitte wählen Sie ein Thema",
+      "customTopicRequired": "Bitte geben Sie Ihr Thema an",
+      "customTopicTooShort": "Thema muss mindestens 3 Zeichen lang sein",
+      "messageRequired": "Bitte geben Sie Ihre Nachricht ein",
+      "messageTooShort": "Nachricht muss mindestens 10 Zeichen lang sein"
+    },
+    "success": {
+      "title": "Nachricht gesendet!",
+      "message": "Vielen Dank für Ihre Kontaktaufnahme. Wir haben Ihre Nachricht erhalten und melden uns innerhalb von 24-48 Stunden bei Ihnen."
+    },
+    "error": {
+      "title": "Senden fehlgeschlagen",
+      "message": "Wir konnten Ihre Nachricht nicht senden. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns direkt unter info@protest-listing.com"
+    },
+    "responseTime": "Wir antworten in der Regel innerhalb von 24-48 Stunden an Werktagen."
   }
 }

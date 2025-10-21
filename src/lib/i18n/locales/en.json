@@ -582,7 +582,8 @@
       "terms": "Terms of Service",
       "imprint": "Imprint",
       "disclaimer": "Disclaimer",
-      "privacy": "Privacy Policy"
+      "privacy": "Privacy Policy",
+      "contact": "Contact"
     },
     "githubAria": "Open GitHub repository",
     "copyright": "© {year} Protest Listing. All rights reserved."
@@ -696,11 +697,11 @@
       "sections": [
         {
           "title": "General inquiries",
-          "description": "For suggestions about new sources to scrape or general feedback, email us or use the upcoming contact form."
+          "description": "For suggestions about new sources to scrape or general feedback, use our contact form."
         },
         {
           "title": "Technical issues",
-          "description": "Found a bug or have a feature request? Open an issue on GitHub for the fastest response from the development team."
+          "description": "Found a bug or have a feature request? Report it via our contact form or open an issue on GitHub."
         }
       ]
     },
@@ -735,5 +736,58 @@
     "loadError": "Failed to load pending events",
     "accessDenied": "Access Denied",
     "accessDeniedMessage": "You need moderator or admin permissions to access this page."
+  },
+  "contact": {
+    "pageTitle": "Contact Us",
+    "metaDescription": "Get in touch with the Protest Listing team. We're here to help with questions, support, and feedback.",
+    "title": "Get in Touch",
+    "subtitle": "Have a question, suggestion, or need support? We're here to help. Send us a message and we'll get back to you as soon as possible.",
+    "form": {
+      "name": "Your Name",
+      "namePlaceholder": "John Doe",
+      "email": "Your Email",
+      "emailPlaceholder": "john@example.com",
+      "topic": "Topic",
+      "topicPlaceholder": "Please select a topic",
+      "customTopic": "Specify Topic",
+      "customTopicPlaceholder": "Please describe your topic",
+      "message": "Message",
+      "messagePlaceholder": "Tell us what's on your mind...",
+      "characters": "characters",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "cancel": "Cancel"
+    },
+    "topics": {
+      "general_inquiry": "General Inquiry",
+      "suggest_data_source": "Suggest Data Source",
+      "technical_support": "Technical Support",
+      "report_event_issue": "Report Event Issue",
+      "partnership_inquiry": "Partnership Inquiry",
+      "press_&_media": "Press & Media",
+      "privacy_concerns": "Privacy Concerns",
+      "legal_question": "Legal Question",
+      "other": "Other (please specify)"
+    },
+    "errors": {
+      "nameRequired": "Please enter your name",
+      "nameTooShort": "Name must be at least 2 characters",
+      "emailRequired": "Please enter your email address",
+      "emailInvalid": "Please enter a valid email address",
+      "topicRequired": "Please select a topic",
+      "customTopicRequired": "Please specify your topic",
+      "customTopicTooShort": "Topic must be at least 3 characters",
+      "messageRequired": "Please enter your message",
+      "messageTooShort": "Message must be at least 10 characters"
+    },
+    "success": {
+      "title": "Message Sent!",
+      "message": "Thank you for contacting us. We've received your message and will get back to you within 24-48 hours."
+    },
+    "error": {
+      "title": "Send Failed",
+      "message": "We couldn't send your message. Please try again later or contact us directly at info@protest-listing.com"
+    },
+    "responseTime": "We typically respond within 24-48 hours during business days."
   }
 }

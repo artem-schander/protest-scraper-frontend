@@ -75,6 +75,13 @@
   function handleGoogleRegister() {
     initiateGoogleOAuth();
   }
+
+  function handleLinkClick(event) {
+    // Only close modal if it's a regular click (no modifier keys)
+    if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
+      isOpen = false;
+    }
+  }
 </script>
 
 <Modal bind:isOpen maxWidth="md">
@@ -121,7 +128,7 @@
         <label class="flex items-start gap-2 cursor-pointer">
           <input type="checkbox" bind:checked={agreeToTerms} required class="mt-1 rounded text-[#E10600] dark:text-red-400 accent-[#E10600]" />
           <span class="text-sm text-black dark:text-white/80">
-            I agree to the <a href="/terms" class="text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600]">Terms of Service</a> and <a href="/privacy" class="text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600]">Privacy Policy</a>
+            I agree to the <a href="/terms" on:click={handleLinkClick} class="text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600]">Terms of Service</a> and <a href="/privacy" on:click={handleLinkClick} class="text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600]">Privacy Policy</a>
           </span>
         </label>
       </div>

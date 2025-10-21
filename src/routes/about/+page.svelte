@@ -175,15 +175,20 @@ const lastUpdated = new Date('2025-10-20');
       <div class="text-black/80 dark:text-white/80 space-y-4">
         <p>{$t('about.contact.intro')}</p>
         <div class="grid sm:grid-cols-2 gap-4">
-          {#each contactSections as section}
-            <div class="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4">
-              <h3 class="font-medium text-black dark:text-white mb-2 flex items-center gap-2">
-                <Icon icon={section.icon} class="w-4 h-4" />
-                {$t(section.title)}
-              </h3>
-              <p class="text-sm text-black/70 dark:text-white/70">{$t(section.description)}</p>
-            </div>
-          {/each}
+          <a href="/contact?topic=Suggest%20Data%20Source" class="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors block">
+            <h3 class="font-medium text-black dark:text-white mb-2 flex items-center gap-2">
+              <Icon icon="heroicons:envelope" class="w-4 h-4" />
+              {$t('about.contact.sections.0.title')}
+            </h3>
+            <p class="text-sm text-black/70 dark:text-white/70">{$t('about.contact.sections.0.description')}</p>
+          </a>
+          <a href="/contact?topic=Technical%20Support" class="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors block">
+            <h3 class="font-medium text-black dark:text-white mb-2 flex items-center gap-2">
+              <Icon icon="heroicons:bug-ant" class="w-4 h-4" />
+              {$t('about.contact.sections.1.title')}
+            </h3>
+            <p class="text-sm text-black/70 dark:text-white/70">{$t('about.contact.sections.1.description')}</p>
+          </a>
         </div>
       </div>
     </section>

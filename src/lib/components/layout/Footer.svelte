@@ -33,6 +33,9 @@
           <a href="/about" class="text-black/60 dark:text-white/60 hover:text-[#E10600] dark:hover:text-red-400 transition-colors">
             {$t('footer.links.about')}
           </a>
+          <a href="/contact" class="text-black/60 dark:text-white/60 hover:text-[#E10600] dark:hover:text-red-400 transition-colors">
+            {$t('footer.links.contact')}
+          </a>
         </nav>
       </div>
 
