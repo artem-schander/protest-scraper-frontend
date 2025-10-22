@@ -174,7 +174,7 @@ import { t } from '$lib/i18n';
 </script>
 
 <!-- Desktop Sidebar -->
-<aside class="hidden lg:block sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-hide">
+<aside class="hidden lg:block sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-hide z-10">
   <div class="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 mt-8 p-6 shadow-sm space-y-6 mb-6">
     <!-- Header -->
     <div class="flex items-center justify-between">

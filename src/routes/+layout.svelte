@@ -84,7 +84,7 @@
   <main class="flex-1">
     <slot />
   </main>
-  <Footer />
+  <Footer publicEnv={data?.publicEnv} />
 </div>
 
 <!-- Global notification container -->

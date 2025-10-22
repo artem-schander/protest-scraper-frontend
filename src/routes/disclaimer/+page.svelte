@@ -1,18 +1,20 @@
 <script>
-import Icon from '$lib/components/common/Icon.svelte';
-import * as env from '$env/static/public';
-import { locale, t } from '$lib/i18n';
+  import Icon from '$lib/components/common/Icon.svelte';
+  import { locale, t } from '$lib/i18n';
 
-const contactEmail = env.PUBLIC_IMPRINT_EMAIL || 'contact@example.com';
-const lastUpdated = new Date('2025-10-20');
+  export let data;
+  const env = data?.publicEnv ?? {};
 
-const generalInfoParagraphs = ['generalInfoText1', 'generalInfoText2'];
-const liabilityContentParagraphs = ['liabilityContentText1', 'liabilityContentText2', 'liabilityContentText3'];
-const liabilityLinksParagraphs = ['liabilityLinksText1', 'liabilityLinksText2'];
-const userContentItems = ['accurate', 'legal', 'rights', 'offensive', 'violence'];
-const noWarrantyItems = ['accuracy', 'availability', 'suitability', 'safety'];
-const limitationLiabilityItems = ['use', 'inaccurate', 'attendance', 'interactions', 'technical', 'data'];
-const safetyNoticeItems = ['verify', 'aware', 'consider', 'follow', 'respect'];
+  $: contactEmail = env.PUBLIC_IMPRINT_EMAIL || 'contact@example.com';
+  const lastUpdated = new Date('2025-10-20');
+
+  const generalInfoParagraphs = ['generalInfoText1', 'generalInfoText2'];
+  const liabilityContentParagraphs = ['liabilityContentText1', 'liabilityContentText2', 'liabilityContentText3'];
+  const liabilityLinksParagraphs = ['liabilityLinksText1', 'liabilityLinksText2'];
+  const userContentItems = ['accurate', 'legal', 'rights', 'offensive', 'violence'];
+  const noWarrantyItems = ['accuracy', 'availability', 'suitability', 'safety'];
+  const limitationLiabilityItems = ['use', 'inaccurate', 'attendance', 'interactions', 'technical', 'data'];
+  const safetyNoticeItems = ['verify', 'aware', 'consider', 'follow', 'respect'];
 </script>
 
 <svelte:head>

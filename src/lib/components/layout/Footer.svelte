@@ -1,10 +1,11 @@
 <script>
-  import * as env from '$env/static/public';
   import Icon from '$lib/components/common/Icon.svelte';
   import { t } from '$lib/i18n';
 
+  export let publicEnv = {};
+
   const currentYear = new Date().getFullYear();
-  const githubUrl = env.PUBLIC_GITHUB_URL;
+  $: githubUrl = publicEnv.PUBLIC_GITHUB_URL || '';
 </script>
 
 <footer class="bg-white dark:bg-stone-800 border-t border-stone-200 dark:border-stone-700">

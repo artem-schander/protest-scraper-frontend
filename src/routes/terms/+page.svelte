@@ -1,10 +1,12 @@
 <script>
   import { locale, t } from '$lib/i18n';
   import Icon from '$lib/components/common/Icon.svelte';
-  import * as env from '$env/static/public';
+
+  export let data;
+  const env = data?.publicEnv ?? {};
 
   const lastUpdated = new Date('2025-10-20');
-  const contactEmail = env.PUBLIC_IMPRINT_EMAIL || env.PUBLIC_PRIVACY_EMAIL || 'contact@protest-listing.com';
+  $: contactEmail = env.PUBLIC_IMPRINT_EMAIL || env.PUBLIC_PRIVACY_EMAIL || 'contact@protest-listing.com';
 
   const sections = [
     {

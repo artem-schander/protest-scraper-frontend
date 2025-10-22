@@ -446,7 +446,7 @@ import { get } from 'svelte/store';
 
 <!-- Main Content -->
 <div class="max-w-7xl mx-auto px-4">
-  <div class="lg:grid lg:grid-cols-[280px,1fr] lg:gap-8">
+  <div class="lg:grid lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8">
     <!-- Filter Sidebar (Desktop) -->
     <FilterSidebar filters={data.filters} {showMobileFilters} on:close={() => showMobileFilters = false} />
 

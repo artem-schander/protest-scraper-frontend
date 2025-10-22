@@ -71,7 +71,7 @@
           disabled:bg-stone-50 dark:disabled:bg-stone-900 disabled:cursor-not-allowed
           resize-y
         "
-      />
+      ></textarea>
     {:else if type === 'text'}
       <input
         type="text"

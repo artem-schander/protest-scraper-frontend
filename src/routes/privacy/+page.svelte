@@ -1,30 +1,32 @@
 <script>
   import Icon from '$lib/components/common/Icon.svelte';
-  import * as env from '$env/static/public';
   import { locale, t } from '$lib/i18n';
 
-  const controllerAddress = [
+  export let data;
+  const env = data?.publicEnv ?? {};
+
+  $: controllerAddress = [
     env.PUBLIC_IMPRINT_NAME,
     env.PUBLIC_IMPRINT_STREET,
     [env.PUBLIC_IMPRINT_POSTAL_CODE, env.PUBLIC_IMPRINT_CITY].filter(Boolean).join(' ').trim() || undefined
   ].filter(Boolean);
 
-  const controllerCountry = env.PUBLIC_PRIVACY_COUNTRY;
-  const controllerEmail = env.PUBLIC_PRIVACY_EMAIL || env.PUBLIC_IMPRINT_EMAIL || 'privacy@example.com';
-  const controllerPhone = env.PUBLIC_PRIVACY_PHONE || env.PUBLIC_IMPRINT_PHONE;
+  $: controllerCountry = env.PUBLIC_PRIVACY_COUNTRY;
+  $: controllerEmail = env.PUBLIC_PRIVACY_EMAIL || env.PUBLIC_IMPRINT_EMAIL || 'privacy@example.com';
+  $: controllerPhone = env.PUBLIC_PRIVACY_PHONE || env.PUBLIC_IMPRINT_PHONE;
 
-  const dataProtectionOfficer = {
+  $: dataProtectionOfficer = {
     name: env.PUBLIC_PRIVACY_DPO_NAME,
     email: env.PUBLIC_PRIVACY_DPO_EMAIL
   };
-  const hasDataProtectionOfficer = Boolean(dataProtectionOfficer.name || dataProtectionOfficer.email);
+  $: hasDataProtectionOfficer = Boolean(dataProtectionOfficer.name || dataProtectionOfficer.email);
 
-  const supervisoryAuthority = {
+  $: supervisoryAuthority = {
     name: env.PUBLIC_PRIVACY_SUPERVISORY_AUTHORITY,
     address: env.PUBLIC_PRIVACY_SUPERVISORY_ADDRESS,
     url: env.PUBLIC_PRIVACY_SUPERVISORY_URL
   };
-  const hasSupervisoryAuthority =
+  $: hasSupervisoryAuthority =
     Boolean(supervisoryAuthority.name) ||
     Boolean(supervisoryAuthority.address) ||
     Boolean(supervisoryAuthority.url);

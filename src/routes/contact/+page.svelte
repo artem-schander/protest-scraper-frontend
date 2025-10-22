@@ -354,7 +354,7 @@
                    disabled:opacity-50 disabled:cursor-not-allowed
                    resize-y transition-all"
             placeholder={$t('contact.form.messagePlaceholder')}
-          />
+          ></textarea>
           <div class="flex">
             {#if errors.message}
               <p class="mt-2 text-sm text-red-500 dark:text-red-400">{errors.message}</p>

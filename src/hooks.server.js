@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { COOKIE_MAX_AGE, LOCALE_COOKIE_KEY, setupI18n } from '$lib/i18n';
 import { VITE_API_URL } from '$env/static/private';
 

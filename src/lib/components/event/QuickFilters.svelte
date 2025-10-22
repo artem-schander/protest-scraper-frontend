@@ -108,6 +108,6 @@
     {/if}
   {/each}
 
-  <div class="grow" />
+  <div class="grow"></div>
   <slot />
 </div>

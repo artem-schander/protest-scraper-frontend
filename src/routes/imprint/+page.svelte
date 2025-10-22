@@ -1,10 +1,12 @@
 <script>
   import { get } from 'svelte/store';
   import Icon from '$lib/components/common/Icon.svelte';
-  import * as env from '$env/static/public';
   import { LANGUAGE_OPTIONS, locale, setAppLocale, t } from '$lib/i18n';
 
-  const imprintData = {
+  export let data;
+  const env = data?.publicEnv ?? {};
+
+  $: imprintData = {
     name: env.PUBLIC_IMPRINT_NAME,
     street: env.PUBLIC_IMPRINT_STREET,
     postalCode: env.PUBLIC_IMPRINT_POSTAL_CODE,
@@ -32,9 +34,9 @@
     }
   ];
 
-  const hasServiceProvider = imprintData.name || imprintData.street || imprintData.postalCode || imprintData.city;
-  const hasContact = imprintData.email || imprintData.phone;
-  const hasContentResponsible = imprintData.contentResponsible || imprintData.contentAddress;
+  $: hasServiceProvider = imprintData.name || imprintData.street || imprintData.postalCode || imprintData.city;
+  $: hasContact = imprintData.email || imprintData.phone;
+  $: hasContentResponsible = imprintData.contentResponsible || imprintData.contentAddress;
 </script>
 
 <svelte:head>
