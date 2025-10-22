@@ -1,10 +1,15 @@
 // API Base URL - Update this with your actual backend URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
+// Track if we're currently refreshing to prevent multiple simultaneous refresh attempts
+let isRefreshing = false;
+let refreshPromise = null;
+
 /**
  * Make an API request with credentials (cookies)
+ * Automatically handles token refresh on 401 errors
  */
-export async function apiRequest(endpoint, options = {}) {
+export async function apiRequest(endpoint, options = {}, retryCount = 0) {
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers
@@ -21,6 +26,52 @@ export async function apiRequest(endpoint, options = {}) {
     data = await response.json();
   } catch {
     data = null;
+  }
+
+  // If 401 and not already the refresh endpoint, try to refresh token
+  if (response.status === 401 && endpoint !== '/auth/refresh' && retryCount === 0) {
+    try {
+      // If already refreshing, wait for that refresh to complete
+      if (isRefreshing && refreshPromise) {
+        await refreshPromise;
+      } else {
+        // Start refresh process
+        isRefreshing = true;
+        refreshPromise = fetch(`${API_BASE_URL}/auth/refresh`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        });
+
+        const refreshResponse = await refreshPromise;
+
+        if (!refreshResponse.ok) {
+          // Refresh failed - token is truly expired (past 30 days)
+          isRefreshing = false;
+          refreshPromise = null;
+
+          // Import authStore dynamically to avoid circular dependency
+          if (typeof window !== 'undefined') {
+            const { authStore } = await import('$lib/stores/auth');
+            authStore.logout();
+          }
+
+          const error = new Error('Session expired. Please log in again.');
+          error.status = 401;
+          throw error;
+        }
+
+        isRefreshing = false;
+        refreshPromise = null;
+      }
+
+      // Retry the original request with new token (from cookie)
+      return await apiRequest(endpoint, options, retryCount + 1);
+    } catch (error) {
+      isRefreshing = false;
+      refreshPromise = null;
+      throw error;
+    }
   }
 
   if (!response.ok) {

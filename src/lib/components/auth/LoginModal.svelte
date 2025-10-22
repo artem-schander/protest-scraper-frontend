@@ -13,7 +13,6 @@
 
   let email = '';
   let password = '';
-  let rememberMe = false;
   let error = '';
   let isLoading = false;
 
@@ -96,11 +95,7 @@
         </svelte:fragment>
       </Input>
 
-      <div class="flex items-center justify-between text-sm">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" bind:checked={rememberMe} class="rounded text-[#E10600] dark:text-red-400 accent-[#E10600]" />
-          <span class="text-black dark:text-white/80">Remember me</span>
-        </label>
+      <div class="flex justify-end text-sm">
         <a href="/forgot-password" class="text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600] font-medium">
           Forgot password?
         </a>

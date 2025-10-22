@@ -38,14 +38,53 @@
   let isSubmitting = false;
   let showCustomTopic = false;
 
+  // Anti-spam measures
+  let honeypot = ''; // Should remain empty
+  let formLoadTime = 0;
+  let proofOfWork = null; // Will contain challenge and solution
+
   // Pre-select topic from URL parameter
   onMount(() => {
+    formLoadTime = Date.now();
+
+    // Generate invisible proof-of-work challenge
+    generateProofOfWork();
+
     const topicParam = $page.url.searchParams.get('topic');
     if (topicParam && TOPICS.includes(topicParam)) {
       formData.topic = topicParam;
       showCustomTopic = topicParam === 'Other';
     }
   });
+
+  /**
+   * Generate SHA-256 proof-of-work challenge
+   * Client must find a nonce where hash(challenge + nonce) starts with '000'
+   * Takes ~100ms on modern devices, makes mass spam harder
+   */
+  async function generateProofOfWork() {
+    const challenge = Math.random().toString(36).substring(2, 15);
+    const difficulty = '000'; // 3 leading zeros = ~16^3 = 4096 attempts average
+    let nonce = 0;
+    let hash = '';
+
+    const startTime = Date.now();
+
+    while (!hash.startsWith(difficulty)) {
+      const text = challenge + nonce;
+      const encoder = new TextEncoder();
+      const data = encoder.encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      nonce++;
+    }
+
+    const timeSpent = Date.now() - startTime;
+    console.log(`Proof-of-work completed in ${timeSpent}ms (${nonce} attempts)`);
+
+    proofOfWork = { challenge, nonce: nonce - 1, hash };
+  }
 
   $: showCustomTopic = formData.topic === 'Other';
 
@@ -102,6 +141,36 @@
   async function handleSubmit(e) {
     e.preventDefault();
 
+    // Anti-spam checks
+    if (honeypot) {
+      // Honeypot filled - likely a bot
+      console.warn('Spam detected: honeypot filled');
+      return;
+    }
+
+    const timeSpent = Date.now() - formLoadTime;
+    if (timeSpent < 3000) {
+      // Submitted too quickly (less than 3 seconds)
+      notificationStore.add({
+        type: 'error',
+        title: 'Too Fast',
+        message: 'Please take a moment to review your message before submitting.',
+        duration: 5000
+      });
+      return;
+    }
+
+    if (!proofOfWork) {
+      // Proof-of-work not completed
+      notificationStore.add({
+        type: 'error',
+        title: 'Please Wait',
+        message: 'Security check is still processing. Please try again in a moment.',
+        duration: 5000
+      });
+      return;
+    }
+
     if (!validateForm()) {
       return;
     }
@@ -111,7 +180,10 @@
     try {
       await apiRequest('/contact', {
         method: 'POST',
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          proofOfWork
+        })
       });
 
       notificationStore.add({
@@ -292,6 +364,20 @@
               {formData.message.length} / 5000 {$t('contact.form.characters')}
             </p>
           </div>
+        </div>
+
+        <!-- Honeypot Field (hidden from humans, visible to bots) -->
+        <div class="hidden" aria-hidden="true">
+          <label for="website">Website (leave blank)</label>
+          <input
+            type="text"
+            id="website"
+            name="website"
+            bind:value={honeypot}
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
 
         <!-- Submit Button -->
         <div class="flex items-center justify-between pt-4">
