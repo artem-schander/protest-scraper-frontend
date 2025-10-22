@@ -1,4 +1,5 @@
 <script>
+  import '../app.css';
   import { onMount, onDestroy } from 'svelte';
   import Header from '$lib/components/layout/Header.svelte';
   import Footer from '$lib/components/layout/Footer.svelte';
