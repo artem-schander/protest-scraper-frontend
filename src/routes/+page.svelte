@@ -348,6 +348,11 @@ import { get } from 'svelte/store';
     }
   }
 
+  async function handleEventUpdated() {
+    // Refresh the event list after an event is edited
+    await invalidate(() => true);
+  }
+
   // Reactive key to force re-render when page or filters change
   $: key = `page:${data.page}-search:${data.filters.search}-dates:${data.filters.startDate}-${data.filters.endDate}-location:${data.filters.lat}-${data.filters.lon}-${data.filters.radius}`;
 
@@ -517,7 +522,7 @@ import { get } from 'svelte/store';
         {#if data.protests && data.protests.length > 0}
           <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {#each data.protests as protest}
-              <EventCard event={protest} />
+              <EventCard event={protest} on:updated={handleEventUpdated} />
             {/each}
           </div>
         {:else if data.error}

@@ -1,4 +1,0 @@
-- Add a surfaced city filter (or remove the stale city handling in `FilterSidebar.svelte`) so the UI matches the query parameters we send to the API.
-- Harden `/events/create` with a server load guard or endpoint check—client-side redirects alone still expose the wizard when opened directly.
-- Wire the desktop auth buttons in `Header.svelte` and connect Login/Register modals to the live backend, replacing the placeholder Google button with a real flow or removing it.
-- Document and implement a safe token refresh strategy; today we only persist access tokens in `localStorage`, which is not production ready.

@@ -3,8 +3,10 @@
   import Modal from '$lib/components/common/Modal.svelte';
   import Button from '$lib/components/common/Button.svelte';
   import Icon from '$lib/components/common/Icon.svelte';
+  import { t } from '$lib/i18n';
   import { verifyEmailCode, resendVerification } from '$lib/utils/api';
   import { authStore } from '$lib/stores/auth';
+  import { translateError } from '$lib/utils/errorHandler';
 
   const RESEND_COOLDOWN_SECONDS = 45;
 
@@ -124,13 +126,13 @@
 
   async function submitVerification() {
     if (!email) {
-      error = 'Missing email address. Please start the verification process again.';
+      error = $t('auth.verification.missingEmail');
       return;
     }
 
     const code = combinedCode();
     if (code.length !== 6) {
-      error = 'Enter the 6-character verification code.';
+      error = $t('auth.verification.enterCode');
       return;
     }
 
@@ -141,18 +143,18 @@
     const response = await verifyEmailCode(email, code);
 
     if (response.error) {
-      error = response.error;
-      if (response.details?.requiresResend) {
+      error = translateError(response);
+      if (response.requiresResend) {
         startCountdown();
       }
     } else if (response.user) {
       authStore.login(response.user);
       dispatch('verified', { user: response.user });
-      info = 'Email verified successfully.';
+      info = $t('auth.verification.success');
       resetForm();
       isOpen = false;
     } else {
-      error = 'Unexpected response from the server.';
+      error = $t('auth.verification.unexpectedResponse');
     }
 
     isLoading = false;
@@ -169,9 +171,9 @@
 
     const response = await resendVerification(email);
     if (response.error) {
-      error = response.error;
+      error = translateError(response);
     } else {
-      info = 'A new verification code has been sent.';
+      info = $t('auth.verification.codeSent');
       if (response.debugVerificationCode) {
         debugCode = response.debugVerificationCode;
         if (debugCode.length === 6) {
@@ -210,16 +212,16 @@
     on:submit|preventDefault={submitVerification}
   >
     <div class="text-center space-y-2">
-      <h2 class="text-2xl font-medium text-black dark:text-white">Verify your email</h2>
+      <h2 class="text-2xl font-medium text-black dark:text-white">{$t('auth.verification.title')}</h2>
       <p class="text-sm text-black/60 dark:text-white/60">
-        Enter the six-character code we sent to <span class="font-medium text-black dark:text-white">{email}</span>.
+        {$t('auth.verification.instructions', { values: { email } })}
       </p>
     </div>
 
     {#if debugCode}
       <div class="rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3 text-sm text-amber-700 dark:text-amber-200">
-        <p class="font-medium">Development mode</p>
-        <p>Use this code if you did not receive an email: <span class="font-mono tracking-widest text-base">{debugCode}</span></p>
+        <p class="font-medium">{$t('auth.verification.devMode')}</p>
+        <p>{$t('auth.verification.devCodeHint', { values: { code: debugCode } })}</p>
       </div>
     {/if}
 
@@ -254,7 +256,7 @@
     </div>
 
     <div class="space-y-3 text-sm text-black/60 dark:text-white/60">
-      <p>If you did not receive a code, check your spam folder or request a new one.</p>
+      <p>{$t('auth.verification.notReceived')}</p>
       <button
         type="button"
         class="font-medium text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600]"
@@ -262,11 +264,11 @@
         disabled={resendCooldown > 0 || isResending}
       >
         {#if resendCooldown > 0}
-          Resend available in {resendCooldown}s
+          {$t('auth.verification.resendCooldown', { values: { seconds: resendCooldown } })}
         {:else if isResending}
-          Sending…
+          {$t('auth.verification.sending')}
         {:else}
-          Resend verification code
+          {$t('auth.verification.resend')}
         {/if}
       </button>
     </div>
@@ -274,9 +276,9 @@
     <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
       {#if isLoading}
         <Icon icon="heroicons:arrow-path" class="w-5 h-5 animate-spin" />
-        Verifying…
+        {$t('auth.verification.verifying')}
       {:else}
-        Verify email
+        {$t('auth.verification.submit')}
       {/if}
     </Button>
   </form>

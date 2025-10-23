@@ -79,6 +79,7 @@ export async function apiRequest(endpoint, options = {}, retryCount = 0) {
       (data && (data.error || data.message)) || response.statusText || 'An error occurred'
     );
     error.status = response.status;
+    error.code = data?.code; // Preserve error code from backend
     error.data = data;
     throw error;
   }
@@ -99,8 +100,9 @@ export async function login(email, password) {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -115,8 +117,9 @@ export async function register(userData) {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -131,8 +134,9 @@ export async function verifyEmailCode(email, code) {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -147,8 +151,9 @@ export async function resendVerification(email) {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -162,8 +167,9 @@ export async function logout() {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -177,8 +183,9 @@ export async function refreshToken() {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -190,8 +197,9 @@ export async function fetchUsers() {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -206,8 +214,9 @@ export async function createUserAccount(payload) {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -222,8 +231,9 @@ export async function updateUserAccount(id, payload) {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -237,8 +247,9 @@ export async function deleteUserAccount(id) {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -253,8 +264,9 @@ export async function banUserAccount(id, payload) {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -268,8 +280,9 @@ export async function unbanUserAccount(id) {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -283,8 +296,9 @@ export async function resendUserVerification(id) {
   } catch (error) {
     return {
       error: error.message,
-      details: error.data,
-      status: error.status
+      code: error.code,
+      status: error.status,
+      ...error.data
     };
   }
 }
@@ -323,7 +337,14 @@ export async function getProtests(filters = {}) {
     const response = await apiRequest(`/protests?${queryParams}`);
     return response;
   } catch (error) {
-    return { error: error.message, protests: [], total: 0 };
+    return {
+      error: error.message,
+      code: error.code,
+      status: error.status,
+      protests: [],
+      total: 0,
+      ...error.data
+    };
   }
 }
 
@@ -332,7 +353,12 @@ export async function getProtestById(id) {
     const response = await apiRequest(`/protests/${id}`);
     return response;
   } catch (error) {
-    return { error: error.message };
+    return {
+      error: error.message,
+      code: error.code,
+      status: error.status,
+      ...error.data
+    };
   }
 }
 
@@ -344,7 +370,12 @@ export async function createProtest(protestData) {
     });
     return response;
   } catch (error) {
-    return { error: error.message };
+    return {
+      error: error.message,
+      code: error.code,
+      status: error.status,
+      ...error.data
+    };
   }
 }
 
@@ -356,7 +387,12 @@ export async function updateProtest(id, protestData) {
     });
     return response;
   } catch (error) {
-    return { error: error.message };
+    return {
+      error: error.message,
+      code: error.code,
+      status: error.status,
+      ...error.data
+    };
   }
 }
 
@@ -367,7 +403,12 @@ export async function deleteProtest(id) {
     });
     return response;
   } catch (error) {
-    return { error: error.message };
+    return {
+      error: error.message,
+      code: error.code,
+      status: error.status,
+      ...error.data
+    };
   }
 }
 

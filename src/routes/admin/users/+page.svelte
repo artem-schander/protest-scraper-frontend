@@ -5,6 +5,7 @@
   import { t, locale } from '$lib/i18n';
   import { authStore } from '$lib/stores/auth';
   import { notificationStore } from '$lib/stores/notification';
+  import { translateError } from '$lib/utils/errorHandler';
   import {
     fetchUsers,
     createUserAccount,
@@ -92,7 +93,7 @@
       notificationStore.add({
         type: 'error',
         title: translate('admin.users.notifications.fetchFailed'),
-        message: response.error
+        message: translateError(response)
       });
     } else {
       users = response.users || [];
@@ -214,7 +215,7 @@
       notificationStore.add({
         type: 'error',
         title: translate('admin.users.notifications.createFailed'),
-        message: response.error
+        message: translateError(response)
       });
     } else {
       notificationStore.add({
@@ -263,7 +264,7 @@
       notificationStore.add({
         type: 'error',
         title: translate('admin.users.notifications.updateFailed'),
-        message: response.error
+        message: translateError(response)
       });
       return;
     }
@@ -290,7 +291,7 @@
       notificationStore.add({
         type: 'error',
         title: translate('admin.users.notifications.deleteFailed'),
-        message: response.error
+        message: translateError(response)
       });
       return;
     }
@@ -352,7 +353,7 @@
       notificationStore.add({
         type: 'error',
         title: translate('admin.users.notifications.banFailed'),
-        message: response.error
+        message: translateError(response)
       });
       return;
     }
@@ -375,7 +376,7 @@
       notificationStore.add({
         type: 'error',
         title: translate('admin.users.notifications.unbanFailed'),
-        message: response.error
+        message: translateError(response)
       });
       return;
     }
@@ -400,7 +401,7 @@
       notificationStore.add({
         type: 'error',
         title: translate('admin.users.notifications.resendFailed'),
-        message: response.error
+        message: translateError(response)
       });
       return;
     }

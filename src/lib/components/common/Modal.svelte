@@ -5,7 +5,7 @@
 
   export let isOpen = false;
   export let title = '';
-  export let maxWidth = 'md'; // sm, md, lg, xl
+  export let maxWidth = 'md'; // sm, md, lg, xl, 2xl, 3xl
 
   const dispatch = createEventDispatcher();
 
@@ -13,7 +13,9 @@
     sm: 'max-w-sm',
     md: 'max-w-md',
     lg: 'max-w-lg',
-    xl: 'max-w-xl'
+    xl: 'max-w-xl',
+    '2xl': 'max-w-2xl',
+    '3xl': 'max-w-3xl'
   };
 
   function close() {

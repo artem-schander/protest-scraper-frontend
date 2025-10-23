@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, createEventDispatcher } from 'svelte';
   import Icon from '$lib/components/common/Icon.svelte';
   import {
     formatDateRange,
@@ -7,9 +7,14 @@
     getDaysUntil,
     getRelativeTime
   } from '$lib/utils/dateFormat';
-import { locale, t } from '$lib/i18n';
+  import { locale, t } from '$lib/i18n';
+  import { authStore } from '$lib/stores/auth';
+  import EditEventModal from '$lib/components/event/EditEventModal.svelte';
 
   export let event;
+
+  const dispatch = createEventDispatcher();
+  let showEditModal = false;
 
   // Extract event data
   const {
@@ -226,11 +231,29 @@ $: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
       <!--  </a> -->
       <!-- {/if} -->
     </div>
-    {#if verified}
-      <span class="text-xs text-green-600 dark:text-green-400 flex items-center gap-1 font-medium">
-        <Icon icon="heroicons:check-circle" class="w-4 h-4" />
-        <!-- Verified -->
-      </span>
-    {/if}
+    <div class="flex items-center gap-2">
+      {#if verified}
+        <span class="text-xs text-green-600 dark:text-green-400 flex items-center gap-1 font-medium">
+          <Icon icon="heroicons:check-circle" class="w-4 h-4" />
+          <!-- Verified -->
+        </span>
+      {/if}
+      {#if $authStore.user?.role === 'MODERATOR' || $authStore.user?.role === 'ADMIN'}
+        <button
+          type="button"
+          on:click|stopPropagation={() => (showEditModal = true)}
+          class="text-xs text-black/60 dark:text-white/60 hover:text-[#E10600] dark:hover:text-red-400 transition-colors flex items-center gap-1"
+          aria-label={$t('editEvent.title')}
+        >
+          <Icon icon="heroicons:pencil-square" class="w-4 h-4" />
+        </button>
+      {/if}
+    </div>
   </div>
 </div>
+
+<EditEventModal
+  bind:isOpen={showEditModal}
+  protestId={id}
+  on:updated={() => dispatch('updated')}
+/>

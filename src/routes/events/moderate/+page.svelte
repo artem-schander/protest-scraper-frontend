@@ -9,10 +9,13 @@
   import Icon from '$lib/components/common/Icon.svelte';
   import Button from '$lib/components/common/Button.svelte';
   import { pendingModerationStore } from '$lib/stores/moderation';
+  import EditEventModal from '$lib/components/event/EditEventModal.svelte';
 
   let pendingEvents = [];
   let isLoading = true;
   let processingIds = new Set();
+  let editingEventId = null;
+  let showEditModal = false;
 
   onMount(async () => {
     // Check authentication and role (only on client-side)
@@ -131,6 +134,18 @@
       pendingModerationStore.decrement();
     }
   }
+
+  function openEditModal(eventId) {
+    editingEventId = eventId;
+    showEditModal = true;
+  }
+
+  async function handleEventUpdated() {
+    // Reload the list to show updated event data
+    await loadPendingEvents();
+    showEditModal = false;
+    editingEventId = null;
+  }
 </script>
 
 <svelte:head>
@@ -172,7 +187,7 @@
     <!-- Loading State -->
     {#if isLoading}
       <div class="flex flex-col items-center justify-center py-20">
-        <Icon icon="heroicons:arrow-path" class="w-12 h-12 text-black/40 dark:text-white/40 animate-spin mb-4" />
+        <div class="w-12 h-12 border-4 border-black/20 dark:border-white/20 border-t-black dark:border-t-white rounded-full animate-spin mb-4"></div>
         <p class="text-black/60 dark:text-white/60">{$t('moderate.loading')}</p>
       </div>
 
@@ -199,7 +214,7 @@
           {@const isProcessing = processingIds.has(event.id)}
 
           <div class="bg-white dark:bg-stone-800 rounded-2xl shadow-lg p-6 transition-all hover:shadow-xl">
-            <div class="flex flex-col lg:flex-row lg:items-start gap-6">
+            <div class="flex flex-col gap-6">
               <!-- Event Info -->
               <div class="flex-1">
                 <h3 class="text-xl font-medium text-black dark:text-white mb-3">
@@ -237,12 +252,12 @@
                   {/if}
 
                   <!-- Source -->
-                  {#if event.source}
-                    <div class="flex items-center gap-2">
-                      <Icon icon="heroicons:information-circle" class="w-4 h-4" />
-                      <span>{$t('moderate.source')}: {event.source}</span>
-                    </div>
-                  {/if}
+                  <!-- {#if event.source} -->
+                  <!--   <div class="flex items-center gap-2"> -->
+                  <!--     <Icon icon="heroicons:information-circle" class="w-4 h-4" /> -->
+                  <!--     <span>{$t('moderate.source')}: {event.source}</span> -->
+                  <!--   </div> -->
+                  <!-- {/if} -->
 
                   <!-- URL -->
                   {#if event.url}
@@ -270,33 +285,48 @@
               </div>
 
               <!-- Actions -->
-              <div class="flex lg:flex-col gap-3">
+              <div class="flex flex-col sm:flex-row gap-2">
                 <Button
                   variant="primary"
-                  on:click={() => approveEvent(event)}
-                  disabled={isProcessing}
-                  class="flex-1 lg:flex-none"
-                >
-                  {#if isProcessing}
-                    <Icon icon="heroicons:arrow-path" class="w-5 h-5 animate-spin" />
-                  {:else}
-                    <Icon icon="heroicons:check" class="w-5 h-5" />
-                  {/if}
-                  {$t('moderate.approve')}
-                </Button>
-
-                <Button
-                  variant="secondary"
+                  size="sm"
                   on:click={() => rejectEvent(event)}
                   disabled={isProcessing}
                   class="flex-1 lg:flex-none"
                 >
                   {#if isProcessing}
-                    <Icon icon="heroicons:arrow-path" class="w-5 h-5 animate-spin" />
+                    <div class="w-4 h-4 border-2 border-black/30 dark:border-white/30 border-t-black dark:border-t-white rounded-full animate-spin"></div>
                   {:else}
-                    <Icon icon="heroicons:x-mark" class="w-5 h-5" />
+                    <Icon icon="heroicons:x-mark" class="w-4 h-4" />
                   {/if}
                   {$t('moderate.reject')}
+                </Button>
+
+                <div class="hidden sm:block sm:grow"></div>
+
+                <Button
+                  variant="light"
+                  size="sm"
+                  on:click={() => openEditModal(event.id)}
+                  disabled={isProcessing}
+                  class="flex-1 lg:flex-none"
+                >
+                  <Icon icon="heroicons:pencil-square" class="w-4 h-4" />
+                  {$t('editEvent.title')}
+                </Button>
+
+                <Button
+                  variant="green"
+                  size="sm"
+                  on:click={() => approveEvent(event)}
+                  disabled={isProcessing}
+                  class="flex-1 lg:flex-none"
+                >
+                  {#if isProcessing}
+                    <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  {:else}
+                    <Icon icon="heroicons:check" class="w-4 h-4" />
+                  {/if}
+                  {$t('moderate.approve')}
                 </Button>
               </div>
             </div>
@@ -306,3 +336,13 @@
     {/if}
   </div>
 </div>
+
+<EditEventModal
+  bind:isOpen={showEditModal}
+  protestId={editingEventId || ''}
+  on:updated={handleEventUpdated}
+  on:close={() => {
+    showEditModal = false;
+    editingEventId = null;
+  }}
+/>

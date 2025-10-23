@@ -8,7 +8,9 @@
   const variants = {
     primary: 'bg-[#E10600] text-white hover:bg-[#C10500] hover:shadow-lg',
     secondary: 'bg-white dark:bg-stone-800 border-2 border-black dark:border-white text-black dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black',
-    ghost: 'bg-transparent text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10'
+    green: 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-lg',
+    light: 'bg-stone-200/50 dark:bg-stone-700/50 text-black dark:text-white hover:bg-stone-200 dark:hover:bg-stone-700',
+    ghost: 'bg-transparent text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10',
   };
 
   const sizes = {
@@ -28,9 +30,8 @@
     {fullWidth ? 'w-full' : ''}
     rounded-xl
     font-medium
-    transform hover:scale-[1.02] active:scale-[0.98]
     transition-all duration-200
-    disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+    disabled:opacity-50 disabled:cursor-not-allowed
     flex items-center justify-center gap-2
   "
 >

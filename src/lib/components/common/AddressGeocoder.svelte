@@ -3,6 +3,7 @@
   import { browser } from '$app/environment';
   import { get } from 'svelte/store';
   import Icon from '$lib/components/common/Icon.svelte';
+  import Button from '$lib/components/common/Button.svelte';
   import { t } from '$lib/i18n';
 
   export let initialAddress = '';
@@ -10,6 +11,9 @@
   export let initialCountry = '';
   export let initialLat = null;
   export let initialLon = null;
+  export let showMap = true; // New prop to control map visibility
+  export let required = false; // Whether location selection is required
+  export let label = ''; // Optional label for the field
 
   const dispatch = createEventDispatcher();
 
@@ -50,8 +54,26 @@
     }
   }
 
+  // Restore selected location when initial props are provided
+  // This runs reactively when the component is recreated (e.g., navigating back)
+  $: if (initialLat && initialLon && initialAddress && !selectedResult) {
+    selectedResult = {
+      lat: initialLat,
+      lon: initialLon,
+      display_name: initialAddress,
+      address: {
+        city: initialCity,
+        country_code: initialCountry?.toLowerCase()
+      }
+    };
+    // Only update map marker if map is initialized
+    if (map && L) {
+      updateMapMarker(parseFloat(initialLat), parseFloat(initialLon), initialAddress);
+    }
+  }
+
   onMount(async () => {
-    if (!browser) return;
+    if (!browser || !showMap) return;
 
     // Dynamically import Leaflet (client-side only)
     L = await import('leaflet');
@@ -92,20 +114,6 @@
     onDestroy(() => {
       observer.disconnect();
     });
-
-    // If we have initial coordinates, restore the selected location
-    if (initialLat && initialLon && initialAddress) {
-      selectedResult = {
-        lat: initialLat,
-        lon: initialLon,
-        display_name: initialAddress,
-        address: {
-          city: initialCity,
-          country_code: initialCountry?.toLowerCase()
-        }
-      };
-      updateMapMarker(parseFloat(initialLat), parseFloat(initialLon), initialAddress);
-    }
   });
 
   onDestroy(() => {
@@ -295,6 +303,16 @@
 </script>
 
 <div class="space-y-3">
+  <!-- Label -->
+  {#if label}
+    <label class="block text-sm text-black/60 dark:text-white/60">
+      {label}
+      {#if required}
+        <span class="text-[#E10600] dark:text-red-400 ml-0.5">*</span>
+      {/if}
+    </label>
+  {/if}
+
   <!-- Search Input -->
   <div class="relative search-results-container">
     <div class="flex gap-2">
@@ -305,11 +323,10 @@
         placeholder={$t('createEvent.geocoder.placeholder')}
         class="flex-1 px-4 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-700 text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 rounded-lg focus:outline-none focus:border-black dark:focus:border-white focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 transition-all"
       />
-      <button
-        type="button"
+      <Button
+        variant="light"
         on:click={searchAddress}
         disabled={isSearching || !searchQuery.trim()}
-        class="px-4 py-2.5 bg-gradient-to-br from-emerald-400 to-lime-400 text-black font-medium rounded-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all flex items-center gap-2"
       >
         {#if isSearching}
           <Icon icon="svg-spinners:ring-resize" class="w-4 h-4" />
@@ -317,7 +334,7 @@
           <Icon icon="heroicons:magnifying-glass" class="w-4 h-4" />
         {/if}
         <span>{$t('createEvent.geocoder.search')}</span>
-      </button>
+      </Button>
     </div>
 
     <!-- Search Results Dropdown -->
@@ -352,11 +369,13 @@
   {/if}
 
   <!-- Map Container -->
-  <div
-    bind:this={mapContainer}
-    class="h-64 dark:bg-black rounded-lg border border-stone-200 dark:border-stone-700 overflow-hidden"
-    style="z-index: 1;"
-  ></div>
+  {#if showMap}
+    <div
+      bind:this={mapContainer}
+      class="h-64 dark:bg-black rounded-lg border border-stone-200 dark:border-stone-700 overflow-hidden"
+      style="z-index: 1;"
+    ></div>
+  {/if}
 
   <!-- Selected Location Info -->
   {#if selectedResult}

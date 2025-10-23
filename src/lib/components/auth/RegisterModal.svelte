@@ -4,7 +4,9 @@
   import Input from '$lib/components/common/Input.svelte';
   import Button from '$lib/components/common/Button.svelte';
   import Icon from '$lib/components/common/Icon.svelte';
+  import { t } from '$lib/i18n';
   import { register, initiateGoogleOAuth } from '$lib/utils/api';
+  import { translateError } from '$lib/utils/errorHandler';
 
   export let isOpen = false;
 
@@ -22,12 +24,12 @@
 
     // Validation
     if (password.length < 8) {
-      error = 'Password must be at least 8 characters long';
+      error = $t('auth.passwordTooShort');
       return;
     }
 
     if (!agreeToTerms) {
-      error = 'Please agree to the Terms and Privacy Policy';
+      error = $t('auth.agreementRequired');
       return;
     }
 
@@ -37,11 +39,11 @@
       const response = await register({ email, password });
 
       if (response.error) {
-        error = response.details?.error || response.error || response.message || 'Registration failed. Please try again.';
-        if (response.details?.debugVerificationCode) {
+        error = translateError(response);
+        if (response.debugVerificationCode) {
           dispatch('verificationRequested', {
             email,
-            code: response.details.debugVerificationCode
+            code: response.debugVerificationCode
           });
         }
       } else if (response.requiresVerification) {
@@ -58,10 +60,10 @@
         dispatch('verifiedWithoutCode', { user: response.user });
         isOpen = false;
       } else {
-        error = 'Registration failed. Please try again.';
+        error = translateError(response);
       }
     } catch (err) {
-      error = err.message || 'An error occurred. Please try again.';
+      error = translateError(err);
     } finally {
       isLoading = false;
     }
@@ -87,8 +89,8 @@
 <Modal bind:isOpen maxWidth="md">
   <div class="space-y-6">
     <div class="text-center">
-      <h2 class="text-2xl font-medium text-black dark:text-white mb-2">Create Account</h2>
-      <p class="text-sm text-black/60 dark:text-white/60">Join us to create and manage events</p>
+      <h2 class="text-2xl font-medium text-black dark:text-white mb-2">{$t('auth.register.title')}</h2>
+      <p class="text-sm text-black/60 dark:text-white/60">{$t('auth.register.subtitle')}</p>
     </div>
 
     <form on:submit={handleRegister} class="space-y-4">
@@ -102,7 +104,7 @@
       <Input
         bind:value={email}
         type="email"
-        label="Email"
+        label={$t('auth.email')}
         required
         icon="heroicons:envelope"
       >
@@ -114,9 +116,9 @@
       <Input
         bind:value={password}
         type="password"
-        label="Password"
+        label={$t('auth.password')}
         required
-        helper="Minimum 8 characters"
+        helper={$t('auth.passwordHelper')}
         icon="heroicons:lock-closed"
       >
         <svelte:fragment slot="icon">
@@ -127,8 +129,13 @@
       <div>
         <label class="flex items-start gap-2 cursor-pointer">
           <input type="checkbox" bind:checked={agreeToTerms} required class="mt-1 rounded text-[#E10600] dark:text-red-400 accent-[#E10600]" />
-          <span class="text-sm text-black dark:text-white/80">
-            I agree to the <a href="/terms" on:click={handleLinkClick} class="text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600]">Terms of Service</a> and <a href="/privacy" on:click={handleLinkClick} class="text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600]">Privacy Policy</a>
+          <span class="text-sm text-black dark:text-white/80" on:click={handleLinkClick}>
+            {@html $t('auth.agreementText', {
+              values: {
+                terms: `<a href="/terms" class="text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600]">${$t('auth.termsLink')}</a>`,
+                privacy: `<a href="/privacy" class="text-[#E10600] dark:text-red-400 hover:text-[#C10500] dark:hover:text-[#E10600]">${$t('auth.privacyLink')}</a>`
+              }
+            })}
           </span>
         </label>
       </div>
@@ -136,9 +143,9 @@
       <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
         {#if isLoading}
           <Icon icon="heroicons:arrow-path" class="w-5 h-5 animate-spin" />
-          Creating account...
+          {$t('auth.creatingAccount')}
         {:else}
-          Create Account
+          {$t('auth.createAccount')}
         {/if}
       </Button>
     </form>
@@ -148,7 +155,7 @@
         <div class="w-full border-t border-stone-200 dark:border-stone-700"></div>
       </div>
       <div class="relative flex justify-center text-sm">
-        <span class="px-4 bg-white dark:bg-stone-800 text-black/40 dark:text-white/40">or</span>
+        <span class="px-4 bg-white dark:bg-stone-800 text-black/40 dark:text-white/40">{$t('common.or')}</span>
       </div>
     </div>
 
@@ -163,17 +170,17 @@
         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
       </svg>
-      Continue with Google
+      {$t('auth.continueWithGoogle')}
     </button>
 
     <p class="text-center text-sm text-black/60 dark:text-white/60">
-      Already have an account?
+      {$t('auth.haveAccount')}
       <button
         type="button"
         on:click={switchToLogin}
         class="text-[#E10600] dark:text-red-400 font-medium hover:text-[#C10500] dark:hover:text-[#E10600]"
       >
-        Login
+        {$t('header.login')}
       </button>
     </p>
   </div>

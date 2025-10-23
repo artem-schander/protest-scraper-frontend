@@ -4,7 +4,13 @@
     "lastUpdated": "Last updated",
     "required": "required",
     "optional": "Optional",
-    "at": "at"
+    "at": "at",
+    "or": "or",
+    "and": "and",
+    "tba": "TBA",
+    "unknown": "Unknown",
+    "success": "Success",
+    "errorOccurred": "An error occurred. Please try again."
   },
   "createEvent": {
     "title": "Create Event",
@@ -48,6 +54,9 @@
     "errorDateTime": "Please select start date and time",
     "errorLocation": "Please search for and select a location",
     "redirecting": "Redirecting you to the homepage in a moment...",
+    "successMessage": "Event created successfully",
+    "submittedTitle": "Event Submitted!",
+    "createdTitle": "Event Created!",
     "geocoder": {
       "placeholder": "Enter address, city, or location",
       "search": "Search",
@@ -56,16 +65,58 @@
       "selected": "Selected location",
       "clear": "Clear location",
       "hint": "Search for an address to show it on the map"
+    }
+  },
+  "editEvent": {
+    "title": "Edit Event",
+    "save": "Save Changes",
+    "saving": "Saving Changes...",
+    "updateSuccess": "Event updated successfully"
+  },
+  "auth": {
+    "sessionExpired": "Session expired. Please log in again.",
+    "loginFailed": "Login failed. Please try again.",
+    "registrationFailed": "Registration failed. Please try again.",
+    "email": "Email",
+    "password": "Password",
+    "passwordHelper": "Minimum 8 characters",
+    "passwordTooShort": "Password must be at least 8 characters long",
+    "agreementRequired": "Please agree to the Terms and Privacy Policy",
+    "agreementText": "I agree to the {terms} and {privacy}",
+    "termsLink": "Terms of Service",
+    "privacyLink": "Privacy Policy",
+    "forgotPassword": "Forgot password?",
+    "signingIn": "Signing in...",
+    "creatingAccount": "Creating account...",
+    "createAccount": "Create Account",
+    "continueWithGoogle": "Continue with Google",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signUp": "Sign up",
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your account to continue"
     },
-    "countries": {
-      "germany": "🇩🇪 Germany",
-      "austria": "🇦🇹 Austria",
-      "switzerland": "🇨🇭 Switzerland",
-      "france": "🇫🇷 France",
-      "uk": "🇬🇧 United Kingdom",
-      "netherlands": "🇳🇱 Netherlands",
-      "belgium": "🇧🇪 Belgium",
-      "other": "🌍 Other"
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Join us to create and manage events"
+    },
+    "verification": {
+      "title": "Verify your email",
+      "instructions": "Enter the six-character code we sent to {email}.",
+      "missingEmail": "Missing email address. Please start the verification process again.",
+      "enterCode": "Enter the 6-character verification code.",
+      "success": "Email verified successfully.",
+      "unexpectedResponse": "Unexpected response from the server.",
+      "codeSent": "A new verification code has been sent.",
+      "devMode": "Development mode",
+      "devCodeHint": "Use this code if you did not receive an email: {code}",
+      "notReceived": "If you did not receive a code, check your spam folder or request a new one.",
+      "resendCooldown": "Resend available in {seconds}s",
+      "sending": "Sending…",
+      "resend": "Resend verification code",
+      "verifying": "Verifying…",
+      "submit": "Verify email"
     }
   },
   "header": {
@@ -176,6 +227,27 @@
       },
       "confirmDelete": "Delete {email}? This action cannot be undone."
     }
+  },
+  "errors": {
+    "EMAIL_ALREADY_EXISTS": "Another user already uses this email",
+    "USER_ALREADY_EXISTS": "User already exists",
+    "EMAIL_PASSWORD_REQUIRED": "Email and password are required",
+    "INVALID_EMAIL_FORMAT": "Invalid email format",
+    "PASSWORD_TOO_SHORT": "Password must be at least 8 characters long",
+    "INVALID_CREDENTIALS": "Invalid email or password",
+    "ACCOUNT_BANNED": "Account is currently banned",
+    "EMAIL_NOT_VERIFIED": "Email not verified. Please check your inbox for the verification code",
+    "REGISTRATION_FAILED": "Registration failed. Please try again",
+    "LOGIN_FAILED": "Login failed. Please try again",
+    "HTTP_400": "Invalid request",
+    "HTTP_401": "Unauthorized - please log in",
+    "HTTP_403": "Access denied",
+    "HTTP_404": "Not found",
+    "HTTP_409": "Conflict - resource already exists",
+    "HTTP_500": "Server error. Please try again later"
+  },
+  "event": {
+    "untitled": "Untitled Event"
   },
   "home": {
     "metaTitle": "Protest Listing - Upcoming Protests & Demonstrations",
