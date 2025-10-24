@@ -247,7 +247,9 @@
     "HTTP_500": "Server error. Please try again later"
   },
   "event": {
-    "untitled": "Untitled Event"
+    "untitled": "Untitled Event",
+    "dateTBA": "Date TBA",
+    "timeTBA": "Time TBA"
   },
   "home": {
     "metaTitle": "Protest Listing - Upcoming Protests & Demonstrations",

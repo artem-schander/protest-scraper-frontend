@@ -27,6 +27,10 @@ $: if (startDate && !userNavigatedMonth && currentMonth.getMonth() !== startDate
   currentMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
 }
 
+// Create a reactive key that changes whenever startDate or endDate change
+// This forces the calendar to re-render and update the highlighted range
+$: dateKey = `${startDate?.getTime() || 'null'}-${endDate?.getTime() || 'null'}`;
+
 $: currentLocale = $locale || 'en-US';
 $: monthFormatter = new Intl.DateTimeFormat(currentLocale, { month: 'long', year: 'numeric' });
 $: dayFormatter = new Intl.DateTimeFormat(currentLocale, { month: 'short', day: 'numeric', year: 'numeric' });
@@ -199,7 +203,7 @@ $: todayStr = formatDateStr(today);
       {/each}
 
       <!-- Days of the month -->
-      {#each Array(daysInMonth) as _, i}
+      {#each Array(daysInMonth) as _, i (dateKey + '-' + i)}
         {@const day = i + 1}
         {@const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)}
         {@const dateStr = formatDateStr(date)}

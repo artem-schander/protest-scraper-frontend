@@ -21,7 +21,9 @@
     id,
     title = 'Untitled Event',
     start,
+    startTimeKnown = true,
     end,
+    endTimeKnown = true,
     // location: "Berlin, Deutschland"
     location,
     locationDetails = 'TBA',
@@ -76,7 +78,7 @@ let timeRangeText = '';
 let relativeTime = '';
 
 $: dateRangeText = eventDate ? formatDateRange(eventDate, eventEndDate, $locale) : '';
-$: timeRangeText = eventDate ? formatTimeRange(eventDate, eventEndDate, {}, $locale) : '';
+$: timeRangeText = (eventDate && startTimeKnown === true) ? formatTimeRange(eventDate, eventEndDate, {}, $locale) : '';
 $: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
 
   // // Location
@@ -139,7 +141,7 @@ $: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
     <h3
       bind:this={titleEl}
       class="text-md font-medium text-black dark:text-white line-clamp-2 leading-tight"
-      style="display: -webkit-box; -webkit-box-orient: vertical; height: 2.4em;"
+      style="display: -webkit-box; -webkit-box-orient: vertical; height: 2.5em;"
       on:mouseenter={handleMouseEnter}
       on:mouseleave={handleMouseLeave}
     >
@@ -167,13 +169,10 @@ $: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
     </p>
 
     <!-- Time Range -->
-    {#if timeRangeText}
-      <p class="flex items-center gap-2">
-        <Icon icon="heroicons:clock" class="w-4 h-4 flex-shrink-0" />
-        <span>{timeRangeText}</span>
-        <!-- <span>{start} | {eventDate?.toISOString()} | {timeRangeText}</span> -->
-      </p>
-    {/if}
+    <p class="flex items-center gap-2">
+      <Icon icon="heroicons:clock" class="w-4 h-4 flex-shrink-0" />
+      <span>{timeRangeText || $t('event.timeTBA')}</span>
+    </p>
 
     <!-- Location -->
     {#if mapLink}

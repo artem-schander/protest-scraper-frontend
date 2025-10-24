@@ -147,7 +147,9 @@
     "HTTP_500": "Serverfehler. Bitte versuche es später erneut"
   },
   "event": {
-    "untitled": "Unbenannte Veranstaltung"
+    "untitled": "Unbenannte Veranstaltung",
+    "dateTBA": "Datum wird noch bekannt gegeben",
+    "timeTBA": "Uhrzeit wird noch bekannt gegeben"
   },
   "header": {
     "language": "Sprache",
