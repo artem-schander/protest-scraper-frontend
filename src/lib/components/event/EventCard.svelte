@@ -9,12 +9,16 @@
   } from '$lib/utils/dateFormat';
   import { locale, t } from '$lib/i18n';
   import { authStore } from '$lib/stores/auth';
+  import { notificationStore } from '$lib/stores/notification';
   import EditEventModal from '$lib/components/event/EditEventModal.svelte';
+  import { deleteProtest } from '$lib/utils/api';
 
   export let event;
 
   const dispatch = createEventDispatcher();
   let showEditModal = false;
+  let showDeleteConfirm = false;
+  let isDeleting = false;
 
   // Extract event data
   const {
@@ -124,6 +128,47 @@ $: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
 
   function handleMouseLeave() {
     showTooltip = false;
+  }
+
+  async function handleDelete() {
+    if (isDeleting) return;
+
+    isDeleting = true;
+    try {
+      const response = await deleteProtest(id);
+
+      if (response.error) {
+        notificationStore.add({
+          type: 'error',
+          title: $t('deleteEvent.error'),
+          message: response.error
+        });
+        isDeleting = false;
+        showDeleteConfirm = false;
+        return;
+      }
+
+      // Show success notification
+      notificationStore.add({
+        type: 'success',
+        title: $t('deleteEvent.success')
+      });
+
+      // Close modal and reset state
+      showDeleteConfirm = false;
+      isDeleting = false;
+
+      // Emit event to refresh the list
+      dispatch('deleted', { id });
+    } catch (error) {
+      console.error('Delete error:', error);
+      notificationStore.add({
+        type: 'error',
+        title: $t('deleteEvent.error')
+      });
+      isDeleting = false;
+      showDeleteConfirm = false;
+    }
   }
 </script>
 
@@ -247,6 +292,16 @@ $: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
           <Icon icon="heroicons:pencil-square" class="w-4 h-4" />
         </button>
       {/if}
+      {#if $authStore.user?.role === 'ADMIN'}
+        <button
+          type="button"
+          on:click|stopPropagation={() => (showDeleteConfirm = true)}
+          class="text-xs text-black/60 dark:text-white/60 hover:text-red-600 dark:hover:text-red-500 transition-colors flex items-center gap-1"
+          aria-label={$t('deleteEvent.title')}
+        >
+          <Icon icon="heroicons:trash" class="w-4 h-4" />
+        </button>
+      {/if}
     </div>
   </div>
 </div>
@@ -256,3 +311,40 @@ $: relativeTime = eventDate ? getRelativeTime(eventDate, $locale) : '';
   protestId={id}
   on:updated={() => dispatch('updated')}
 />
+
+{#if showDeleteConfirm}
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+    on:click|stopPropagation={() => (showDeleteConfirm = false)}
+  >
+    <div
+      class="bg-white dark:bg-stone-800 rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4"
+      on:click|stopPropagation
+    >
+      <h3 class="text-xl font-semibold text-black dark:text-white">
+        {$t('deleteEvent.confirmTitle')}
+      </h3>
+      <p class="text-black/70 dark:text-white/70">
+        {$t('deleteEvent.confirmMessage')}
+      </p>
+      <div class="flex gap-3 justify-end pt-2">
+        <button
+          type="button"
+          on:click|stopPropagation={() => (showDeleteConfirm = false)}
+          disabled={isDeleting}
+          class="px-4 py-2 rounded-lg border border-stone-300 dark:border-stone-600 text-black dark:text-white hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors disabled:opacity-50"
+        >
+          {$t('deleteEvent.cancel')}
+        </button>
+        <button
+          type="button"
+          on:click|stopPropagation={handleDelete}
+          disabled={isDeleting}
+          class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition-colors disabled:opacity-50"
+        >
+          {isDeleting ? $t('deleteEvent.deleting') : $t('deleteEvent.confirm')}
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}

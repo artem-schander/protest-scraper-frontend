@@ -1,7 +1,7 @@
 <script>
-import { goto, invalidate } from '$app/navigation';
-import { tick } from 'svelte';
-import { get } from 'svelte/store';
+  import { goto, invalidate, invalidateAll } from '$app/navigation';
+  import { tick } from 'svelte';
+  import { get } from 'svelte/store';
   import { fly } from 'svelte/transition';
   import EventCard from '$lib/components/event/EventCard.svelte';
   import FilterSidebar from '$lib/components/layout/FilterSidebar.svelte';
@@ -350,11 +350,13 @@ import { get } from 'svelte/store';
 
   async function handleEventUpdated() {
     // Refresh the event list after an event is edited
-    await invalidate(() => true);
+    await invalidateAll();
   }
 
-  // Reactive key to force re-render when page or filters change
-  $: key = `page:${data.page}-search:${data.filters.search}-dates:${data.filters.startDate}-${data.filters.endDate}-location:${data.filters.lat}-${data.filters.lon}-${data.filters.radius}`;
+  async function handleEventDeleted() {
+    // Re-fetch the entire page data from the server
+    await invalidateAll();
+  }
 
   $: if (!isPendingNavigation) {
     appliedSearch = data.filters.search || '';
@@ -518,48 +520,46 @@ import { get } from 'svelte/store';
       </div>
 
       <!-- Event Grid -->
-      {#key key}
-        {#if data.protests && data.protests.length > 0}
-          <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {#each data.protests as protest}
-              <EventCard event={protest} on:updated={handleEventUpdated} />
-            {/each}
+      {#if data.protests && data.protests.length > 0}
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {#each data.protests as protest (protest.id)}
+            <EventCard event={protest} on:updated={handleEventUpdated} on:deleted={handleEventDeleted} />
+          {/each}
+        </div>
+      {:else if data.error}
+        <!-- Error State -->
+        <div class="text-center py-16">
+          <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-50 dark:bg-red-900/20 mb-4">
+            <Icon icon="heroicons:exclamation-triangle" class="w-12 h-12 text-red-500 dark:text-red-400" />
           </div>
-        {:else if data.error}
-          <!-- Error State -->
-          <div class="text-center py-16">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-50 dark:bg-red-900/20 mb-4">
-              <Icon icon="heroicons:exclamation-triangle" class="w-12 h-12 text-red-500 dark:text-red-400" />
-            </div>
-            <h3 class="text-xl font-medium text-black dark:text-white mb-2">{$t('home.errorTitle')}</h3>
-            <p class="text-black/60 dark:text-white/60 mb-2">
-              {$t('home.errorDescription')}
-            </p>
-            {#if data.error}
-              <p class="text-black/60 dark:text-white/60 mb-6">
-                {data.error}
-              </p>
-            {/if}
-            <button
-              on:click={() => window.location.reload()}
-              class="px-6 py-3 rounded-xl bg-red-600 hover:bg-[#C10500] text-white font-medium hover:shadow-lg transition-all"
-            >
-              {$t('home.errorRetry')}
-            </button>
-          </div>
-        {:else}
-          <!-- Empty State -->
-          <div class="text-center py-16">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-stone-200 dark:bg-stone-800 border-2 border-black/10 dark:border-white/10 mb-4">
-              <Icon icon="heroicons:calendar-days" class="w-12 h-12 text-black dark:text-white" />
-            </div>
-            <h3 class="text-xl font-medium text-black dark:text-white mb-2">{$t('home.emptyTitle')}</h3>
+          <h3 class="text-xl font-medium text-black dark:text-white mb-2">{$t('home.errorTitle')}</h3>
+          <p class="text-black/60 dark:text-white/60 mb-2">
+            {$t('home.errorDescription')}
+          </p>
+          {#if data.error}
             <p class="text-black/60 dark:text-white/60 mb-6">
-              {$t('home.emptyDescription')}
+              {data.error}
             </p>
+          {/if}
+          <button
+            on:click={() => window.location.reload()}
+            class="px-6 py-3 rounded-xl bg-red-600 hover:bg-[#C10500] text-white font-medium hover:shadow-lg transition-all"
+          >
+            {$t('home.errorRetry')}
+          </button>
+        </div>
+      {:else}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+          <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-stone-200 dark:bg-stone-800 border-2 border-black/10 dark:border-white/10 mb-4">
+            <Icon icon="heroicons:calendar-days" class="w-12 h-12 text-black dark:text-white" />
           </div>
-        {/if}
-      {/key}
+          <h3 class="text-xl font-medium text-black dark:text-white mb-2">{$t('home.emptyTitle')}</h3>
+          <p class="text-black/60 dark:text-white/60 mb-6">
+            {$t('home.emptyDescription')}
+          </p>
+        </div>
+      {/if}
 
       <!-- Pagination -->
       <Pagination

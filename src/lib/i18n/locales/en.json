@@ -73,6 +73,16 @@
     "saving": "Saving Changes...",
     "updateSuccess": "Event updated successfully"
   },
+  "deleteEvent": {
+    "title": "Delete Event",
+    "confirmTitle": "Confirm Deletion",
+    "confirmMessage": "Are you sure you want to delete this event? This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete",
+    "deleting": "Deleting...",
+    "success": "Event deleted successfully",
+    "error": "Failed to delete event"
+  },
   "auth": {
     "sessionExpired": "Session expired. Please log in again.",
     "loginFailed": "Login failed. Please try again.",

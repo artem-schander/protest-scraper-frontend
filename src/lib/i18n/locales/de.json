@@ -82,6 +82,16 @@
     "saving": "Speichert Änderungen...",
     "updateSuccess": "Veranstaltung erfolgreich aktualisiert"
   },
+  "deleteEvent": {
+    "title": "Veranstaltung löschen",
+    "confirmTitle": "Löschen bestätigen",
+    "confirmMessage": "Möchten Sie diese Veranstaltung wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "cancel": "Abbrechen",
+    "confirm": "Löschen",
+    "deleting": "Wird gelöscht...",
+    "success": "Veranstaltung erfolgreich gelöscht",
+    "error": "Fehler beim Löschen der Veranstaltung"
+  },
   "auth": {
     "sessionExpired": "Sitzung abgelaufen. Bitte melde dich erneut an.",
     "loginFailed": "Anmeldung fehlgeschlagen. Bitte versuche es erneut.",
