@@ -14,10 +14,6 @@
 
   export let pendingCount = 0;
 
-  if (browser) {
-    pendingModerationStore.set(pendingCount);
-  }
-
   let showLoginModal = false;
   let showRegisterModal = false;
   let showMobileMenu = false;
@@ -163,7 +159,7 @@
     }
 
     isLoadingPendingCount = true;
-    const response = await getProtests({ verified: 'false', limit: 1 });
+    const response = await getProtests({ verified: 'false', manualOnly: 'true', limit: 1 });
 
     if (!response.error && hasModerationAccess) {
       const parsedTotal = Number(response.total);

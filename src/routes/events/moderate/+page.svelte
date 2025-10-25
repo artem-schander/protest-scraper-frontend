@@ -40,7 +40,7 @@
 
   async function loadPendingEvents() {
     isLoading = true;
-    const response = await getProtests({ verified: 'false', limit: 100 });
+    const response = await getProtests({ verified: 'false', manualOnly: 'true', limit: 100 });
 
     if (response.error) {
       notificationStore.add({
