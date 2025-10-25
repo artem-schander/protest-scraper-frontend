@@ -35,14 +35,14 @@ export async function load({ locals, cookies, fetch }) {
     const authToken = cookies.get('auth-token');
     if (authToken) {
       try {
-        const response = await fetch(`${API_BASE_URL}/protests?verified=false&limit=1`, {
+        const response = await fetch(`${API_BASE_URL}/protests?verified=false&manualOnly=true&limit=1`, {
           headers: {
             Cookie: `auth-token=${authToken}`
           }
         });
         if (response.ok) {
           const data = await response.json();
-          const total = Number.isFinite(data.total) ? data.total : Array.isArray(data.protests) ? data.protests.length : 0;
+          const total = Number.isFinite(data.pagination?.total) ? data.pagination.total : Array.isArray(data.protests) ? data.protests.length : 0;
           pendingModerationCount = total;
         }
       } catch (error) {

@@ -144,6 +144,36 @@ The app supports EN/DE localization using `svelte-i18n` with SSR-safe cookie per
 </script>
 ```
 
+### JWT Token Management
+
+**Architecture:**
+- **Access Token**: 15-minute expiry (backend hardcoded)
+- **Refresh Window**: 30 days (tokens can be refreshed within this period)
+- **Storage**: HTTP-only cookies (`auth-token`) - **cannot be accessed by JavaScript** (intentional for XSS protection)
+- **User State**: Stored in localStorage (`authUser`) - only contains `{ userId, email, role }`, **not the token**
+
+**Why This Design:**
+- HTTP-only cookies prevent XSS attacks from stealing tokens
+- Client JavaScript cannot decode the JWT (this is a security feature, not a bug)
+- SSR can access cookies via `request.headers` but localStorage is client-only
+- Token expiry is handled entirely server-side
+
+**Automatic Refresh Flow:**
+The `apiRequest()` function in `src/lib/utils/api.js` handles token refresh transparently:
+
+1. Any API request with expired token returns 401
+2. `apiRequest()` catches 401 and automatically calls `POST /api/auth/refresh`
+3. Backend validates `refreshUntil` claim (ignoring standard expiry)
+4. If within 30-day window, backend issues new 15-minute token (in cookie)
+5. Original request is retried automatically with new token
+6. If refresh fails (past 30 days), user is logged out via `authStore.logout()`
+
+**Important Notes:**
+- **Never try to decode the JWT client-side** - it's in an HTTP-only cookie you can't access
+- **Never store token expiry in localStorage** - SSR can't read localStorage
+- **Don't implement proactive refresh** - reactive 401 handling already works
+- The existing system is correct - random logouts are likely a different issue
+
 ### Authentication UX Flow
 
 The header mounts the three auth modals (`LoginModal`, `RegisterModal`, `EmailVerificationModal`). Keep these interactions in sync when changing any of the modals:
@@ -167,6 +197,66 @@ The header mounts the three auth modals (`LoginModal`, `RegisterModal`, `EmailVe
 - Example: `text-black dark:text-white`, `bg-white dark:bg-stone-800`
 
 See `DARK_MODE.md` for detailed implementation.
+
+### WebSocket Real-Time Moderation
+
+**Architecture:**
+- Singleton WebSocket client (`ModerationWebSocketClient`) in `src/lib/utils/moderationWebSocket.js`
+- Connection managed by Header component (always mounted)
+- Individual pages register event handlers without managing connection lifecycle
+- Connects to `/ws/moderation` endpoint with cookie-based authentication
+
+**Connection Management:**
+- **Header** (`src/lib/components/layout/Header.svelte`):
+  - Calls `getModerationWebSocket()` on mount
+  - Connects via `ws.connect()` if not already connected
+  - Listens for `event_created` to update pending moderation badge
+  - Cleans up listeners on unmount but keeps connection alive
+
+- **Moderation Page** (`src/routes/events/moderate/+page.svelte`):
+  - Gets existing WebSocket instance via `getModerationWebSocket()`
+  - Registers event handlers (`event_locked`, `event_unlocked`, etc.)
+  - Requests current lock state via `requestCurrentLocks()` on mount
+  - Cleans up listeners on unmount but doesn't disconnect
+
+**Event Locking Pattern:**
+```svelte
+// Track locks with reactive Map
+let lockedEvents = new Map(); // eventId → { userId, email }
+
+// Lock when opening edit modal
+function openEditModal(eventId) {
+  wsClient.viewEvent(eventId);
+  editingEventId = eventId;
+  showEditModal = true;
+}
+
+// Unlock when modal closes (reactive statement)
+$: if (!showEditModal && editingEventId) {
+  wsClient.unviewEvent(editingEventId);
+  editingEventId = null;
+}
+
+// Update locks map on WebSocket events
+function handleEventLocked(data) {
+  lockedEvents.set(data.eventId, data.lockedBy);
+  lockedEvents = new Map(lockedEvents); // Trigger reactivity
+}
+
+// Check if event is locked by another browser
+{@const locked = lockedEvents.has(event.id)}
+{@const isLockedByOther = locked && editingEventId !== event.id}
+```
+
+**Key Implementation Details:**
+- Use `new Map(lockedEvents)` to trigger Svelte reactivity (reassignment)
+- Access Map directly in `{@const}` declarations for reactivity tracking
+- Don't use helper functions for Map access (prevents reactivity)
+- Lock state persists across page reloads via `request_locks` message
+
+**Message Types:**
+- Client sends: `view_event`, `unview_event`, `event_updated`, `event_deleted`, `request_locks`
+- Server sends: `event_locked`, `event_unlocked`, `event_updated`, `event_deleted`, `event_created`
 
 ### Tailwind Configuration
 

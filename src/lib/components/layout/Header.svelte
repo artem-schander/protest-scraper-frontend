@@ -1,4 +1,5 @@
 <script>
+  import { onMount, onDestroy } from 'svelte';
   import Icon from '$lib/components/common/Icon.svelte';
   import { authStore } from '$lib/stores/auth';
   import LoginModal from '$lib/components/auth/LoginModal.svelte';
@@ -11,6 +12,7 @@
   import { goto } from '$app/navigation';
   import { pendingModerationStore } from '$lib/stores/moderation';
   import { browser } from '$app/environment';
+  import { getModerationWebSocket } from '$lib/utils/moderationWebSocket';
 
   export let pendingCount = 0;
 
@@ -52,6 +54,34 @@
 
   $: if (!showVerificationModal) {
     verificationCode = '';
+  }
+
+  onMount(() => {
+    // Connect WebSocket for moderators (Header is always mounted, so manages the connection)
+    if (hasModerationAccess && browser) {
+      const ws = getModerationWebSocket();
+
+      // Set up event listener
+      ws.on('event_created', handleEventCreated);
+
+      // Connect only if not already connected
+      if (!ws.getConnectionStatus()) {
+        ws.connect();
+      }
+    }
+  });
+
+  onDestroy(() => {
+    // Clean up WebSocket listener (but don't disconnect - other pages might be using it)
+    if (browser) {
+      const ws = getModerationWebSocket();
+      ws.off('event_created', handleEventCreated);
+    }
+  });
+
+  function handleEventCreated() {
+    // Refresh the pending count when a new event is created
+    refreshPendingModerationCount();
   }
 
   function formatPendingCount(count) {
@@ -162,7 +192,7 @@
     const response = await getProtests({ verified: 'false', manualOnly: 'true', limit: 1 });
 
     if (!response.error && hasModerationAccess) {
-      const parsedTotal = Number(response.total);
+      const parsedTotal = Number(response.pagination?.total);
       let total = 0;
 
       if (Number.isFinite(parsedTotal) && parsedTotal >= 0) {

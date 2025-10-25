@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { goto } from '$app/navigation';
   import { authStore } from '$lib/stores/auth';
   import { notificationStore } from '$lib/stores/notification';
@@ -10,12 +10,16 @@
   import Button from '$lib/components/common/Button.svelte';
   import { pendingModerationStore } from '$lib/stores/moderation';
   import EditEventModal from '$lib/components/event/EditEventModal.svelte';
+  import { getModerationWebSocket } from '$lib/utils/moderationWebSocket';
 
   let pendingEvents = [];
   let isLoading = true;
   let processingIds = new Set();
   let editingEventId = null;
   let showEditModal = false;
+  let lockedEvents = new Map(); // eventId → { userId, email }
+  let wsClient = null;
+  let isWsConnected = false;
 
   onMount(async () => {
     // Check authentication and role (only on client-side)
@@ -36,7 +40,50 @@
     }
 
     await loadPendingEvents();
+
+    // Get WebSocket instance (connection managed by Header component)
+    wsClient = getModerationWebSocket();
+    isWsConnected = wsClient.getConnectionStatus();
+
+    // Setup event handlers
+    wsClient.on('open', () => {
+      isWsConnected = true;
+      // Request current locks after connection
+      wsClient.requestCurrentLocks();
+    });
+
+    wsClient.on('close', () => {
+      isWsConnected = false;
+    });
+
+    wsClient.on('event_locked', handleEventLocked);
+    wsClient.on('event_unlocked', handleEventUnlocked);
+    wsClient.on('event_updated', handleWsEventUpdated);
+    wsClient.on('event_deleted', handleWsEventDeleted);
+
+    // If already connected, request locks immediately
+    if (isWsConnected) {
+      wsClient.requestCurrentLocks();
+    }
   });
+
+  onDestroy(() => {
+    // Cleanup WebSocket event listeners (but don't disconnect - Header manages the connection)
+    if (wsClient) {
+      wsClient.off('event_locked', handleEventLocked);
+      wsClient.off('event_unlocked', handleEventUnlocked);
+      wsClient.off('event_updated', handleWsEventUpdated);
+      wsClient.off('event_deleted', handleWsEventDeleted);
+    }
+  });
+
+  // Watch for modal close (when isOpen changes from true to false)
+  $: if (!showEditModal && editingEventId) {
+    if (wsClient && wsClient.getConnectionStatus()) {
+      wsClient.unviewEvent(editingEventId);
+    }
+    editingEventId = null;
+  }
 
   async function loadPendingEvents() {
     isLoading = true;
@@ -52,7 +99,7 @@
       pendingModerationStore.reset();
     } else {
       pendingEvents = response.protests || [];
-      const parsedTotal = Number(response.total);
+      const parsedTotal = Number(response.pagination?.total);
       let total = 0;
 
       if (Number.isFinite(parsedTotal) && parsedTotal >= 0) {
@@ -93,6 +140,12 @@
         duration: 5000
       });
 
+      // Notify WebSocket
+      if (wsClient && wsClient.getConnectionStatus()) {
+        wsClient.notifyEventUpdated(event.id);
+        wsClient.unviewEvent(event.id);
+      }
+
       // Remove from list
       pendingEvents = pendingEvents.filter(e => e.id !== event.id);
       pendingModerationStore.decrement();
@@ -129,6 +182,12 @@
         duration: 5000
       });
 
+      // Notify WebSocket
+      if (wsClient && wsClient.getConnectionStatus()) {
+        wsClient.notifyEventDeleted(event.id);
+        wsClient.unviewEvent(event.id);
+      }
+
       // Remove from list
       pendingEvents = pendingEvents.filter(e => e.id !== event.id);
       pendingModerationStore.decrement();
@@ -138,13 +197,63 @@
   function openEditModal(eventId) {
     editingEventId = eventId;
     showEditModal = true;
+
+    // Lock the event for editing
+    if (wsClient && wsClient.getConnectionStatus()) {
+      wsClient.viewEvent(eventId);
+    }
   }
 
   async function handleEventUpdated() {
+    // Unlock the event
+    if (wsClient && wsClient.getConnectionStatus() && editingEventId) {
+      wsClient.unviewEvent(editingEventId);
+    }
+
     // Reload the list to show updated event data
     await loadPendingEvents();
     showEditModal = false;
     editingEventId = null;
+  }
+
+  function handleEditModalClose() {
+    // Unlock the event when modal closes without saving
+    if (wsClient && wsClient.getConnectionStatus() && editingEventId) {
+      wsClient.unviewEvent(editingEventId);
+    }
+
+    showEditModal = false;
+    editingEventId = null;
+  }
+
+  // WebSocket event handlers
+  function handleEventLocked(data) {
+    lockedEvents.set(data.eventId, data.lockedBy);
+    lockedEvents = new Map(lockedEvents); // Create new Map to trigger reactivity
+  }
+
+  function handleEventUnlocked(data) {
+    lockedEvents.delete(data.eventId);
+    lockedEvents = new Map(lockedEvents); // Create new Map to trigger reactivity
+  }
+
+  function handleWsEventUpdated(data) {
+    // Another moderator updated an event - reload list
+    loadPendingEvents();
+  }
+
+  function handleWsEventDeleted(data) {
+    // Another moderator deleted an event - remove from list
+    pendingEvents = pendingEvents.filter(e => e.id !== data.eventId);
+    pendingModerationStore.decrement();
+  }
+
+  function isEventLocked(eventId) {
+    return lockedEvents.has(eventId);
+  }
+
+  function getEventLocker(eventId) {
+    return lockedEvents.get(eventId);
   }
 </script>
 
@@ -212,8 +321,12 @@
 
         {#each pendingEvents as event (event.id)}
           {@const isProcessing = processingIds.has(event.id)}
+          {@const locked = lockedEvents.has(event.id)}
+          {@const locker = lockedEvents.get(event.id)}
+          {@const isLockedByThisBrowser = editingEventId === event.id}
+          {@const isLockedByOther = locked && !isLockedByThisBrowser}
 
-          <div class="bg-white dark:bg-stone-800 rounded-2xl shadow-lg p-6 transition-all hover:shadow-xl">
+          <div class="bg-white dark:bg-stone-800 rounded-2xl shadow-lg p-6 transition-all hover:shadow-xl {isLockedByOther ? 'pointer-events-none' : ''}">
             <div class="flex flex-col gap-6">
               <!-- Event Info -->
               <div class="flex-1">
@@ -284,51 +397,61 @@
                 </div>
               </div>
 
-              <!-- Actions -->
-              <div class="flex flex-col sm:flex-row gap-2">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  on:click={() => rejectEvent(event)}
-                  disabled={isProcessing}
-                  class="flex-1 lg:flex-none"
-                >
-                  {#if isProcessing}
-                    <div class="w-4 h-4 border-2 border-black/30 dark:border-white/30 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-                  {:else}
-                    <Icon icon="heroicons:x-mark" class="w-4 h-4" />
-                  {/if}
-                  {$t('moderate.reject')}
-                </Button>
+              <!-- Locked Indicator -->
+              {#if isLockedByOther}
+                <div class="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 outline outline-offset-1 outline-amber-200 dark:outline-amber-900/50 rounded-lg">
+                  <Icon icon="heroicons:lock-closed" class="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <span class="text-sm text-amber-700 dark:text-amber-300">
+                    Currently being reviewed by {locker.email}
+                  </span>
+                </div>
+              {:else}
+                <!-- Actions -->
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    on:click={() => rejectEvent(event)}
+                    disabled={isProcessing || isLockedByOther}
+                    class="flex-1 lg:flex-none"
+                  >
+                    {#if isProcessing}
+                      <div class="w-4 h-4 border-2 border-black/30 dark:border-white/30 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                    {:else}
+                      <Icon icon="heroicons:x-mark" class="w-4 h-4" />
+                    {/if}
+                    {$t('moderate.reject')}
+                  </Button>
 
-                <div class="hidden sm:block sm:grow"></div>
+                  <div class="hidden sm:block sm:grow"></div>
 
-                <Button
-                  variant="light"
-                  size="sm"
-                  on:click={() => openEditModal(event.id)}
-                  disabled={isProcessing}
-                  class="flex-1 lg:flex-none"
-                >
-                  <Icon icon="heroicons:pencil-square" class="w-4 h-4" />
-                  {$t('editEvent.title')}
-                </Button>
+                  <Button
+                    variant="light"
+                    size="sm"
+                    on:click={() => openEditModal(event.id)}
+                    disabled={isProcessing || isLockedByOther}
+                    class="flex-1 lg:flex-none"
+                  >
+                    <Icon icon="heroicons:pencil-square" class="w-4 h-4" />
+                    {$t('editEvent.title')}
+                  </Button>
 
-                <Button
-                  variant="green"
-                  size="sm"
-                  on:click={() => approveEvent(event)}
-                  disabled={isProcessing}
-                  class="flex-1 lg:flex-none"
-                >
-                  {#if isProcessing}
-                    <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  {:else}
-                    <Icon icon="heroicons:check" class="w-4 h-4" />
-                  {/if}
-                  {$t('moderate.approve')}
-                </Button>
-              </div>
+                  <Button
+                    variant="green"
+                    size="sm"
+                    on:click={() => approveEvent(event)}
+                    disabled={isProcessing || isLockedByOther}
+                    class="flex-1 lg:flex-none"
+                  >
+                    {#if isProcessing}
+                      <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    {:else}
+                      <Icon icon="heroicons:check" class="w-4 h-4" />
+                    {/if}
+                    {$t('moderate.approve')}
+                  </Button>
+                </div>
+              {/if}
             </div>
           </div>
         {/each}
@@ -341,8 +464,5 @@
   bind:isOpen={showEditModal}
   protestId={editingEventId || ''}
   on:updated={handleEventUpdated}
-  on:close={() => {
-    showEditModal = false;
-    editingEventId = null;
-  }}
+  on:close={handleEditModalClose}
 />
