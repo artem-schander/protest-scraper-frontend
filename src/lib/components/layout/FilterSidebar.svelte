@@ -228,12 +228,11 @@ import { t } from '$lib/i18n';
 {#if showMobileFilters}
   <!-- Backdrop -->
   <div
-    class="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+    class="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 transition-opacity duration-300"
     on:click={handleBackdropClick}
     role="button"
     tabindex="0"
     on:keydown={(e) => e.key === 'Escape' && dispatch('close')}
-    transition:fade={{ duration: 200 }}
   >
     <!-- Drawer -->
     <div
