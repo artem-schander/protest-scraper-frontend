@@ -1,7 +1,9 @@
 # Protest Listing Platform – Frontend
 
+**🌐 Live at:** [https://protest-listing.com](https://protest-listing.com)
+
 > **📦 Part of the [Protest Scraper](https://github.com/artem-schander/protest-scraper) project**
-> This is the SvelteKit frontend. See also: [Backend API](https://github.com/artem-schander/protest-scraper) (Node.js/Express/MongoDB)
+> This is the SvelteKit frontend. See also: [Backend API](https://github.com/artem-schander/protest-scraper) (Node.js/Express/MongoDB) | [Production API](https://scraper.protest-listing.com/api)
 
 SvelteKit frontend for the protest-scraper API. The app ships with geolocation-aware filters, map tooling, rich exports, and full EN/DE localisation backed by SSR-safe cookies.
 
