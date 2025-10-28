@@ -33,6 +33,10 @@ let locationErrorKey = null;
   let darkTileLayer;
   let markerClusterGroup = null;
   let events = [];
+  let goalZoom = null;
+  let currentZoom = null;
+  let zoomAnimationId = null;
+  let isZooming = false;
 
   /**
    * Fetch all events matching current filters (excluding radius filter)
@@ -183,17 +187,70 @@ let locationErrorKey = null;
   }
 
   /**
+   * Animate zoom smoothly using requestAnimationFrame
+   * Same technique as smooth wheel zoom plugin
+   */
+  function animateZoom() {
+    if (!map || !isZooming) return;
+
+    // Interpolate towards goal zoom (same as wheel zoom: 0.3 factor)
+    const newZoom = currentZoom + (goalZoom - currentZoom) * 0.3;
+    currentZoom = Math.floor(newZoom * 100) / 100;
+
+    // Check if we're close enough to the goal
+    if (Math.abs(goalZoom - currentZoom) < 0.01) {
+      currentZoom = goalZoom;
+      isZooming = false;
+      cancelAnimationFrame(zoomAnimationId);
+      map._moveEnd(true);
+      return;
+    }
+
+    // Update map using internal _move method (like smooth wheel zoom)
+    // Keep center at marker position
+    const center = internalLat && internalLon ? L.latLng(internalLat, internalLon) : map.getCenter();
+    map._move(center, currentZoom);
+
+    // Continue animation
+    zoomAnimationId = requestAnimationFrame(animateZoom);
+  }
+
+  /**
+   * Start smooth zoom animation to target zoom level
+   */
+  function startSmoothZoom(targetZoom) {
+    if (!map) return;
+
+    // Stop any existing animation
+    if (isZooming) {
+      cancelAnimationFrame(zoomAnimationId);
+    }
+
+    goalZoom = Math.max(5, Math.min(14, targetZoom));
+    currentZoom = map.getZoom();
+    isZooming = true;
+
+    // Start animation like wheel zoom does
+    if (!map._zooming) {
+      map._moveStart(true, false);
+    }
+
+    animateZoom();
+  }
+
+  /**
    * Smart zoom: fit all markers UNLESS radius filter is active
+   * Uses smooth animation like wheel zoom plugin
    */
   function updateSmartZoom() {
     if (!map || !L) return;
 
     const hasRadiusFilter = internalLat != null && internalLon != null;
 
-    if (hasRadiusFilter && circle) {
+    if (hasRadiusFilter) {
       // Calculate smooth fractional zoom for radius circle
       const zoom = calculateSmoothZoom(internalRadius, internalLat);
-      map.setView([internalLat, internalLon], zoom, { animate: false });
+      startSmoothZoom(zoom);
     } else if (markerClusterGroup && markerClusterGroup.getLayers().length > 0) {
       // Fit bounds to all markers with padding
       const bounds = markerClusterGroup.getBounds();
@@ -230,17 +287,21 @@ let locationErrorKey = null;
       zoomDelta: 0.1 // Small steps for smoother transitions
     }).setView([defaultLat, defaultLon], 10);
 
-    // Create light and dark tile layers
+    // Create light and dark tile layers with fade animation
     lightTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       subdomains: ['a', 'b', 'c', 'd'],
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors © CARTO'
+      attribution: '© OpenStreetMap contributors © CARTO',
+      fadeAnimation: true,
+      keepBuffer: 2 // Keep 2 zoom levels of tiles in memory to reduce reloading
     });
 
     darkTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       subdomains: ['a', 'b', 'c', 'd'],
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors © CARTO'
+      attribution: '© OpenStreetMap contributors © CARTO',
+      fadeAnimation: true,
+      keepBuffer: 2 // Keep 2 zoom levels of tiles in memory to reduce reloading
     });
 
     // Add the initial tile layer based on current theme
@@ -277,6 +338,12 @@ let locationErrorKey = null;
   });
 
   onDestroy(() => {
+    // Stop any ongoing zoom animation
+    if (zoomAnimationId) {
+      cancelAnimationFrame(zoomAnimationId);
+      isZooming = false;
+    }
+
     if (map) {
       map.remove();
     }
@@ -321,14 +388,14 @@ let locationErrorKey = null;
     // Add new marker
     marker = L.marker([newLat, newLon], { icon }).addTo(map);
 
-    // Add circle showing search radius
+    // Add circle showing search radius (hidden by default, only for zoom calculation)
     const effectiveRadius = normalizeRadius(radius);
 
     circle = L.circle([newLat, newLon], {
       color: '#E10600',
-      opacity: 0.1,
+      opacity: 0,
       fillColor: '#E10600',
-      fillOpacity: 0.1,
+      fillOpacity: 0,
       radius: effectiveRadius * 1000 // Convert km to meters
     }).addTo(map);
 
@@ -389,6 +456,10 @@ let locationErrorKey = null;
       (position) => {
         const userLat = position.coords.latitude;
         const userLon = position.coords.longitude;
+
+        // Set radius to 30km for "my location"
+        radius = 30;
+        internalRadius = 30;
 
         updateMapMarker(userLat, userLon);
         emitChange(userLat, userLon, radius);
