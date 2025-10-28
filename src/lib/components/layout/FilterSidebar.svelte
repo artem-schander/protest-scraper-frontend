@@ -213,6 +213,7 @@ import { t } from '$lib/i18n';
         bind:lat
         bind:lon
         bind:radius
+        filters={filters}
         on:change={handleMapChange}
       />
     </div>
@@ -288,6 +289,7 @@ import { t } from '$lib/i18n';
             bind:lat
             bind:lon
             bind:radius
+            filters={filters}
             on:change={handleMapChange}
           />
         </div>

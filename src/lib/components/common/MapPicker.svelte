@@ -4,10 +4,12 @@ import { browser } from '$app/environment';
 import { get } from 'svelte/store';
 import Icon from '$lib/components/common/Icon.svelte';
 import { t } from '$lib/i18n';
+import { getProtests } from '$lib/utils/api.js';
 
   export let lat = null;
   export let lon = null;
   export let radius = 10; // km
+  export let filters = {}; // All current filters from parent
 
   function normalizeRadius(value) {
     const parsed = Number.parseFloat(value);
@@ -29,12 +31,159 @@ import { t } from '$lib/i18n';
 let locationErrorKey = null;
   let lightTileLayer;
   let darkTileLayer;
+  let markerClusterGroup = null;
+  let events = [];
+
+  /**
+   * Fetch all events matching current filters (excluding radius filter)
+   * Fetches all pages to get complete event list for markers
+   * Runs lazily without blocking the UI
+   */
+  async function fetchAndDisplayEvents() {
+    if (!map || !L || !markerClusterGroup) {
+      return;
+    }
+
+    // Run async without blocking
+    setTimeout(async () => {
+      try {
+        // Build filter object excluding radius/location (we want all events, not just nearby)
+        const eventFilters = {
+          ...filters,
+          limit: 100, // Fetch 100 per page
+        };
+
+        // Remove location filters to get all events
+        delete eventFilters.lat;
+        delete eventFilters.lon;
+        delete eventFilters.radius;
+
+        // Fetch first page to get total count
+        const firstPage = await getProtests({ ...eventFilters, page: 1 });
+
+        if (firstPage.error) {
+          console.error('Failed to fetch events:', firstPage.error);
+          return;
+        }
+
+        let allEvents = firstPage.protests || [];
+        const total = firstPage.pagination?.total || 0;
+        const totalPages = Math.ceil(total / 100);
+
+        // Fetch remaining pages in parallel
+        if (totalPages > 1) {
+          const pagePromises = [];
+          for (let page = 2; page <= totalPages; page++) {
+            pagePromises.push(getProtests({ ...eventFilters, page }));
+          }
+
+          const remainingPages = await Promise.all(pagePromises);
+          remainingPages.forEach(pageData => {
+            if (pageData.protests) {
+              allEvents = [...allEvents, ...pageData.protests];
+            }
+          });
+        }
+
+        events = allEvents;
+
+        // Clear existing markers
+        markerClusterGroup.clearLayers();
+
+        // Add markers for events with coordinates
+        let markerCount = 0;
+        events.forEach(event => {
+          if (event.coordinates?.lat && event.coordinates?.lon) {
+            markerCount++;
+            const eventLat = event.coordinates.lat;
+            const eventLon = event.coordinates.lon;
+
+            // Create marker with red circle icon
+            const eventMarker = L.marker([eventLat, eventLon], {
+              icon: L.divIcon({
+                html: `
+                  <div style="
+                    width: 6px;
+                    height: 6px;
+                    background-color: #E10600;
+                    border: 2px solid white;
+                    border-radius: 50%;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                  "></div>
+                `,
+                className: 'custom-event-marker',
+                iconSize: [10, 10],
+                iconAnchor: [5, 5],
+                popupAnchor: [0, -5]
+              })
+            });
+
+            // Format date for popup
+            const startDate = new Date(event.start);
+            const dateStr = startDate.toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            });
+
+            // Create popup content
+            const popupContent = `
+              <div class="event-popup">
+                <h3 style="font-weight: 600; margin: 0 0 4px 0; font-size: 14px;">${event.title}</h3>
+                <p style="margin: 0 0 4px 0; font-size: 12px; opacity: 0.7;">${dateStr}</p>
+                ${event.city ? `<p style="margin: 0; font-size: 12px; opacity: 0.7;">${event.city}</p>` : ''}
+              </div>
+            `;
+
+            eventMarker.bindPopup(popupContent, {
+              maxWidth: 200,
+              className: 'custom-event-popup'
+            });
+
+            markerClusterGroup.addLayer(eventMarker);
+          }
+        });
+
+        // Update map zoom based on smart zoom logic
+        updateSmartZoom();
+
+      } catch (error) {
+        console.error('Error fetching events for markers:', error);
+      }
+    }, 0);
+  }
+
+  /**
+   * Smart zoom: fit all markers UNLESS radius filter is active
+   */
+  function updateSmartZoom() {
+    if (!map || !L) return;
+
+    const hasRadiusFilter = lat != null && lon != null;
+
+    if (hasRadiusFilter) {
+      // Keep radius-based zoom
+      const zoom = calculateZoomLevel(normalizeRadius(radius) || radius, lat);
+      map.setView([lat, lon], zoom);
+    } else if (markerClusterGroup && markerClusterGroup.getLayers().length > 0) {
+      // Fit bounds to all markers with padding
+      const bounds = markerClusterGroup.getBounds();
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
+    }
+  }
 
   onMount(async () => {
     if (!browser) return;
 
-    // Dynamically import Leaflet (client-side only)
-    L = await import('leaflet');
+    // Dynamically import Leaflet and markercluster (client-side only)
+    const leafletModule = await import('leaflet');
+    L = leafletModule.default || leafletModule;
+
+    // Import smooth wheel zoom - must be before map creation
+    await import('@luomus/leaflet-smooth-wheel-zoom');
+
+    // Import markercluster - it adds to L automatically
+    await import('leaflet.markercluster');
 
     // Initialize map centered on Berlin (default)
     const defaultLat = lat ? parseFloat(lat) : 52.52;
@@ -43,7 +192,11 @@ let locationErrorKey = null;
     map = L.map(mapContainer, {
       zoomControl: false, // Remove +/- zoom buttons
       attributionControl: false, // Remove attribution
-      wheelPxPerZoomLevel: 120,
+      maxBounds: [[-90, -180], [90, 180]], // Restrict panning to world bounds
+      maxBoundsViscosity: 1.0, // Make bounds completely solid (no bouncing back)
+      scrollWheelZoom: false, // Disable default zoom
+      smoothWheelZoom: true, // Enable smooth zoom like Google Maps
+      smoothSensitivity: 10 // Sensitivity (1 = default, higher = slower)
     }).setView([defaultLat, defaultLon], 10);
 
     // Create light and dark tile layers
@@ -62,6 +215,16 @@ let locationErrorKey = null;
     // Add the initial tile layer based on current theme
     updateTileLayer();
 
+    // Initialize marker cluster group
+    markerClusterGroup = L.markerClusterGroup({
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: true,
+      spiderfyOnMaxZoom: true,
+      removeOutsideVisibleBounds: true,
+      maxClusterRadius: 80,
+    });
+    map.addLayer(markerClusterGroup);
+
     // If we have initial coordinates, add marker and circle
     if (lat != null && lon != null) {
       const latNum = parseFloat(lat);
@@ -70,6 +233,9 @@ let locationErrorKey = null;
         updateMapMarker(latNum, lonNum);
       }
     }
+
+    // Fetch and display event markers
+    await fetchAndDisplayEvents();
 
     // Click event to place marker
     map.on('click', (e) => {
@@ -337,6 +503,11 @@ function clearLocation() {
       observer.disconnect();
     });
   }
+
+  // Refetch events when filters change
+  $: if (browser && map && markerClusterGroup) {
+    fetchAndDisplayEvents();
+  }
 </script>
 
 <div class="space-y-3">
@@ -442,6 +613,8 @@ function clearLocation() {
 <style>
   /* Import Leaflet CSS */
   @import 'leaflet/dist/leaflet.css';
+  @import 'leaflet.markercluster/dist/MarkerCluster.css';
+  @import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
   /* Custom marker styling */
   :global(.custom-map-marker) {
@@ -458,7 +631,43 @@ function clearLocation() {
     }
   }
 
+  :global(.custom-event-marker) {
+    background: transparent !important;
+    border: none !important;
+  }
+
+  /* Custom popup styling */
+  :global(.custom-event-popup .leaflet-popup-content-wrapper) {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.custom-event-popup .leaflet-popup-content) {
+    margin: 12px;
+  }
+
+  :global(.custom-event-popup .leaflet-popup-tip) {
+    background-color: white;
+  }
+
+  /* Dark mode popup styling */
+  :global(.dark .custom-event-popup .leaflet-popup-content-wrapper) {
+    background-color: rgb(41 37 36); /* stone-800 */
+    color: white;
+  }
+
+  :global(.dark .custom-event-popup .leaflet-popup-tip) {
+    background-color: rgb(41 37 36); /* stone-800 */
+  }
+
+  /* Map background - light mode */
   :global(.leaflet-container) {
-    background-color: oklch(96.7% 0.003 264.542);
+    background-color: #e5e7eb; /* stone-200 equivalent */
+  }
+
+  /* Map background - dark mode */
+  :global(.dark .leaflet-container) {
+    background-color: #1c1917; /* stone-900 */
   }
 </style>

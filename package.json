@@ -22,9 +22,11 @@
   },
   "dependencies": {
     "@iconify/svelte": "^4.0.2",
+    "@luomus/leaflet-smooth-wheel-zoom": "^1.0.0",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
     "svelte-i18n": "^4.0.1"
   },
   "type": "module"

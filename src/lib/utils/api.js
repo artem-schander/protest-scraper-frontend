@@ -322,9 +322,13 @@ export function initiateAppleOAuth() {
 export async function getProtests(filters = {}) {
   const queryParams = new URLSearchParams();
 
+  if (filters.search) queryParams.append('search', filters.search);
   if (filters.city) queryParams.append('city', filters.city);
+  if (filters.country) queryParams.append('country', filters.country);
   if (filters.source) queryParams.append('source', filters.source);
   if (filters.language) queryParams.append('language', filters.language);
+  if (filters.startDate) queryParams.append('startDate', filters.startDate);
+  if (filters.endDate) queryParams.append('endDate', filters.endDate);
   if (filters.dateRange) queryParams.append('dateRange', filters.dateRange);
   if (filters.page) queryParams.append('page', filters.page);
   if (filters.lat) queryParams.append('lat', filters.lat);
