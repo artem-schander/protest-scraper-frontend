@@ -154,17 +154,46 @@ let locationErrorKey = null;
   }
 
   /**
+   * Calculate smooth fractional zoom level that fits the radius circle
+   */
+  function calculateSmoothZoom(radiusKm, latitude) {
+    // Get map container size
+    const mapSize = map.getSize();
+    const mapHeight = mapSize.y;
+
+    // Add padding (30px on each side = 60px total)
+    const availableHeight = mapHeight - 60;
+
+    // Calculate meters per pixel needed to fit the circle
+    const radiusMeters = radiusKm * 1000;
+    const diameterMeters = radiusMeters * 2;
+    const metersPerPixel = diameterMeters / availableHeight;
+
+    // Web Mercator formula: resolution = (cos(lat) * 2 * π * R) / (256 * 2^zoom)
+    // Where R = Earth radius = 6378137 meters
+    const earthRadius = 6378137;
+    const latRad = (latitude * Math.PI) / 180;
+    const resolution = Math.cos(latRad) * 2 * Math.PI * earthRadius / 256;
+
+    // Solve for zoom: zoom = log2(resolution / metersPerPixel)
+    const zoom = Math.log2(resolution / metersPerPixel);
+
+    // Clamp between min and max zoom
+    return Math.max(5, Math.min(14, zoom));
+  }
+
+  /**
    * Smart zoom: fit all markers UNLESS radius filter is active
    */
   function updateSmartZoom() {
     if (!map || !L) return;
 
-    const hasRadiusFilter = lat != null && lon != null;
+    const hasRadiusFilter = internalLat != null && internalLon != null;
 
-    if (hasRadiusFilter) {
-      // Keep radius-based zoom
-      const zoom = calculateZoomLevel(normalizeRadius(radius) || radius, lat);
-      map.setView([lat, lon], zoom);
+    if (hasRadiusFilter && circle) {
+      // Calculate smooth fractional zoom for radius circle
+      const zoom = calculateSmoothZoom(internalRadius, internalLat);
+      map.setView([internalLat, internalLon], zoom, { animate: false });
     } else if (markerClusterGroup && markerClusterGroup.getLayers().length > 0) {
       // Fit bounds to all markers with padding
       const bounds = markerClusterGroup.getBounds();
@@ -196,7 +225,9 @@ let locationErrorKey = null;
       maxBoundsViscosity: 1.0, // Make bounds completely solid (no bouncing back)
       scrollWheelZoom: false, // Disable default zoom
       smoothWheelZoom: true, // Enable smooth zoom like Google Maps
-      smoothSensitivity: 10 // Sensitivity (1 = default, higher = slower)
+      smoothSensitivity: 10, // Sensitivity (1 = default, higher = slower)
+      zoomSnap: 0, // Allow fractional zoom levels (0 = continuous)
+      zoomDelta: 0.1 // Small steps for smoother transitions
     }).setView([defaultLat, defaultLon], 10);
 
     // Create light and dark tile layers
@@ -251,35 +282,6 @@ let locationErrorKey = null;
     }
   });
 
-  function calculateZoomLevel(
-    radiusKm,
-    latitude = 0,
-    viewportPx = 230,
-    paddingFraction = 0.75,
-    tileSize = 256,
-    minZoom = 5,
-    maxZoom = 14
-  ) {
-    const R = 6378137; // meters (WGS84)
-    const diameterM = 2 * radiusKm * 1000;
-    const targetM = diameterM * (1 + paddingFraction);
-
-    // meters/pixel we need so the target diameter fits in the viewport
-    const requiredMetersPerPixel = targetM / Math.max(1, viewportPx);
-
-    // Web Mercator ground resolution: m/px = cos(lat) * 2πR / (tileSize * 2^z)
-    // Solve for z:
-    const latFactor = Math.max(1e-6, Math.cos((latitude * Math.PI) / 180)); // avoid poles -> 0
-    const numerator = 2 * Math.PI * R * latFactor;
-
-    const z = Math.log2(numerator / (tileSize * requiredMetersPerPixel));
-
-    // Use floor to guarantee the circle fits (rounding up could crop it)
-    const fitted = Math.floor(z);
-
-    return Math.min(maxZoom, Math.max(minZoom, fitted));
-  }
-
   function updateMapMarker(newLat, newLon, shouldUpdateZoom = true) {
     if (!L || !map) return;
 
@@ -332,8 +334,7 @@ let locationErrorKey = null;
 
     // Pan to new location with appropriate zoom
     if (shouldUpdateZoom) {
-      const zoom = calculateZoomLevel(effectiveRadius || radius, newLat);
-      map.setView([newLat, newLon], zoom);
+      updateSmartZoom();
     }
 
     // Update component state
@@ -364,10 +365,9 @@ let locationErrorKey = null;
       circle.setRadius(radius * 1000);
     }
 
-    // Update zoom level based on new radius
-    if (lat && lon && map) {
-      const zoom = calculateZoomLevel(radius);
-      map.setView([lat, lon], zoom, { animate: true });
+    // Update zoom level based on new radius - smooth zoom to fit circle
+    if (lat && lon && map && circle) {
+      updateSmartZoom();
     }
 
     // Emit change if we have coordinates
@@ -480,8 +480,7 @@ function clearLocation() {
       internalRadius = normalized;
       circle.setRadius(normalized * 1000);
       if (internalLat != null && internalLon != null) {
-        const zoom = calculateZoomLevel(normalized || radius, internalLat);
-        map.setView([internalLat, internalLon], zoom, { animate: true });
+        updateSmartZoom();
       }
     }
   }
