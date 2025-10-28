@@ -621,7 +621,7 @@ function clearLocation() {
   <!-- Map Container -->
   <div
     bind:this={mapContainer}
-    class="h-64 dark:bg-black rounded-lg border-1 border-stone-200 dark:border-stone-700 overflow-hidden"
+    class="h-58 dark:bg-black rounded-lg border-1 border-stone-200 dark:border-stone-700 overflow-hidden"
     style="z-index: 1;"
   ></div>
 
